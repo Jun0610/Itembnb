@@ -1,19 +1,21 @@
 import './navbar.css';
 import { NavLink } from 'react-router-dom';
 
+import "bootstrap/dist/css/bootstrap.min.css"
+
 const Navbar = () => {
 
     const logo = require('../resources/logo-no-background.png');
 
     return (
-        <nav className="nav-wrapper">
-            <div className="container">
-                <a href="/" >
+        <nav className="navbar customNavBar" >
+            <div className="container-fluid">
+                <a href="/" className='navbar-brand'>
                     <img src = {logo} className='brand-logo'></img>
                 </a>
                 <ul>
-                    <li><NavLink to="/signup" className='nav-link'>Sign Up</NavLink></li>
-                    <li><NavLink to="/login" className='nav-link'>Login</NavLink></li>
+                    <li><NavLink to="/signup" className='custom-nav-link'>Sign Up</NavLink></li>
+                    <li><NavLink to="/login" className='custom-nav-link'>Login</NavLink></li>
                 </ul>
             </div>
         </nav>
