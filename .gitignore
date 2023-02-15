@@ -33,3 +33,8 @@ Frontend/*.tgz
 
 # Yarn Integrity file
 Frontend/.yarn-integrity
+
+#backend modules
+backend/node_modules
+backend/package-lock.json
+backend/package.json
