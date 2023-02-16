@@ -1,19 +1,28 @@
-const { MongoClient } = require("mongodb");
-const Item = require("./item");
-const ItemReview = require("./item-review");
+const mongo = require("mongodb");
+const express = require('express')
+const {Item, Category} = require("./item");
+const Review = require("./review");
+
+const app = express();
+
+
+app.listen(8888, () => {
+    console.log("server is listening on port 8888...")
+})
+
 
 async function main() {
 
     const uri = "mongodb+srv://itembnb:turkstra.db@itembnbdb.xzcvsqf.mongodb.net/?retryWrites=true&w=majority";
 
-    const client = new MongoClient(uri);
+    const client = new mongo.MongoClient(uri);
 
     try {
         await client.connect();
         await listDatabases(client);
         const db = client.db("itembnb")
-        const results = await db.collection("items").find().toArray();
-        console.log(results)
+        // const results = await db.collection("items").find({_id : new mongo.ObjectId('63ec624c09acb0b1c1fe9173')}).toArray();
+        // console.log(results)
 
 
         
