@@ -13,7 +13,7 @@ const Navbar = () => {
                 <a href="/" className='navbar-brand'>
                     <img src = {logo} className='brand-logo'></img>
                 </a>
-                <ul>
+                <ul className="custom-ul">
                     <li><NavLink to="/signup" className='custom-nav-link'>Sign Up</NavLink></li>
                     <li><NavLink to="/login" className='custom-nav-link'>Login</NavLink></li>
                 </ul>
