@@ -21,7 +21,7 @@ const Post = ({item}) => {
           <div className="card-body custom-card-body-left">
             <h5 className="card-title"> {title} </h5>
             <p className="card-text item-desc"> {description} </p>
-            <a href="#" class="btn custom-card-button">Go somewhere</a>
+            <a href="#" class="btn custom-card-button">Read more</a>
           </div>
 
         {isRequest === false &&
