@@ -21,6 +21,7 @@ const CreateItemPost = () => {
     unavailList: [],
     review: [],
     category: [],
+    images: [],
   });
 
   const [images, setImages] = React.useState([]);
@@ -50,8 +51,17 @@ const CreateItemPost = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(item);
-    alert("Item Successfully posted!");
+    if (item.category.length > 3 ) {
+      alert("Please only select at most 3 categories!");
+    } else if (item.category.length === 0) {
+      alert("Please at least select one category!");
+    }
+    if (images.length === 0) {
+      alert("Please upload at least one image!");
+    }
+    item.images = images;
     ItemService(item);
+    alert("Item Successfully posted!");
     setItem({
       name: '',
       description: '',
@@ -60,7 +70,9 @@ const CreateItemPost = () => {
       unavailList: [],
       review: [],
       category: [],
+      images: [],
     });
+    setImages([]);
   }
 
   return (
@@ -115,7 +127,8 @@ const CreateItemPost = () => {
           // write your building UI
           <div className="grid grid-rows-2 grid-flow-col gap-4 m-4 h-80">
             <div className="row-span-2 col-span-2">
-              {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" img="first image" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-secondary h-80"
+              {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : 
+              <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
                 style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
                 onClick={onImageUpload} 
                 {...dragProps}
@@ -124,7 +137,7 @@ const CreateItemPost = () => {
               </div>}
             </div>
             <div className="row-span-1 col-span-1">
-              {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" img="first image" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-secondary h-36"
+              {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
                 onClick={onImageUpload} 
                 {...dragProps}
@@ -132,26 +145,69 @@ const CreateItemPost = () => {
                 Click or Drop here
               </div>}
             </div>
-            <div className="bg-secondary row-span-1 col-span-1"
-              style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
-              onClick={onImageUpload} 
-              {...dragProps}
-            >
-              Click or Drop here
+            <div className="row-span-1 col-span-1">
+              {imageList[2] ? <img src={imageList[2]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
+                onClick={onImageUpload} 
+                {...dragProps}
+              >
+                Click or Drop here
+              </div>}
             </div>
-            <div className="bg-secondary row-span-1 col-span-1"
-              style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
-              onClick={onImageUpload} 
-              {...dragProps}
-            >
-              Click or Drop here
+            <div className="row-span-1 col-span-1">
+              {imageList[3] ? <img src={imageList[3]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
+                style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
+                onClick={onImageUpload} 
+                {...dragProps}
+              >
+                Click or Drop here
+              </div>}
             </div>
-            <div className="bg-secondary row-span-1 col-span-1"
-              style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
-              onClick={onImageUpload} 
-              {...dragProps}
-            >
-              Click or Drop here
+            <div className="row-span-1 col-span-1">
+              {imageList[4] ? <img src={imageList[4]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
+                style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
+                onClick={onImageUpload} 
+                {...dragProps}
+              >
+                Click or Drop here
+              </div>}
+            </div>
+          </div>
+        )}
+      </ImageUploading>
+      </div>
+      <div>
+      <ImageUploading
+        multiple
+        value={images}
+        onChange={onChangeImage}
+        maxNumber={maxNumber}
+        dataURLKey="data_url"
+      >
+        {({
+          imageList,
+          onImageUpload,
+          onImageRemoveAll,
+          onImageUpdate,
+          onImageRemove,
+          isDragging,
+          dragProps,
+        }) => (
+          // write your building UI
+          <div>
+            <button className="btn btn-primary btn-lg m-3" onClick={onImageUpload} style={{backgroundColor: "#F0D061", border: "none"}}>Click here to upload image</button>
+            &nbsp;
+            <button className="btn btn-primary btn-lg m-3" onClick={onImageRemoveAll} style={{backgroundColor: "#F0D061", border: "none"}}>Remove all images</button>
+            <div className="grid grid-flow-col auto-cols-max h-60" style={images.length > 0 ? {maxHeight: "32rem", overflowX: "scroll", overflowY: "hidden"} : {display: "None"}}>
+              {imageList.map((image, index) => (
+                <div key={index}>
+                  <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
+                  <img src={image['data_url']} alt="" className="auto" onDoubleClick={onImageRemove} style={{width: '100%', height: '12rem', objectFit: "cover"}}/>
+                  </div>
+                  <div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
