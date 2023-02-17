@@ -7,7 +7,7 @@ import "../styles/homepage.css";
 const Homepage = () => {
   return (
     <div>
-      <h1>Item posts</h1>
+      <h1 className="item-post-header">Item posts</h1>
         <div className="cardcontainer">
           <Post item={
                 {title: "Item 1",
@@ -51,7 +51,7 @@ const Homepage = () => {
                   isRequest: false}
               } />
         </div>
-      <h1>Item requests</h1>
+      <h1 className="item-post-header">Item requests</h1>
       <div className="cardcontainer">
           <Post item={
                 {title: "Item 1",
