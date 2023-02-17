@@ -1,0 +1,7 @@
+.cardcontainer {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    height: 400px;
+    margin: 0 10px;
+}

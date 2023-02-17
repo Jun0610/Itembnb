@@ -1,4 +1,4 @@
-import './navbar.css';
+import '../styles/navbar.css';
 import { NavLink } from 'react-router-dom';
 
 import "bootstrap/dist/css/bootstrap.min.css"
