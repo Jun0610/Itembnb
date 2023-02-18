@@ -32,12 +32,30 @@ const CreateItemPost = () => {
   const onChangeImage = (imageList, addUpdateIndex) => {
     console.log(imageList, addUpdateIndex);
     setImages(imageList);
+
+    if (imagesDisplay.length > imageList.length) {
+      // deleted an image from down there
+      const newImageList = [];
+      imageList.forEach(element => newImageList.push(element));
+      setImagesDisplay(newImageList);
+    }
+
   }
 
   const onChangeImageDisplay = (imageList, addUpdateIndex) => {
     console.log(imageList, addUpdateIndex);
     setImagesDisplay(imageList);
-    setImages([...images, ...imageList]);
+
+    const urls = [];
+    images.forEach(e => urls.push(e['data_url']));
+    console.log("urls: ", urls);
+
+    const newImageList = [];
+    imageList.forEach(element => {
+      if (!urls.includes(element['data_url'])) newImageList.push(element);
+    });
+
+    setImages([...images, ...newImageList]);
   }
 
   const handleItem = (e) => {
