@@ -21,13 +21,34 @@ client.connect().then( () => {
 const db = client.db("itembnb");
 
 
-//sending posts
+//sending item posts
 app.get('/item-posts', async (req, res) => {
     res.status(200).json(await db.collection("posts").find({isRequest: false}, {sort: {dateCreated: -1}, limit: 20}).toArray())
 })
 
+
+//sending request posts
 app.get('/request-posts', async (req, res) => {
     res.status(200).json(await db.collection("posts").find({isRequest: true}, {sort: {dateCreated: -1}, limit: 20}).toArray())
+})
+
+
+
+//sending user profile 
+app.get('/user-profile-data/:id', async (req, res) => {
+    res.status(200).json(await db.collection('users').findOne({_id: new mongo.ObjectId(req.params.id)}))
+})
+
+//sending categories
+app.get('/categories', async (req, res) => {
+    res.status(200).json({
+        ACADEMICS: "Acaademics",
+        HOUSEHOLD : "Household",
+        ENTERTAINMENT: "Entertainment",
+        OUTDOOR: "Outdoor",
+        ELECTRONIC: "Electronic",
+        MISC: "Misc",
+    })
 })
 
 
