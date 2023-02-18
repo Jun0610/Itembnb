@@ -32,7 +32,7 @@ app.get('/request-posts', async (req, res) => {
 
 
 //creating item post
-app.post
+// app.post
 
 
 
