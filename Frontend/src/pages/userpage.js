@@ -9,7 +9,7 @@ import "../styles/userpage.css";
 const Userpage = () => {
   return (
     <div id="page_content_container">
-        <div id="profile_leftbox">
+        <div id="profile_leftbox" class="add_padding">
             <div>
                 <img id="profilepic" src="https://images.gr-assets.com/users/1674487597p6/614430.jpg"/>
 
@@ -21,12 +21,12 @@ const Userpage = () => {
             </div>
         </div>
 
-        <div id="profile_main">
-            <div class="content_block">
+        <div id="profile_main" class="add_padding">
+            <div class="add_padding">
                 <h1>USERNAME's Profile</h1>
-                <p>Borrower rating: X/5</p>
-                <p>Lender rating: X/5</p>
-                <p>User description: lorem ipsum dolor sit amet consecutiro ipsit adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>Borrower Rating: X/5</p>
+                <p>Lender Rating: X/5</p>
+                <p><strong>Profile Description</strong>: lorem ipsum dolor sit amet consecutiro ipsit adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
 
         <h3 className="item-post-header">USERNAME's Posted Items</h3>
