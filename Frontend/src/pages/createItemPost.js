@@ -27,9 +27,16 @@ const CreateItemPost = () => {
   const [images, setImages] = React.useState([]);
   const maxNumber = 20;
 
+  const [imagesDisplay, setImagesDisplay] = React.useState([]);
+
   const onChangeImage = (imageList, addUpdateIndex) => {
     console.log(imageList, addUpdateIndex);
     setImages(imageList);
+  }
+
+  const onChangeImageDisplay = (imageList, addUpdateIndex) => {
+    console.log(imageList, addUpdateIndex);
+    setImagesDisplay(imageList);
   }
 
   const handleItem = (e) => {
@@ -110,8 +117,8 @@ const CreateItemPost = () => {
       <div>
       <ImageUploading
         multiple
-        value={images}
-        onChange={onChangeImage}
+        value={imagesDisplay}
+        onChange={onChangeImageDisplay}
         maxNumber={maxNumber}
         dataURLKey="data_url"
       >
@@ -129,8 +136,8 @@ const CreateItemPost = () => {
             <div className="row-span-2 col-span-2">
               {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : 
               <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
-                style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
-                onClick={onImageUpload} 
+                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                onClick={onImageUpload} onDoubleClick={onImageRemove(0)}
                 {...dragProps}
               >
                 Click or Drop here
@@ -138,8 +145,8 @@ const CreateItemPost = () => {
             </div>
             <div className="row-span-1 col-span-1">
               {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
-                style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
-                onClick={onImageUpload} 
+                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                onClick={onImageUpload} onDoubleClick={onImageRemove(1)}
                 {...dragProps}
               >
                 Click or Drop here
@@ -147,8 +154,8 @@ const CreateItemPost = () => {
             </div>
             <div className="row-span-1 col-span-1">
               {imageList[2] ? <img src={imageList[2]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
-                style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
-                onClick={onImageUpload} 
+                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                onClick={onImageUpload} onDoubleClick={onImageRemove(2)}
                 {...dragProps}
               >
                 Click or Drop here
@@ -156,8 +163,8 @@ const CreateItemPost = () => {
             </div>
             <div className="row-span-1 col-span-1">
               {imageList[3] ? <img src={imageList[3]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
-                style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
-                onClick={onImageUpload} 
+                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                onClick={onImageUpload} onDoubleClick={onImageRemove(3)}
                 {...dragProps}
               >
                 Click or Drop here
@@ -165,8 +172,8 @@ const CreateItemPost = () => {
             </div>
             <div className="row-span-1 col-span-1">
               {imageList[4] ? <img src={imageList[4]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
-                style={isDragging ? { backgroundColor: 'red' } : {cursor: "pointer"}}
-                onClick={onImageUpload} 
+                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                onClick={onImageUpload} onDoubleClick={onImageRemove(4)}
                 {...dragProps}
               >
                 Click or Drop here
