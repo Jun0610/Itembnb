@@ -37,6 +37,7 @@ const CreateItemPost = () => {
   const onChangeImageDisplay = (imageList, addUpdateIndex) => {
     console.log(imageList, addUpdateIndex);
     setImagesDisplay(imageList);
+    setImages([...images, ...imageList]);
   }
 
   const handleItem = (e) => {
@@ -137,7 +138,7 @@ const CreateItemPost = () => {
               {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : 
               <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove(0)}
+                onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
               >
                 Click or Drop here
@@ -146,7 +147,7 @@ const CreateItemPost = () => {
             <div className="row-span-1 col-span-1">
               {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove(1)}
+                onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
               >
                 Click or Drop here
@@ -155,7 +156,7 @@ const CreateItemPost = () => {
             <div className="row-span-1 col-span-1">
               {imageList[2] ? <img src={imageList[2]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove(2)}
+                onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
               >
                 Click or Drop here
@@ -164,7 +165,7 @@ const CreateItemPost = () => {
             <div className="row-span-1 col-span-1">
               {imageList[3] ? <img src={imageList[3]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove(3)}
+                onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
               >
                 Click or Drop here
@@ -173,7 +174,7 @@ const CreateItemPost = () => {
             <div className="row-span-1 col-span-1">
               {imageList[4] ? <img src={imageList[4]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove(4)}
+                onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
               >
                 Click or Drop here
@@ -209,7 +210,7 @@ const CreateItemPost = () => {
               {imageList.map((image, index) => (
                 <div key={index}>
                   <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
-                  <img src={image['data_url']} alt="" className="auto" onDoubleClick={onImageRemove} style={{width: '100%', height: '12rem', objectFit: "cover"}}/>
+                  <img src={image['data_url']} alt="" className="auto" onDoubleClick={() => onImageRemove(index)} style={{width: '100%', height: '12rem', objectFit: "cover"}}/>
                   </div>
                   <div>
                   </div>
