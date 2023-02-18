@@ -1,0 +1,37 @@
+.content_block {
+    padding: 10px;
+}
+
+#page_content_container {
+    display: flex;
+    padding: 10px;
+}
+
+/* Small box on the left that displays user info preview */
+#profile_leftbox {
+    width: 33.3%;
+    max-width: 300px;
+
+    text-align: center;
+
+    padding: 10px;
+}
+
+#profile_leftbox > div {
+    border: 1px solid gray;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+#profilepic {
+    border-radius: 100%;
+    width: 75px;
+    margin: 10px;
+}
+
+/* Main div for user info */
+#profile_main {
+    width: 66.6%;
+
+    padding: 10px;
+}
