@@ -1,4 +1,5 @@
 const mongo = require("mongodb");
+const config = require("./config")
 const express = require('express')
 const {Item, Category} = require("./item");
 const Review = require("./review");
@@ -11,41 +12,50 @@ app.listen(8888, () => {
 })
 
 
-async function main() {
+const client = new mongo.MongoClient(config.uri);
 
-    const uri = "mongodb+srv://itembnb:turkstra.db@itembnbdb.xzcvsqf.mongodb.net/?retryWrites=true&w=majority";
+client.connect().then( () => {
+    console.log("Successfully connected to MongoDB");
+});
 
-    const client = new mongo.MongoClient(uri);
-
-    try {
-        await client.connect();
-        await listDatabases(client);
-        const db = client.db("itembnb")
-        // const results = await db.collection("items").find({_id : new mongo.ObjectId('63ec624c09acb0b1c1fe9173')}).toArray();
-        // console.log(results)
+const db = client.db("itembnb");
 
 
-        
-        // const result = await client.db("itembnb").collection("items").insertOne(new Item({
-        //     price: 5, 
-        //     name: "test", 
-        //     description: "test",
-        //     review: [{rating: 5, reviewText: "testing123"}],
-        // }));
-        // console.log(result);
-        
-        // // const results = await client.db("itembnb").collection("items").findOne({"review.0.rating": 5})
-        // // const item = new Item(results);
-        // // console.log(item);
-        
-    }
-    catch (e) {
-        console.log(e);
-    } finally {
-        await client.close();
-    }
-    
-}
+//sending item posts
+app.get('/item-posts', async (req, res) => {
+    res.status(200).json(await db.collection("posts").find({isRequest: false}, {sort: {dateCreated: -1}, limit: 20}).toArray())
+})
+
+
+//sending request posts
+app.get('/request-posts', async (req, res) => {
+    res.status(200).json(await db.collection("posts").find({isRequest: true}, {sort: {dateCreated: -1}, limit: 20}).toArray())
+})
+
+
+
+//sending user profile 
+app.get('/user-profile-data/:id', async (req, res) => {
+    res.status(200).json(await db.collection('users').findOne({_id: new mongo.ObjectId(req.params.id)}))
+})
+
+//sending categories
+app.get('/categories', async (req, res) => {
+    res.status(200).json([  {value: 'ACADEMICS', label: "Academics"},
+    {value: 'HOUSEHOLD', label: "Household"},
+    {value: 'ENTERTAINMENT', label: "Entertainment"},
+    {value: 'OUTDOOR', label: "Outdoor"},
+    {value: 'ELECTRONIC', label: "Electronic"},
+    {value: 'MISC', label: "Misc"},])
+})
+
+
+//creating item post
+// app.post
+
+
+
+console.log("test");
 
 async function listDatabases(client) {
     const databasesList = await client.db().admin().listDatabases();
@@ -57,6 +67,6 @@ async function listDatabases(client) {
 
 }
 
-main().catch(console.error);
+
 
 
