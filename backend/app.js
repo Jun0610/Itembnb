@@ -20,16 +20,20 @@ client.connect().then( () => {
 
 const db = client.db("itembnb");
 
-async function test(db) {
-    const result = await db.collection("posts").find({}, {sort: {dateCreated: -1}, limit: 20});
-}
 
-test(db)
-// 
 //sending posts
-app.get('/posts', async (req, res) => {
+app.get('/item-posts', async (req, res) => {
     res.status(200).json(await db.collection("posts").find({}, {sort: {dateCreated: -1}, limit: 20}).toArray())
 })
+
+app.get('/request-posts', async (req, res) => {
+    res.status(200).json(await db.collection("posts").find({isRequest: true}, {sort: {dateCreated: -1}, limit: 20}).toArray())
+})
+
+
+//creating item post
+app.post
+
 
 
 console.log("test");
