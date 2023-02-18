@@ -21,6 +21,21 @@ client.connect().then( () => {
 const db = client.db("itembnb");
 
 
+//sending posts
+app.get('/item-posts', async (req, res) => {
+    res.status(200).json(await db.collection("posts").find({isRequest: false}, {sort: {dateCreated: -1}, limit: 20}).toArray())
+})
+
+app.get('/request-posts', async (req, res) => {
+    res.status(200).json(await db.collection("posts").find({isRequest: true}, {sort: {dateCreated: -1}, limit: 20}).toArray())
+})
+
+
+//creating item post
+// app.post
+
+
+
 console.log("test");
 
 async function listDatabases(client) {
