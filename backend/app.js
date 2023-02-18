@@ -4,8 +4,11 @@ const express = require('express')
 const {Item, Category} = require("./item");
 const Review = require("./review");
 
+const cors = require('cors');
+
 const app = express();
 
+app.use(cors());
 
 app.listen(8888, () => {
     console.log("server is listening on port 8888...")
