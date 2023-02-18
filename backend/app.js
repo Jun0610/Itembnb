@@ -2,10 +2,14 @@ const express = require('express')
 const db = require('./mongo')   //gets mongodb db instance
 const cors = require('cors')
 
+const cors = require('cors');
+
 const app = express();
+
 
 //middleware
 app.use(cors())
+
 
 
 
