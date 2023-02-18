@@ -1,16 +1,7 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Select from 'react-select';
 import ItemService from "../tools/itemsService";
 import ImageUploading from 'react-images-uploading';
-
-const Categories = [
-  {value: 'ACADEMICS', label: "Academics"},
-  {value: 'HOUSEHOLD', label: "Household"},
-  {value: 'ENTERTAINMENT', label: "Entertainment"},
-  {value: 'OUTDOOR', label: "Outdoor"},
-  {value: 'ELECTRONIC', label: "Electronic"},
-  {value: 'MISC', label: "Misc"},
-];
 
 const CreateItemPost = () => {
   const [item, setItem] = React.useState({
@@ -28,6 +19,16 @@ const CreateItemPost = () => {
   const maxNumber = 20;
 
   const [imagesDisplay, setImagesDisplay] = React.useState([]);
+
+  const [categories, setCategories] = React.useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8888/categories").then(res => res.json()).then(
+      (result) => {
+        setCategories(result);
+      },
+    );
+  }, []); 
 
   const onChangeImage = (imageList, addUpdateIndex) => {
     console.log(imageList, addUpdateIndex);
@@ -122,8 +123,8 @@ const CreateItemPost = () => {
               <input className="mt-1 block border border-slate-300 rounded-md" id="price" type="number" value={item.price} onChange={handleItem} name="price"/>
             </div>
             <div className="flex-auto">
-              <label htmlFor="catogory" className="font-bold" style={{color: "#F0D061"}}>Category</label>
-              <Select className="mt-1 block basic-multi-select" id="category" defaultValue={[Categories[5]]} isMulti name="category" options={Categories} classNamePrefix="select" onChange={handleCategory
+              <label htmlFor="category" className="font-bold" style={{color: "#F0D061"}}>Category</label>
+              <Select className="mt-1 block basic-multi-select" id="category" defaultValue={[categories[5]]} isMulti name="category" options={categories} classNamePrefix="select" onChange={handleCategory
               }/>
             </div>
           </div>
@@ -224,7 +225,7 @@ const CreateItemPost = () => {
             <button className="btn btn-primary btn-lg m-3" onClick={onImageUpload} style={{backgroundColor: "#F0D061", border: "none"}}>Click here to upload image</button>
             &nbsp;
             <button className="btn btn-primary btn-lg m-3" onClick={onImageRemoveAll} style={{backgroundColor: "#F0D061", border: "none"}}>Remove all images</button>
-            <div className="grid grid-flow-col auto-cols-max h-60" style={images.length > 0 ? {maxHeight: "32rem", overflowX: "scroll", overflowY: "hidden"} : {display: "None"}}>
+            <div className="grid grid-flow-col auto-cols-max h-60" style={images.length > 0 ? {maxHeight: "32rem", overflowX: "scroll", overflowY: "hidden"} : {display: "None"}}>            
               {imageList.map((image, index) => (
                 <div key={index}>
                   <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
