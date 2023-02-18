@@ -44,14 +44,12 @@ app.get('/user-profile-data/:id', async (req, res) => {
 
 //sending categories
 app.get('/categories', async (req, res) => {
-    res.status(200).json({
-        ACADEMICS: "Acaademics",
-        HOUSEHOLD : "Household",
-        ENTERTAINMENT: "Entertainment",
-        OUTDOOR: "Outdoor",
-        ELECTRONIC: "Electronic",
-        MISC: "Misc",
-    })
+    res.status(200).json([  {value: 'ACADEMICS', label: "Academics"},
+    {value: 'HOUSEHOLD', label: "Household"},
+    {value: 'ENTERTAINMENT', label: "Entertainment"},
+    {value: 'OUTDOOR', label: "Outdoor"},
+    {value: 'ELECTRONIC', label: "Electronic"},
+    {value: 'MISC', label: "Misc"},])
 })
 
 
