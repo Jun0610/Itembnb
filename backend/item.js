@@ -1,33 +1,22 @@
-const Post = require("./post")
-const Review = require("./review")
+const db = require("./mongo")
+const express = require("express")
+const router = express.Router()
 
 
-class Item extends Post {
-    constructor(doc) {
-        super(doc._id, doc.name, doc.description, doc.dateCreated, doc.ownerId)
-        this.price = doc.price;
-        //need to handle images
-        this.revservHist = doc.revservHist;
-        this.unavailList = doc.unavailList;
-        this.review = []
-        doc.review.forEach((review) => {
-            console.log(review)
-            this.review.push(new Review(review))
-        })
-        this.category = doc.category
-    }
+//sending item posts
+router.get('/get-item-posts', async (req, res) => {
+    res.status(200).json(await db.collection("posts").find({isRequest: false}, {sort: {dateCreated: -1}, limit: 20}).toArray())
+})
 
-}
-
-const Category = {
-    ACADEMICS: "Acaademics",
-    HOUSEHOLD : "Household",
-    ENTERTAINMENT: "Entertainment",
-    OUTDOOR: "Outdoor",
-    ELECTRONIC: "Electronic",
-    MISC: "Misc",
-}
+//sending categories
+router.get('/categories', async (req, res) => {
+    res.status(200).json([  {value: 'ACADEMICS', label: "Academics"},
+    {value: 'HOUSEHOLD', label: "Household"},
+    {value: 'ENTERTAINMENT', label: "Entertainment"},
+    {value: 'OUTDOOR', label: "Outdoor"},
+    {value: 'ELECTRONIC', label: "Electronic"},
+    {value: 'MISC', label: "Misc"},])
+})
 
 
-module.exports = {Item, Category};
-
+module.exports = router;
