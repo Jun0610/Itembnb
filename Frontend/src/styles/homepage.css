@@ -1,0 +1,15 @@
+.cardcontainer {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    height: 400px;
+    margin: 0 10px;
+}
+
+.item-post-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+}

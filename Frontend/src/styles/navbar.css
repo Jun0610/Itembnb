@@ -12,10 +12,11 @@
     object-fit: contain;
 }
 
-ul {
+.custom-ul {
     list-style-type: none;
     display: flex;
     flex-direction: row;
+    margin: 0;
 }
 
 .custom-nav-link {

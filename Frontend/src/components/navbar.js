@@ -1,5 +1,5 @@
-import "./navbar.css";
-import { NavLink } from "react-router-dom";
+import '../styles/navbar.css';
+import { NavLink } from 'react-router-dom';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -13,7 +13,7 @@ const Navbar = () => {
           <img src={logo} className="brand-logo">
           </img>
         </a>
-        <ul>
+        <ul className="custom-ul">
           <li>
             <NavLink to="/signup" className="custom-nav-link">
               Sign Up
