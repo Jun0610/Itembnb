@@ -1,8 +1,7 @@
 const express = require('express')
-const db = require('./mongo')   //gets mongodb db instance
+const {db, mongo} = require('./mongo')   //gets mongodb db instance
 const cors = require('cors')
 
-const cors = require('cors');
 
 const app = express();
 
@@ -20,16 +19,16 @@ app.listen(8888, () => {
 
 //item related processing
 const item = require("./item");
-app.use("/item", item);
+app.use("/api/item", item);
 
 //request related processing
 const request = require("./request")
-app.use("/request", request)
+app.use("/api/request", request)
 
 
 //user-related processing
 const user = require("./user")
-app.use("/user", user)
+app.use("/api/user", user)
 
 
 

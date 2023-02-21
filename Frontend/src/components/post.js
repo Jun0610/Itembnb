@@ -3,7 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/post.css";
 
 const Post = ({item}) => {
-    const {title, description, price, image, isRequest} = item;
+    const title = item.title;
+    const description = item.description;
+    const price = item.price;
+    const image = item.image;
+    const isRequest = item.isRequest;
 
     const rating = 4;
 

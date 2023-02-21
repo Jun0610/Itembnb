@@ -11,4 +11,4 @@ client.connect().then( () => {
 
 const db = client.db("itembnb");
 
-module.exports = db;
+module.exports = {db, mongo};
