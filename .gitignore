@@ -36,3 +36,7 @@ Frontend/.yarn-integrity
 
 #backend modules
 backend/node_modules
+
+
+#config files
+backend/config.js
