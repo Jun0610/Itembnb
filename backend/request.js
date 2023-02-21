@@ -10,14 +10,25 @@
 
 // module.exports = Request;
 
-const db = require("./mongo")
+const {db, mongo} = require('./mongo') 
 const express = require("express")
 const router = express.Router()
 
 
 //sending request posts
 router.get('/get-request-posts', async (req, res) => {
-    res.status(200).json(await db.collection("posts").find({isRequest: true}, {sort: {dateCreated: -1}, limit: 20}).toArray())
+    try {
+        const results = await db.collection("items").find({isRequest: true}, {sort: {dateCreated: -1}, limit: 20}).toArray()
+        if (results == null) {
+            res.status(200).json({success: true, data: []})
+        } else {
+            res.status(200).json({sucess: true, data: results})
+        }
+        
+    } catch (err) {
+        res.status(404).send("Could not process request.")
+    }
+    
 })
 
 module.exports = router;
