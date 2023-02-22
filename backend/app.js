@@ -9,6 +9,12 @@ const app = express();
 //middleware
 app.use(cors())
 
+//parse form data
+app.use(express.urlencoded({ extended: false }))
+
+// parse json
+app.use(express.json())
+
 
 
 
