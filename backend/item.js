@@ -32,21 +32,10 @@ router.get('/categories', async (req, res) => {
 //add item to database
 router.post('/add-item', async (req, res) => {
     try {
-        // const item = {
-        //     title: req.body.name,
-        //     description: req.body.description,
-        //     price: req.body.price,
-        //     reservHist: req.body.reservHist,
-        //     unavailHist: req.body.unavailHist,
-        //     review: req.body.review,
-        //     category: req.body.category,
-        //     //have to figure out how to add images
-        // }
-        console.log(req.body);
-        //await db.collection("items").insertOne(item);
-        res.status(200).send("Successfully inserted item!")
+        await db.collection("items").insertOne(req.body);
+        res.status(200).json({success: true, data: "successfully added item!"})
     } catch (err) {
-        res.status(404).send(err)
+        res.status(404).json({success: false, data: err})
     }
     
 })
