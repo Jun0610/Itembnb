@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import userContext from '../contexts/userContext';
+
 const Navbar = () => {
   const logo = require("../resources/logo-no-background.png");
 
@@ -10,7 +12,7 @@ const Navbar = () => {
     <nav className="navbar customNavBar">
       <div className="container-fluid">
         <a href="/" className="navbar-brand">
-          <img src={logo} className="brand-logo">
+          <img src={logo} className="brand-logo" alt='...'>
           </img>
         </a>
         <ul className="custom-ul">
@@ -24,11 +26,11 @@ const Navbar = () => {
               Login
             </NavLink>
           </li>
-          <li>
+          {<li>
             <NavLink to="/create-item-post" className="custom-nav-link">
               Create Item Post!
             </NavLink>
-          </li>
+          </li>}
         </ul>
       </div>
     </nav>

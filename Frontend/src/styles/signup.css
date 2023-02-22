@@ -1,0 +1,49 @@
+#outer-container {
+    background-color: #F0D061;
+    height: auto;
+    width: auto;
+}
+
+#inner-container {
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.img-wrap{
+    position: relative;
+    text-align: center;
+    font-weight: bold;
+    line-height: 200px;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    object-fit: cover;
+    border-radius: 50%;
+    border: solid black;
+    align-self: center;
+}
+
+.custom-col {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.img-wrap:hover{
+    background-color: grey;
+}
+
+
+#photo-upload{
+    display: none;
+}
+
+.custom-file-upload {
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    padding: 6px;
+    cursor: pointer;
+    background: #fff;
+    margin-bottom: 25px;
+  }

@@ -7,7 +7,7 @@ const intialState = {
 
 const userContext = React.createContext(intialState);
 
-export const userContextProvider = (props) => {
+export const UserContextProvider = (props) => {
     const [user, setUser] = React.useState(intialState);
 
     const login = (user) => {
