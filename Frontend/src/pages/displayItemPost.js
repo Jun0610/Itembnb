@@ -4,7 +4,7 @@ import ImageUploading from 'react-images-uploading';
 import ItemService from '../tools/itemsService';
 
 const DisplayItemPost = () => {
-  const [item, setItem] = React.useState({
+  /*const [item, setItem] = React.useState({
     name: "Music Box",
     description: "This is a pretty music box.",
     price: 50,
@@ -13,7 +13,8 @@ const DisplayItemPost = () => {
     review: [],
     category: [{value: 'ACADEMICS', label: "Academics"}, {value: 'HOUSEHOLD', label: "Household"}],
     images: [],
-  });
+  });*/
+  const [item, setItem] = React.useState({});
   const [isEditing, setIsEditing] = React.useState(false);
   const [image, setImages] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
@@ -23,10 +24,19 @@ const DisplayItemPost = () => {
     // call API to fetch the item data
     async function fetchCategories() {
         const data = await ItemService.getAllCategories();
-        console.log("in item post: ", data);
         setCategories(data);
-      }
+    }
+
+    async function fetchItem() {
+        const data = await ItemService.getItem();;
+        setItem(data);
+    }
+
       fetchCategories();
+      fetchItem();
+      console.log(item);
+      const i = item.images;
+      setImages(i);
   }, {});
 
   const onItemChange = (e) => {
@@ -61,7 +71,7 @@ const DisplayItemPost = () => {
         <div>
             <ImageUploading
             multiple
-            value={image}
+            value={item.images}
             onChange={onChangeImage}
             maxNumber={maxNumber}
             dataURLKey="data_url"

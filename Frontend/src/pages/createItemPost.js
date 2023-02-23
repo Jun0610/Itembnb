@@ -25,7 +25,6 @@ const CreateItemPost = () => {
   useEffect(() => {
     async function fetchCategories() {
       const data = await ItemService.getAllCategories();
-      console.log("in item post: ", data);
       setCategories(data);
     }
 
@@ -47,12 +46,22 @@ const CreateItemPost = () => {
   }
 
   const onChangeImageDisplay = (imageList, addUpdateIndex) => {
-    console.log(imageList, addUpdateIndex);
+    console.log("imageDisplaybfor: ", imagesDisplay);
+    console.log("image: ", imageList, "index: ", addUpdateIndex);
+    
+    /*
+    const newImagesDisplay = [];
+    if (imagesDisplay.length > imageList.length) {
+      // deleted an image in Display mode
+      imagesDisplay.forEach(element => {
+        if element['data_url']
+      })
+    }*/
+
     setImagesDisplay(imageList);
 
     const urls = [];
     images.forEach(e => urls.push(e['data_url']));
-    console.log("urls: ", urls);
 
     const newImageList = [];
     imageList.forEach(element => {
@@ -78,31 +87,36 @@ const CreateItemPost = () => {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(item);
     if (item.category.length > 3 ) {
       alert("Please only select at most 3 categories!");
+      return;
     } else if (item.category.length === 0) {
       alert("Please at least select one category!");
+      return;
     }
-    if (images.length === 0) {
-      alert("Please upload at least one image!");
+    if (imagesDisplay.length === 0) {
+      alert("Please upload/choose at least one image!");
+      return;
     }
-    item.images = images;
-    ItemService(item);
-    alert("Item Successfully posted!");
-    setItem({
-      name: '',
-      description: '',
-      price: 0,
-      revservHist: [],
-      unavailList: [],
-      review: [],
-      category: [],
-      images: [],
+    item.images = imagesDisplay;
+    await ItemService.postItem(item).then((res) => {
+      console.log(res);
+      alert("Item Successfully posted!");
+      setItem({
+        name: '',
+        description: '',
+        price: 0,
+        revservHist: [],
+        unavailList: [],
+        review: [],
+        category: [],
+        images: [],
+      });
+      setImages([]);
     });
-    setImages([]);
   }
 
   return (
@@ -157,10 +171,10 @@ const CreateItemPost = () => {
           // write your building UI
           <div className="grid grid-rows-2 grid-flow-col gap-4 m-4 h-80">
             <div className="row-span-2 col-span-2">
-              {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : 
+              {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => {console.log("double clicked"); onImageRemove(0)}}/> : 
               <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={() => onImageRemove(0)}
+                onClick={onImageUpload}
                 {...dragProps}
               >
                 Click or Drop here
@@ -233,7 +247,7 @@ const CreateItemPost = () => {
                 <div key={index}>
                   <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
                   <img src={image['data_url']} alt="" className="auto" style={{width: '100%', height: '12rem', objectFit: "cover"}}/>
-                  <i class="fa-solid fa-trash mt-1 icon-3x" style={{cursor: "pointer"}} onClick={() => onImageRemove(index)}></i>
+                  <i className="fa-solid fa-trash mt-1 icon-3x" style={{cursor: "pointer"}} onClick={() => onImageRemove(index)}></i>
                   </div>
                   <div>
                   </div>
