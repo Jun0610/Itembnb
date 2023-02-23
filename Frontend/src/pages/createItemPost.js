@@ -158,7 +158,7 @@ const CreateItemPost = () => {
               {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : 
               <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove}
+                onClick={onImageUpload} onDoubleClick={() => onImageRemove(0)}
                 {...dragProps}
               >
                 Click or Drop here
