@@ -1,14 +1,7 @@
 import React, {useEffect} from 'react';
 import Select from 'react-select';
 import ImageUploading from 'react-images-uploading';
-
-const categories = 
-[{value: 'ACADEMICS', label: "Academics"},
-{value: 'HOUSEHOLD', label: "Household"},
-{value: 'ENTERTAINMENT', label: "Entertainment"},
-{value: 'OUTDOOR', label: "Outdoor"},
-{value: 'ELECTRONIC', label: "Electronic"},
-{value: 'MISC', label: "Misc"}];
+import ItemService from '../tools/itemsService';
 
 const DisplayItemPost = () => {
   const [item, setItem] = React.useState({
@@ -23,12 +16,18 @@ const DisplayItemPost = () => {
   });
   const [isEditing, setIsEditing] = React.useState(false);
   const [image, setImages] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
   const maxNumber = 20;
 
-  /*
   useEffect(() => {
     // call API to fetch the item data
-  }, {});*/
+    async function fetchCategories() {
+        const data = await ItemService.getAllCategories();
+        console.log("in item post: ", data);
+        setCategories(data);
+      }
+      fetchCategories();
+  }, {});
 
   const onItemChange = (e) => {
     setItem({

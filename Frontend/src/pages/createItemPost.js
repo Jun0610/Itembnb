@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
-import Select from 'react-select';
 import ItemService from "../tools/itemsService";
+import Select from 'react-select';
 import ImageUploading from 'react-images-uploading';
 
 const CreateItemPost = () => {
@@ -23,12 +23,14 @@ const CreateItemPost = () => {
   const [categories, setCategories] = React.useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8888/categories").then(res => res.json()).then(
-      (result) => {
-        setCategories(result);
-      },
-    );
-  }, []); 
+    async function fetchCategories() {
+      const data = await ItemService.getAllCategories();
+      console.log("in item post: ", data);
+      setCategories(data);
+    }
+
+    fetchCategories();
+  }, []);
 
   const onChangeImage = (imageList, addUpdateIndex) => {
     console.log(imageList, addUpdateIndex);
