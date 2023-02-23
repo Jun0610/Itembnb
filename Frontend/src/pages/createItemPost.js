@@ -36,6 +36,7 @@ const CreateItemPost = () => {
 
     if (imagesDisplay.length > imageList.length) {
       // deleted an image from down there
+      console.log("deleted an image: ", imageList);
       const newImageList = [];
       imageList.forEach(element => newImageList.push(element));
       setImagesDisplay(newImageList);
@@ -132,7 +133,7 @@ const CreateItemPost = () => {
         </form>
       </div>
       <div className="m-3 text-xl font-bold" style={{color: "#F0D061"}}>
-        Upload your images here. 
+        Upload your images here. (Double click on the preview image to delete it)
       </div>
       <div>
       <ImageUploading
@@ -229,7 +230,8 @@ const CreateItemPost = () => {
               {imageList.map((image, index) => (
                 <div key={index}>
                   <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
-                  <img src={image['data_url']} alt="" className="auto" onDoubleClick={() => onImageRemove(index)} style={{width: '100%', height: '12rem', objectFit: "cover"}}/>
+                  <img src={image['data_url']} alt="" className="auto" style={{width: '100%', height: '12rem', objectFit: "cover"}}/>
+                  <i class="fa-solid fa-trash mt-1 icon-3x" style={{cursor: "pointer"}} onClick={() => onImageRemove(index)}></i>
                   </div>
                   <div>
                   </div>
