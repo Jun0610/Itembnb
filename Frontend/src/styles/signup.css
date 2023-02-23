@@ -10,7 +10,7 @@
     display: flex;
 }
 
-#inner-container {
+#inner-signup-container {
     background-color: #fff;
     border-radius: 10px;
     margin: auto;
@@ -67,7 +67,7 @@
     align-self: center;
 }
 
-#custom-form {
+#custom-signup-form {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -79,6 +79,7 @@
     margin-top: 25px;
     background-color: #F0D061;
     font-weight: bold;
+    color: #fff;
     border: 0;
     position: absolute;
     bottom: 0;

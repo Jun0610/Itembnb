@@ -15,6 +15,7 @@ export const UserContextProvider = (props) => {
             user: user,
             isAuth: true
         })
+        console.log(user);
     }
 
     const logout = () => {

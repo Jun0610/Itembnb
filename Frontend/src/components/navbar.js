@@ -1,12 +1,14 @@
 import '../styles/navbar.css';
 import { NavLink } from 'react-router-dom';
-
+import {useContext} from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import userContext from '../contexts/userContext';
 
 const Navbar = () => {
   const logo = require("../resources/logo-no-background.png");
+
+  const authUser = useContext(userContext);
 
   return (
     <nav className="navbar customNavBar">
@@ -16,17 +18,17 @@ const Navbar = () => {
           </img>
         </a>
         <ul className="custom-ul">
-          <li>
+          {!authUser.isAuth && <li>
             <NavLink to="/signup" className="custom-nav-link">
               Sign Up
             </NavLink>
-          </li>
-          <li>
+          </li>}
+          {!authUser.isAuth && <li>
             <NavLink to="/login" className="custom-nav-link">
               Login
             </NavLink>
-          </li>
-          {<li>
+          </li>}
+          {authUser.isAuth && <li>
             <NavLink to="/create-item-post" className="custom-nav-link">
               Create Item Post!
             </NavLink>

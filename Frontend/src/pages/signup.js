@@ -62,7 +62,7 @@ const SignUp = () => {
 
     return ( 
         <div className="fullscreen">
-            <div id="inner-container">
+            <div id="inner-signup-container">
                 <h1 id="signup-header">Sign Up</h1>
                 <div className="row">
                     <div className="col">
@@ -75,7 +75,7 @@ const SignUp = () => {
                         </form>
                     </div>
                     <div className="col">        
-                        <form id="custom-form" onSubmit={handleSubmit} novalidate>
+                        <form id="custom-signup-form" onSubmit={handleSubmit}>
                             <label className="form-label" htmlFor="name">Enter your name</label>
                             <input className="form-control" type="text" name="name" id="name" onChange={handleNameChange} required/>
                             <label className="form-label" htmlFor="email">Enter email</label>
@@ -85,7 +85,7 @@ const SignUp = () => {
                             <label className="form-label" htmlFor="password2">Confirm password</label>
                             <input className="form-control" type="password" name="password2" id="password2" onChange={handleConfirmPassword} required/>
                             {!confirmPass && <span id="password-error" className="error-message">Your passwords don't match!</span>}
-                            <button className="btn btn-primary custom-btn">Sign Up</button>
+                            <button className="btn custom-btn">Sign Up</button>
                         </form>
                     </div>
                 </div>
