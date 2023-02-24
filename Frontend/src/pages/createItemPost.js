@@ -15,7 +15,12 @@ const CreateItemPost = () => {
     images: [],
   });
 
-  const [images, setImages] = React.useState([]);
+  const [images, setImages] = React.useState([null * 5]);
+  const [image1, setImage1] = React.useState([]);
+  const [image2, setImage2] = React.useState([]);
+  const [image3, setImage3] = React.useState([]);
+  const [image4, setImage4] = React.useState([]);
+  const [image5, setImage5] = React.useState([]);
   const maxNumber = 20;
 
   const [imagesDisplay, setImagesDisplay] = React.useState([]);
@@ -31,44 +36,147 @@ const CreateItemPost = () => {
     fetchCategories();
   }, []);
 
-  const onChangeImage = (imageList, addUpdateIndex) => {
-    console.log(imageList, addUpdateIndex);
-    setImages(imageList);
-
-    if (imagesDisplay.length > imageList.length) {
-      // deleted an image from down there
-      console.log("deleted an image: ", imageList);
-      const newImageList = [];
-      imageList.forEach(element => newImageList.push(element));
-      setImagesDisplay(newImageList);
+  const onChangeImage1 = (imageList, addUpdateIndex) => {
+    setImage1(imageList);
+    // handle delete
+    if ((!imageList || imageList.length === 0) && (images[0] != null)) {
+      images[0] = null;
+      return;
     }
 
+    // handle insert
+    images[0] = imageList[0];
+    var flag = false;
+    for (const element in imagesDisplay) {
+      if (element['data_url'] === imageList[0]['data_url']) {
+        flag = true;
+        break;
+      }
+    }
+    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
+  }
+
+  const onChangeImage2 = (imageList, addUpdateIndex) => {
+    setImage2(imageList);
+    // handle delete
+    if ((!imageList || imageList.length === 0) && (images[1] != null)) {
+      images[1] = null;
+      return;
+    }
+
+    // handle insert
+    images[1] = imageList[0];
+    var flag = false;
+    for (const element in imagesDisplay) {
+      if (element['data_url'] === imageList[0]['data_url']) {
+        flag = true;
+        break;
+      }
+    }
+    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
+  }
+
+  const onChangeImage3 = (imageList, addUpdateIndex) => {
+    setImage3(imageList);
+    // handle delete
+    if ((!imageList || imageList.length === 0) && (images[2] != null)) {
+      images[2] = null;
+      return;
+    }
+
+    // handle insert
+    images[2] = imageList[0];
+    var flag = false;
+    for (const element in imagesDisplay) {
+      if (element['data_url'] === imageList[0]['data_url']) {
+        flag = true;
+        break;
+      }
+    }
+    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
+  }
+
+  const onChangeImage4 = (imageList, addUpdateIndex) => {
+    setImage4(imageList);
+    // handle delete
+    if ((!imageList || imageList.length === 0) && (images[3] != null)) {
+      images[3] = null;
+      return;
+    }
+
+    // handle insert
+    images[3] = imageList[0];
+    var flag = false;
+    for (const element in imagesDisplay) {
+      if (element['data_url'] === imageList[0]['data_url']) {
+        flag = true;
+        break;
+      }
+    }
+    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
+  }
+
+  const onChangeImage5 = (imageList, addUpdateIndex) => {
+    setImage5(imageList);
+    // handle delete
+    if ((!imageList || imageList.length === 0) && (images[4] != null)) {
+      images[4] = null;
+      return;
+    }
+
+    // handle insert
+    images[4] = imageList[0];
+    var flag = false;
+    for (const element in imagesDisplay) {
+      if (element['data_url'] === imageList[0]['data_url']) {
+        flag = true;
+        break;
+      }
+    }
+    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
   }
 
   const onChangeImageDisplay = (imageList, addUpdateIndex) => {
-    console.log("imageDisplaybfor: ", imagesDisplay);
-    console.log("image: ", imageList, "index: ", addUpdateIndex);
-    
-    /*
-    const newImagesDisplay = [];
-    if (imagesDisplay.length > imageList.length) {
-      // deleted an image in Display mode
-      imagesDisplay.forEach(element => {
-        if element['data_url']
-      })
-    }*/
-
     setImagesDisplay(imageList);
 
-    const urls = [];
-    images.forEach(e => urls.push(e['data_url']));
+    //handle delete
+    var idx = -1;
+    var flag = true;
+    for (var i = 0; i < 5; i++) {
+      for (const element in imagesDisplay) {
+        if (element['data_url'] === imageList[0]['data_url']) {
+          flag = true;
+          break;
+        }
+      }
+      if (!flag) idx = i;
+    }
 
-    const newImageList = [];
-    imageList.forEach(element => {
-      if (!urls.includes(element['data_url'])) newImageList.push(element);
-    });
-
-    setImages([...images, ...newImageList]);
+    if (idx === -1) return;
+    switch (idx) {
+      case 0:
+        setImage1([]);
+        images[0] = null;
+        break;
+      case 1:
+        setImage2([]);
+        images[1] = null;
+        break;
+      case 2:
+        setImage3([]);
+        images[2] = null;
+        break;
+      case 3:
+        setImage4([]);
+        images[3] = null;
+        break;
+      case 4:
+        setImage5([]);
+        images[4] = null;
+        break;
+      default:
+        break;
+    }
   }
 
   const handleItem = (e) => {
@@ -151,80 +259,131 @@ const CreateItemPost = () => {
       <div className="m-3 text-xl font-bold" style={{color: "#F0D061"}}>
         Upload your images here. (Double click on the preview image to delete it)
       </div>
+      <div className="grid grid-rows-2 grid-flow-col gap-4 m-4 h-80">
+        <div className="row-span-2 col-span-2">
+          <ImageUploading multiple value={image1} onChange={onChangeImage1} maxNumber={maxNumber} dataURLKey="data_url">{
+            ({
+              imageList,
+              onImageUpload,
+              onImageRemoveAll,
+              onImageUpdate,
+              onImageRemove,
+              isDragging,
+              dragProps,
+            }) => <div>
+              {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : 
+                <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
+                  style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                  onClick={onImageUpload} 
+                  {...dragProps}
+                >
+              Click or Drop here
+            </div>}
+            </div>
+          }</ImageUploading>
+        </div>
+        <div className="row-span-1 col-span-1">
+          <ImageUploading
+              value={image2}
+              onChange={onChangeImage2}
+              maxNumber={maxNumber}
+              dataURLKey="data_url"
+              >
+              {({
+                imageList,
+                onImageUpload,
+                onImageRemoveAll,
+                onImageUpdate,
+                onImageRemove,
+                isDragging,
+                dragProps,
+                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={onImageRemove} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                onClick={onImageUpload} onDoubleClick={onImageRemove}
+                {...dragProps}
+              >
+                Click or Drop here
+              </div>}</div>}
+          </ImageUploading>
+        </div>
+        <div className="row-span-1 col-span-1">
+          <ImageUploading
+              value={image3}
+              onChange={onChangeImage3}
+              maxNumber={maxNumber}
+              dataURLKey="data_url"
+              >
+              {({
+                imageList,
+                onImageUpload,
+                onImageRemoveAll,
+                onImageUpdate,
+                onImageRemove,
+                isDragging,
+                dragProps,
+                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={onImageRemove} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                onClick={onImageUpload} onDoubleClick={onImageRemove}
+                {...dragProps}
+              >
+                Click or Drop here
+              </div>}</div>}
+          </ImageUploading>
+        </div>
+        <div className="row-span-1 col-span-1">
+          <ImageUploading
+              value={image4}
+              onChange={onChangeImage4}
+              maxNumber={maxNumber}
+              dataURLKey="data_url"
+              >
+              {({
+                imageList,
+                onImageUpload,
+                onImageRemoveAll,
+                onImageUpdate,
+                onImageRemove,
+                isDragging,
+                dragProps,
+                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={onImageRemove} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                onClick={onImageUpload} onDoubleClick={onImageRemove}
+                {...dragProps}
+              >
+                Click or Drop here
+              </div>},</div>}
+          </ImageUploading>
+        </div>
+        <div className="row-span-1 col-span-1">
+          <ImageUploading
+              value={image5}
+              onChange={onChangeImage5}
+              maxNumber={maxNumber}
+              dataURLKey="data_url"
+              >
+              {({
+                imageList,
+                onImageUpload,
+                onImageRemoveAll,
+                onImageUpdate,
+                onImageRemove,
+                isDragging,
+                dragProps,
+                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={onImageRemove} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
+                onClick={onImageUpload} onDoubleClick={onImageRemove}
+                {...dragProps}
+              >
+                Click or Drop here
+              </div>}</div>}
+          </ImageUploading>
+        </div>
+      </div>
       <div>
       <ImageUploading
         multiple
         value={imagesDisplay}
         onChange={onChangeImageDisplay}
-        maxNumber={maxNumber}
-        dataURLKey="data_url"
-      >
-        {({
-          imageList,
-          onImageUpload,
-          onImageRemoveAll,
-          onImageUpdate,
-          onImageRemove,
-          isDragging,
-          dragProps,
-        }) => (
-          // write your building UI
-          <div className="grid grid-rows-2 grid-flow-col gap-4 m-4 h-80">
-            <div className="row-span-2 col-span-2">
-              {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => {console.log("double clicked"); onImageRemove(0)}}/> : 
-              <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
-                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload}
-                {...dragProps}
-              >
-                Click or Drop here
-              </div>}
-            </div>
-            <div className="row-span-1 col-span-1">
-              {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
-                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove}
-                {...dragProps}
-              >
-                Click or Drop here
-              </div>}
-            </div>
-            <div className="row-span-1 col-span-1">
-              {imageList[2] ? <img src={imageList[2]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
-                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove}
-                {...dragProps}
-              >
-                Click or Drop here
-              </div>}
-            </div>
-            <div className="row-span-1 col-span-1">
-              {imageList[3] ? <img src={imageList[3]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
-                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove}
-                {...dragProps}
-              >
-                Click or Drop here
-              </div>}
-            </div>
-            <div className="row-span-1 col-span-1">
-              {imageList[4] ? <img src={imageList[4]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
-                style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                onClick={onImageUpload} onDoubleClick={onImageRemove}
-                {...dragProps}
-              >
-                Click or Drop here
-              </div>}
-            </div>
-          </div>
-        )}
-      </ImageUploading>
-      </div>
-      <div>
-      <ImageUploading
-        multiple
-        value={images}
-        onChange={onChangeImage}
         maxNumber={maxNumber}
         dataURLKey="data_url"
       >
