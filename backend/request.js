@@ -18,7 +18,7 @@ const router = express.Router()
 //sending request posts
 router.get('/get-request-posts', async (req, res) => {
     try {
-        const results = await db.collection("requests").find({isRequest: true}, {sort: {dateCreated: -1}, limit: 20}).toArray()
+        const results = await db.collection("requests").find().sort({dateCreated: -1}).limit(20).toArray();
         if (results == null) {
             res.status(200).json({success: true, data: []})
         } else {
