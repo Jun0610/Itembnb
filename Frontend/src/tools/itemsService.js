@@ -1,8 +1,10 @@
+const url = "http://localhost:8888/api/item";
+
 class ItemService {
     static async postItem(item) {
         console.log(item);
         return new Promise((resolve, reject) => {
-            fetch("http://localhost:8888/api/item/add-item", {
+            fetch(`${url}/add-item`, {
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(item),
@@ -15,9 +17,9 @@ class ItemService {
         })
     }
 
-    static async getItem() {
+    static async getItem(id) {
         return new Promise((resolve, reject) => {
-            fetch("http://localhost:8888/api/item/get-item-posts-1").then(res => res.json()).then((res) => {
+            fetch(`/get-item-post/${id}`).then(res => res.json()).then((res) => {
                 const data = res.data[0];
                 console.log(data);
                 resolve(data);
@@ -29,7 +31,7 @@ class ItemService {
 
     static async getAllCategories() {
         return new Promise((resolve, reject) => {
-            fetch("http://localhost:8888/api/item/categories").then(res => res.json()).then(
+            fetch(`${url}/categories`).then(res => res.json()).then(
                 (result) => {
                     resolve(result);
                 }
@@ -39,9 +41,37 @@ class ItemService {
         });
     }
 
-    static createItemPost(item) {
-        console.log("create item post");
-        console.log(item);
+    static async editItem(item, user) {
+        console.log("edit an item");
+        return new Promise((resolve, reject) => {
+            fetch(`${url}/edit-item/item-id/${item.id}/user-id/${user.id}`, {
+                method: 'PUT', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(item),
+            }).then(res => res.json()).then(
+                (result) => {
+                    resolve(result);
+                }
+            ).catch((err) => {
+                reject(err);
+            })
+        })
+    }
+
+    static async deleteItem(item, user) {
+        console.log("delete an item");
+        return new Promise((resolve, reject) => {
+            fetch(`${url}/delete-item/item-id/${item.id}/user-id/${user.id}`, {
+                method: 'DELETE', 
+                headers: { 'Content-Type': 'application/json' },
+            }).then(res => res.json()).then(
+                (result) => {
+                    resolve(result);
+                }
+            ).catch((err) => {
+                reject(err);
+            })
+        })
     }
 
 }

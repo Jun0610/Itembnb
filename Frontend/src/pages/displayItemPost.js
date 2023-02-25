@@ -2,6 +2,8 @@ import React, {useEffect} from 'react';
 import Select from 'react-select';
 import ImageUploading from 'react-images-uploading';
 import ItemService from '../tools/itemsService';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; 
 
 const DisplayItemPost = () => {
   /*const [item, setItem] = React.useState({
@@ -16,7 +18,7 @@ const DisplayItemPost = () => {
   });*/
   const [item, setItem] = React.useState({});
   const [isEditing, setIsEditing] = React.useState(false);
-  const [image, setImages] = React.useState([]);
+  const [images, setImages] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const maxNumber = 20;
 
@@ -61,17 +63,34 @@ const DisplayItemPost = () => {
     })
   }
 
+  const handleDeleteItem = () => {
+    confirmAlert({
+        title: 'Confirm to delete',
+        message: "Are you sure you want to delete this item?",
+        buttons: [
+            {
+                label: 'Yes',
+                onClick: () => ItemService.deleteItem(item)
+            }, 
+            {
+                label: 'No',
+                onClick: () => {},
+            }
+        ],
+    });
+  }
+
   return (
     <div>
         <div className="m-3 font-bold" style={{color: "#F0D061"}}>Your Item Post</div>
         <div>
             <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => setIsEditing(!isEditing)}>{isEditing ? 'Save' : 'Edit'}</button>
-            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}}>Delete</button>
+            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={handleDeleteItem()}>Delete</button>
         </div>
         <div>
             <ImageUploading
             multiple
-            value={item.images}
+            value={images}
             onChange={onChangeImage}
             maxNumber={maxNumber}
             dataURLKey="data_url"
@@ -91,7 +110,7 @@ const DisplayItemPost = () => {
                 {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : 
                 <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                    onClick={onImageUpload} onDoubleClick={onImageRemove}
+                    onClick={onImageUpload} onDoubleClick={() => onImageRemove(0)}
                     {...dragProps}
                 >
                     Click or Drop here

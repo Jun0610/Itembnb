@@ -269,7 +269,7 @@ const CreateItemPost = () => {
       </div>
       <div className="grid grid-rows-2 grid-flow-col gap-4 m-4 h-80">
         <div className="row-span-2 col-span-2">
-          <ImageUploading multiple value={image1} onChange={onChangeImage1} maxNumber={maxNumber} dataURLKey="data_url">{
+          <ImageUploading value={image1} onChange={onChangeImage1} acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} dataURLKey="data_url">{
             ({
               imageList,
               onImageUpload,
@@ -278,7 +278,8 @@ const CreateItemPost = () => {
               onImageRemove,
               isDragging,
               dragProps,
-            }) => <div>
+              errors,
+            }) => (!errors ? <div>
               {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : 
                 <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
                   style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
@@ -287,14 +288,20 @@ const CreateItemPost = () => {
                 >
               Click or Drop here
             </div>}
-            </div>
+            </div> : 
+            errors && 
+            <div>
+              {errors.acceptType && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Your selected file type is not allow</span>}
+              {errors.maxFileSize && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file size exceed maxFileSize</span>}
+              {errors.resolution && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file is not match your desired resolution</span>}
+            </div>)
           }</ImageUploading>
         </div>
         <div className="row-span-1 col-span-1">
           <ImageUploading
               value={image2}
               onChange={onChangeImage2}
-              maxNumber={maxNumber}
+              acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} 
               dataURLKey="data_url"
               >
               {({
@@ -305,23 +312,29 @@ const CreateItemPost = () => {
                 onImageRemove,
                 isDragging,
                 dragProps,
-                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                errors
+                }) => (!errors ? <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
               >
                 Click or Drop here
-              </div>}</div>}
+              </div>}</div> : 
+              errors && <div>
+                {errors.acceptType && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Your selected file type is not allow</span>}
+                {errors.maxFileSize && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file size exceed maxFileSize</span>}
+                {errors.resolution && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file is not match your desired resolution</span>}
+            </div>)}
           </ImageUploading>
         </div>
         <div className="row-span-1 col-span-1">
           <ImageUploading
               value={image3}
               onChange={onChangeImage3}
-              maxNumber={maxNumber}
+              acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} 
               dataURLKey="data_url"
               >
-              {({
+                {({
                 imageList,
                 onImageUpload,
                 onImageRemoveAll,
@@ -329,23 +342,29 @@ const CreateItemPost = () => {
                 onImageRemove,
                 isDragging,
                 dragProps,
-                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                errors
+                }) => (!errors ? <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
               >
                 Click or Drop here
-              </div>}</div>}
+              </div>}</div> : 
+              errors && <div>
+                {errors.acceptType && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Your selected file type is not allow</span>}
+                {errors.maxFileSize && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file size exceed maxFileSize</span>}
+                {errors.resolution && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file is not match your desired resolution</span>}
+            </div>)}
           </ImageUploading>
         </div>
         <div className="row-span-1 col-span-1">
           <ImageUploading
               value={image4}
               onChange={onChangeImage4}
-              maxNumber={maxNumber}
+              acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} 
               dataURLKey="data_url"
               >
-              {({
+                {({
                 imageList,
                 onImageUpload,
                 onImageRemoveAll,
@@ -353,23 +372,30 @@ const CreateItemPost = () => {
                 onImageRemove,
                 isDragging,
                 dragProps,
-                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                errors
+                }) => (!errors ? <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
               >
                 Click or Drop here
-              </div>},</div>}
+              </div>}</div> : 
+              errors && <div>
+                {errors.acceptType && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Your selected file type is not allow</span>}
+                {errors.maxFileSize && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file size exceed maxFileSize</span>}
+                {errors.resolution && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file is not match your desired resolution</span>}
+            </div>)}
           </ImageUploading>
         </div>
         <div className="row-span-1 col-span-1">
           <ImageUploading
               value={image5}
               onChange={onChangeImage5}
+              acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} 
               maxNumber={maxNumber}
               dataURLKey="data_url"
               >
-              {({
+                {({
                 imageList,
                 onImageUpload,
                 onImageRemoveAll,
@@ -377,13 +403,19 @@ const CreateItemPost = () => {
                 onImageRemove,
                 isDragging,
                 dragProps,
-                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                errors
+                }) => (!errors ? <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
               >
                 Click or Drop here
-              </div>}</div>}
+              </div>}</div> : 
+              errors && <div>
+                {errors.acceptType && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Your selected file type is not allow</span>}
+                {errors.maxFileSize && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file size exceed maxFileSize</span>}
+                {errors.resolution && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file is not match your desired resolution</span>}
+            </div>)}
           </ImageUploading>
         </div>
       </div>
