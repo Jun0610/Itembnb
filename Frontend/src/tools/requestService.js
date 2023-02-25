@@ -24,8 +24,8 @@ class RequestService {
     static async getRequest(id) {
         return new Promise((resolve, reject) => {
             fetch(`${url}/get-request-post/${id}`).then(res => res.json()).then((res) => {
-                const data = res.data[0];
-                console.log(data);
+                console.log("response", res);
+                const data = res.data;
                 resolve(data);
             }).catch((err) => {
                 reject(err);

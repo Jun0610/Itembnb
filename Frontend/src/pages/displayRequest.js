@@ -1,9 +1,8 @@
 import React, {useEffect} from "react";
+import {useParams} from "react-router-dom";
 import RequestService from '../tools/requestService';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
-
-import {useParams} from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
@@ -63,7 +62,7 @@ const DisplayRequestPost = () => {
             <div className="flex gap-6 mb-6">
                 <div className="flex-none">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Name</label>
-                    <input className="mt-1 block px-3 rounded-md" id="name" type="text" value={request.name} name="name" readOnly={isEditing ? false : true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onRequestChange}/>
+                    <input className="mt-1 block px-3 rounded-md" id="name" type="text" value={request.title} name="name" readOnly={isEditing ? false : true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onRequestChange}/>
                 </div>
                 <div className="flex-auto">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Description</label>

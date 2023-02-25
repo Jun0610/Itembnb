@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import {useParams} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import Post from "../components/post";
@@ -9,10 +10,10 @@ import "../styles/userpage.css";
 const Userpage = () => {
 
   // Get user info from the server
+  const {id} = useParams(); // id of request post
   const [userInfo, setUserInfo] = React.useState([]);
-
   useEffect(() => {
-  fetch("http://localhost:8888/user-profile-data/63f1381599125f4a73c8a6ff")
+  fetch("http://localhost:8888/user-profile-data/" + id)
   .then((response) => response.json())
   .then((data) => {console.log("Data received", data[0]); setUserInfo(data); });
   }, []);

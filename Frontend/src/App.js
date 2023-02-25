@@ -25,7 +25,7 @@ function App() {
           <Route path="/display-request-post/:id" element={<DisplayRequestPost />} />
           <Route exact path="/signup" element={<SignUp />} />
           <Route exact path="/login" element={<Login />} />
-          <Route exact path='/user' element={<UserProfile />} />
+          <Route path='/user/:id' element={<UserProfile />} />
         </Routes>
       </Router>
       </UserContextProvider>
