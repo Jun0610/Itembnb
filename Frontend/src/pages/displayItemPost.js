@@ -22,23 +22,38 @@ const DisplayItemPost = () => {
   const [categories, setCategories] = React.useState([]);
   const maxNumber = 20;
 
+  const currentC = [];
+
   useEffect(() => {
     // call API to fetch the item data
     async function fetchCategories() {
         const data = await ItemService.getAllCategories();
         setCategories(data);
+        return data;
     }
 
     async function fetchItem() {
-        const data = await ItemService.getItemE();;
-        setItem(data);
+        await ItemService.getItemE().then((data) => {
+            console.log(data);
+            setItem(data)
+            setImages(data.images);
+            return data.category;
+        });
     }
 
-      fetchCategories();
-      fetchItem();
-      console.log(item);
-      const i = item.images;
-      setImages(i);
+      fetchCategories().then((categories) => {
+        fetchItem().then((cats) => {
+            console.log("data category: ", cats);
+            for (const c of cats) {
+                categories.forEach((e) => {
+                    console.log(e['value'], ": ", c['value'])
+                    if (e['value'] === c['value']) currentC.push(e);
+                });
+            }
+            console.log("current c: ", currentC);
+          });
+        } 
+      );
   }, []);
 
   const onItemChange = (e) => {
@@ -107,7 +122,7 @@ const DisplayItemPost = () => {
             // write your building UI
             <div className="grid grid-rows-2 grid-flow-col gap-4 m-4 h-80">
                 <div className="row-span-2 col-span-2">
-                {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : 
+                {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(0)}/> : 
                 <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                     onClick={onImageUpload}
@@ -117,7 +132,7 @@ const DisplayItemPost = () => {
                 </div>}
                 </div>
                 <div className="row-span-1 col-span-1">
-                {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(1)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                     onClick={onImageUpload} onDoubleClick={onImageRemove}
                     {...dragProps}
@@ -126,7 +141,7 @@ const DisplayItemPost = () => {
                 </div>}
                 </div>
                 <div className="row-span-1 col-span-1">
-                {imageList[2] ? <img src={imageList[2]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                {imageList[2] ? <img src={imageList[2]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(2)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                     onClick={onImageUpload} onDoubleClick={onImageRemove}
                     {...dragProps}
@@ -135,7 +150,7 @@ const DisplayItemPost = () => {
                 </div>}
                 </div>
                 <div className="row-span-1 col-span-1">
-                {imageList[3] ? <img src={imageList[3]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
+                {imageList[3] ? <img src={imageList[3]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(3)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                     onClick={onImageUpload} onDoubleClick={onImageRemove}
                     {...dragProps}
@@ -144,7 +159,7 @@ const DisplayItemPost = () => {
                 </div>}
                 </div>
                 <div className="row-span-1 col-span-1">
-                {imageList[4] ? <img src={imageList[4]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
+                {imageList[4] ? <img src={imageList[4]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(4)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                     onClick={onImageUpload} onDoubleClick={onImageRemove}
                     {...dragProps}
@@ -174,7 +189,7 @@ const DisplayItemPost = () => {
                 </div>
                 <div className="flex-auto">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Category tags</label>
-                    <Select isDisabled={!isEditing} className="mt-1 block basic-multi-select" id="category" defaultValue={item.category} isMulti name="category" options={categories} classNamePrefix="select" onChange={handleCategory}/>
+                    <Select isDisabled={!isEditing} className="mt-1 block basic-multi-select" id="category" defaultValue={[categories[5]]} isMulti name="category" options={categories} classNamePrefix="select" onChange={handleCategory}/>
                 </div>
             </div>
         </div>
