@@ -1,0 +1,36 @@
+{
+    "name": "Jun Shern Lim",
+    "email": "jun@purdue.edu",
+    "password": "password",
+    "favoritedItems": [],
+    "postedItems": [],
+    "requestPosts": [],
+    "profileDesc" : "test123",
+    "reservHist": [],
+    "chatId": "12345",
+    "borrowerRating": 5,
+    "lenderRating": 5
+    //"profile_pic": 
+}
+
+{
+    "title": "Best Item",
+    "description": "The best item",
+    "dateCreated": "",
+    "ownerId": "63f9b98ab23f8fb1e3ea7251",
+    "reservHist": [],
+    "images": [],
+    "price": 123,
+    "unavailList" : [],
+    "reviews": [],
+    "categories": []
+}
+
+{
+    "title": "Best Request",
+    "description": "The best request",
+    "dateCreated": "",
+    "ownerId": "63f9b98ab23f8fb1e3ea7251",
+    "resolved": false,
+    "recommendedItems": []
+}

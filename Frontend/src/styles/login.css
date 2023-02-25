@@ -1,0 +1,50 @@
+.fullscreen {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+    background-color: #F0D061; 
+    align-items: center;
+    display: flex;
+}
+
+#inner-login-container {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    margin: auto;
+    width: 30%;
+    height: 70%;
+    padding: 20px;
+}
+
+#login-header {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+
+#custom-login-form {
+    position: relative;
+    height: 100%;
+}
+
+.custom-btn {
+    width: 100%;
+    margin-top: 25px;
+    background-color: #F0D061;
+    font-weight: bold;
+    color: #fff;
+    border: 0;
+    position: absolute;
+    bottom: 0;
+}
+
+.custom-btn:hover {
+    background-color: #c0a64e;
+}
