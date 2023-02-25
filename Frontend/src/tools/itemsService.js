@@ -33,7 +33,6 @@ class ItemService {
         return new Promise((resolve, reject) => {
             fetch(`${url}/get-item-posts-1`).then(res => res.json()).then((res) => {
                 const data = res.data[0];
-                console.log(data);
                 resolve(data);
             }).catch((err) => {
                 reject(err);

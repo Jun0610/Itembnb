@@ -28,7 +28,7 @@ const Navbar = () => {
               Login
             </NavLink>
           </li>}
-          {authUser.isAuth && <li>
+          {!authUser.isAuth && <li>
             <NavLink to="/create-item-post" className="custom-nav-link">
               Create Item Post!
             </NavLink>
