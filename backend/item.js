@@ -86,29 +86,13 @@ router.get('/categories', async (req, res) => {
 
 //add item to database
 router.post('/add-item', async (req, res) => {
-    console.log("req: ", req.body);
+    //save date as date object
+    req.body.dateCreated = new Date(Date.now());
     try {
         await db.collection("items").insertOne(req.body);
         res.status(201).json({success: true, data: "successfully added item!"})
     } catch (err) {
         res.status(404).json({success: false, data: err})
-    }
-    
-})
-
-router.get('/get-item-posts-1', async (req, res) => {
-    try {
-        const result = await db.collection("items").find({name: "Small thing"}, {sort: {dateCreated: -1}, limit: 20}).toArray();
-        console
-        if (result == null) {
-            res.status(200).json({success: true, data: []})
-        } else {
-            console.log(result);
-            res.status(200).json({success: true, data: result})
-        }
-        
-    } catch (err) {
-        res.status(404).send(err)
     }
     
 })
