@@ -35,13 +35,14 @@ const DisplayRequestPost = () => {
   }
 
   const handleDeleteRequest = () => {
+    console.log("deletion message");
     confirmAlert({
-        title: 'Confirm to delete',
+        name: 'Confirm to delete',
         message: "Are you sure you want to delete this request?",
         buttons: [
             {
                 label: 'Yes',
-                onClick: () => RequestService.deleteRequest(request)
+                onClick: () => RequestService.deleteRequest(request, id)
             }, 
             {
                 label: 'No',
@@ -51,18 +52,26 @@ const DisplayRequestPost = () => {
     });
   }
 
+  const handleEditRequest = () => {
+    if (isEditing) {
+      RequestService.editRequest(request, id);
+    }
+
+    setIsEditing(!isEditing);
+  }
+
   return (
     <div>
         <div className="m-3 font-bold" style={{color: "#F0D061"}}>Your Item Request</div>
         <div>
-            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => setIsEditing(!isEditing)}>{isEditing ? 'Save' : 'Edit'}</button>
-            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={handleDeleteRequest()}>Delete</button>
+            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={handleEditRequest}>{isEditing ? 'Save' : 'Edit'}</button>
+            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={handleDeleteRequest}>Delete</button>
         </div>
         <div className='m-3'>
             <div className="flex gap-6 mb-6">
                 <div className="flex-none">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Name</label>
-                    <input className="mt-1 block px-3 rounded-md" id="name" type="text" value={request.title} name="name" readOnly={isEditing ? false : true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onRequestChange}/>
+                    <input className="mt-1 block px-3 rounded-md" id="name" type="text" value={request.name} name="name" readOnly={isEditing ? false : true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onRequestChange}/>
                 </div>
                 <div className="flex-auto">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Description</label>

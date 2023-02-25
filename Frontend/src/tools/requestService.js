@@ -33,15 +33,16 @@ class RequestService {
         })
     }
 
-    static async editRequest(request, user) {
-        console.log("edit an request");
+    static async editRequest(request, userId) {
+        console.log("edit an request", request);
         return new Promise((resolve, reject) => {
-            fetch(`${url}/edit-request/request-id/${request.id}/user-id/${user.id}`, {
+            fetch(`${url}/edit-request/request-id/${request._id}/user-id/${userId}`, {
                 method: 'put', 
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(request),
             }).then(res => res.json()).then(
                 (result) => {
+                    console.log("edit res", result);
                     resolve(result);
                 }
             ).catch((err) => {
@@ -50,10 +51,10 @@ class RequestService {
         })
     }
 
-    static async deleteRequest(request, user) {
+    static async deleteRequest(request, userId) {
         console.log("delete an request");
         return new Promise((resolve, reject) => {
-            fetch(`${url}/delete-request/request-id/${request.id}/user-id/${user.id}`, {
+            fetch(`${url}/delete-request/request-id/${request._id}/user-id/${userId}`, {
                 method: 'delete', 
                 headers: { 'content-type': 'application/json' },
             }).then(res => res.json()).then(
