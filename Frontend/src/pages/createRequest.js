@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import RequestService from '../tools/requestService';
 import Post from "../components/post";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -6,8 +7,12 @@ import "../styles/homepage.css";
 
 const CreateRequest = () => {
   const [request, setRequest] = React.useState({
-    name: '',
+    title: '',
     description: '',
+    dateCreated: '',
+    ownerID: "TODO",
+    resolved: false,
+    recommendedItems: []
   });
 
   const handleRequest = (e) => {
@@ -19,8 +24,8 @@ const CreateRequest = () => {
 
   const validateRequest = () => {
     let errors = "";
-    if (request.name.length < 1) {
-      errors += "Invalid name: You must give your item request a name.\n";
+    if (request.title.length < 1) {
+      errors += "Invalid title: You must give your item request a title.\n";
     }
     if (request.description.length < 1) {
       errors += "Invalid description: You must give your item request a description.\n";
@@ -37,16 +42,10 @@ const CreateRequest = () => {
     e.preventDefault();
     console.log(request);
     if (validateRequest()) {
-      alert("Your item request has been successfully posted!");
-      setRequest({
-        name: '',
-        description: '',
-      });
-
       await RequestService.postRequest(request).then((res) => {
         alert("Request successfully posted!");
         setRequest({
-          name: '',
+          title: '',
           description: '',
         });
       });
@@ -61,8 +60,8 @@ const CreateRequest = () => {
         <form onSubmit={handleSubmit}>
           <div className="flex gap-6 mb-6">
             <div className="flex-none">
-              <label htmlFor="name" className="font-bold" style={{color: "#F0D061"}}>Name</label>
-              <input className="mt-1 block px-3 border border-slate-300 py-2 rounded-md text-sm shadow-sm placeholder-slate-400 bg-white" id="name" type="text" value={request.name} onChange={handleRequest} name="name"/>
+              <label htmlFor="title" className="font-bold" style={{color: "#F0D061"}}>Name</label>
+              <input className="mt-1 block px-3 border border-slate-300 py-2 rounded-md text-sm shadow-sm placeholder-slate-400 bg-white" id="title" type="text" value={request.title} onChange={handleRequest} name="title"/>
             </div>
             <div className="flex-auto">
               <label htmlFor="description" className="font-bold" style={{color: "#F0D061"}}>Description</label>

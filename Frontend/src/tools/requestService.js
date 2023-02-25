@@ -1,13 +1,18 @@
 const url = "http://localhost:8888/api/request";
 
-class requestService {
+class RequestService {
     static async postRequest(request) {
         console.log(request);
-        return new promise((resolve, reject) => {
+
+        // Date.now() gets converted to Unix timestamp (int?)
+        // new Date() gets converted to string-formatted Date
+        request.dateCreated = Date.now();
+
+        return new Promise((resolve, reject) => {
             fetch(`${url}/add-request`, {
                 method: 'post', 
                 headers: { 'content-type': 'application/json' },
-                body: json.stringify(request),
+                body: JSON.stringify(request),
             }).then(res => res.json()).then((res) => {
                 const data = res.data;
                 resolve(data);
@@ -18,7 +23,7 @@ class requestService {
     }
 
     static async getRequest(id) {
-        return new promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             fetch(`/get-request-post/${id}`).then(res => res.json()).then((res) => {
                 const data = res.data[0];
                 console.log(data);
@@ -32,11 +37,11 @@ class requestService {
 
     static async editRequest(request, user) {
         console.log("edit an request");
-        return new promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             fetch(`${url}/edit-request/request-id/${request.id}/user-id/${user.id}`, {
                 method: 'put', 
                 headers: { 'content-type': 'application/json' },
-                body: json.stringify(request),
+                body: JSON.stringify(request),
             }).then(res => res.json()).then(
                 (result) => {
                     resolve(result);
@@ -49,7 +54,7 @@ class requestService {
 
     static async deleteRequest(request, user) {
         console.log("delete an request");
-        return new promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             fetch(`${url}/delete-request/request-id/${request.id}/user-id/${user.id}`, {
                 method: 'delete', 
                 headers: { 'content-type': 'application/json' },
@@ -65,4 +70,4 @@ class requestService {
 
 }
 
-export default requestService;
+export default RequestService;
