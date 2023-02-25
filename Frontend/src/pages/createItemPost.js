@@ -41,6 +41,7 @@ const CreateItemPost = () => {
     // handle delete
     if ((!imageList || imageList.length === 0) && (images[0] != null)) {
       images[0] = null;
+
       return;
     }
 
@@ -53,7 +54,7 @@ const CreateItemPost = () => {
         break;
       }
     }
-    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
+    if (!flag || imagesDisplay.length === 0) setImagesDisplay([...imagesDisplay, imageList[0]]);
   }
 
   const onChangeImage2 = (imageList, addUpdateIndex) => {
@@ -73,7 +74,7 @@ const CreateItemPost = () => {
         break;
       }
     }
-    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
+    if (!flag || imagesDisplay.length === 0) setImagesDisplay([...imagesDisplay, imageList[0]]);
   }
 
   const onChangeImage3 = (imageList, addUpdateIndex) => {
@@ -93,7 +94,7 @@ const CreateItemPost = () => {
         break;
       }
     }
-    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
+    if (!flag || imagesDisplay.length === 0) setImagesDisplay([...imagesDisplay, imageList[0]]);
   }
 
   const onChangeImage4 = (imageList, addUpdateIndex) => {
@@ -113,7 +114,7 @@ const CreateItemPost = () => {
         break;
       }
     }
-    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
+    if (!flag || imagesDisplay.length === 0) setImagesDisplay([...imagesDisplay, imageList[0]]);
   }
 
   const onChangeImage5 = (imageList, addUpdateIndex) => {
@@ -133,49 +134,58 @@ const CreateItemPost = () => {
         break;
       }
     }
-    if (flag) setImagesDisplay([...imagesDisplay, imageList[0]]);
+    if (!flag || imagesDisplay.length === 0) setImagesDisplay([...imagesDisplay, imageList[0]]);
   }
 
   const onChangeImageDisplay = (imageList, addUpdateIndex) => {
+    const lenBefore = imagesDisplay.length;
     setImagesDisplay(imageList);
 
+    //handle insert
+    if (lenBefore < imageList.length) return;
+
     //handle delete
-    var idx = -1;
-    var flag = true;
+    if (imageList.length === 0) {
+      setImage1([]);
+      setImage2([]);
+      setImage3([]);
+      setImage4([]);
+      setImage5([]);
+      return;
+    }
+    const IMAGE_LIST = [image1[0], image2[0], image3[0], image4[0], image5[0]];
     for (var i = 0; i < 5; i++) {
-      for (const element in imagesDisplay) {
-        if (element['data_url'] === imageList[0]['data_url']) {
+      var flag = false;
+      // for each plot, check if the data_url still exists
+      for (const element of imageList) {
+        if (IMAGE_LIST[i] && element['data_url'] === IMAGE_LIST[i]['data_url']) {
           flag = true;
           break;
         }
       }
-      if (!flag) idx = i;
-    }
 
-    if (idx === -1) return;
-    switch (idx) {
-      case 0:
-        setImage1([]);
-        images[0] = null;
-        break;
-      case 1:
-        setImage2([]);
-        images[1] = null;
-        break;
-      case 2:
-        setImage3([]);
-        images[2] = null;
-        break;
-      case 3:
-        setImage4([]);
-        images[3] = null;
-        break;
-      case 4:
-        setImage5([]);
-        images[4] = null;
-        break;
-      default:
-        break;
+      if (!flag) {
+        images[i] = null;
+        switch (i) {
+          case 0:
+            setImage1([]);
+            break;
+          case 1:
+            setImage2([]);
+            break;
+          case 2:
+            setImage3([]);
+            break;
+          case 3:
+            setImage4([]);
+            break;
+          case 4:
+            setImage5([]);
+            break;
+          default:
+            break;
+        }
+      }
     }
   }
 
@@ -197,7 +207,6 @@ const CreateItemPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(item);
     if (item.category.length > 3 ) {
       alert("Please only select at most 3 categories!");
       return;
@@ -211,7 +220,6 @@ const CreateItemPost = () => {
     }
     item.images = imagesDisplay;
     await ItemService.postItem(item).then((res) => {
-      console.log(res);
       alert("Item Successfully posted!");
       setItem({
         name: '',
@@ -297,7 +305,7 @@ const CreateItemPost = () => {
                 onImageRemove,
                 isDragging,
                 dragProps,
-                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={onImageRemove} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
@@ -321,7 +329,7 @@ const CreateItemPost = () => {
                 onImageRemove,
                 isDragging,
                 dragProps,
-                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={onImageRemove} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
@@ -345,7 +353,7 @@ const CreateItemPost = () => {
                 onImageRemove,
                 isDragging,
                 dragProps,
-                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={onImageRemove} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
@@ -369,7 +377,7 @@ const CreateItemPost = () => {
                 onImageRemove,
                 isDragging,
                 dragProps,
-                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={onImageRemove} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                }) => <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
@@ -401,7 +409,7 @@ const CreateItemPost = () => {
             <button className="btn btn-primary btn-lg m-3" onClick={onImageUpload} style={{backgroundColor: "#F0D061", border: "none"}}>Click here to upload image</button>
             &nbsp;
             <button className="btn btn-primary btn-lg m-3" onClick={onImageRemoveAll} style={{backgroundColor: "#F0D061", border: "none"}}>Remove all images</button>
-            <div className="grid grid-flow-col auto-cols-max h-60" style={images.length > 0 ? {maxHeight: "32rem", overflowX: "scroll", overflowY: "hidden"} : {display: "None"}}>            
+            <div className="grid grid-flow-col auto-cols-max h-60" style={imagesDisplay.length > 0 ? {maxHeight: "32rem", overflowX: "scroll", overflowY: "hidden"} : {display: "None"}}>            
               {imageList.map((image, index) => (
                 <div key={index}>
                   <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
