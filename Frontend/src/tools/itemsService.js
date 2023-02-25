@@ -19,9 +19,20 @@ class ItemService {
 
     static async getItem(id) {
         return new Promise((resolve, reject) => {
-            fetch(`/get-item-post/${id}`).then(res => res.json()).then((res) => {
+            fetch(`${url}/get-item-post/${id}`).then(res => res.json()).then((res) => {
                 const data = res.data[0];
                 console.log(data);
+                resolve(data);
+            }).catch((err) => {
+                reject(err);
+            })
+        })
+    }
+
+    static async getItemE() {
+        return new Promise((resolve, reject) => {
+            fetch(`${url}/get-item-posts-1`).then(res => res.json()).then((res) => {
+                const data = res.data[0];
                 resolve(data);
             }).catch((err) => {
                 reject(err);
