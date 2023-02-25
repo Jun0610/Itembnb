@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useContext} from 'react';
 import Select from 'react-select';
 import ImageUploading from 'react-images-uploading';
 import ItemService from '../tools/itemsService';
@@ -22,7 +22,7 @@ const DisplayItemPost = () => {
   const [categories, setCategories] = React.useState([]);
   const maxNumber = 20;
 
-  const authUser = useContext(userContext);
+  //const authUser = useContext(userContext);
 
   useEffect(() => {
     // call API to fetch the item data
