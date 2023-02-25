@@ -2,19 +2,15 @@ const express = require('express')
 const {db, mongo} = require('./mongo')   //gets mongodb db instance
 const cors = require('cors')
 
-
 const app = express();
 
 
 //middleware
-app.use(cors())
+app.use(cors());
 
-//parse form data
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false })) //parse form data
 
-// parse json
-app.use(express.json())
-
+app.use(express.json()) // parse json
 
 
 
@@ -24,11 +20,11 @@ app.listen(8888, () => {
 
 
 //item related processing
-const item = require("./item");
+const item = require("./item").router;
 app.use("/api/item", item);
 
 //request related processing
-const request = require("./request")
+const request = require("./request").router;
 app.use("/api/request", request)
 
 
