@@ -6,7 +6,7 @@ const router = express.Router()
 //sending all item posts
 router.get('/get-item-posts', async (req, res) => {
     try {
-        const result = await db.collection("items").find({sort: {dateCreated: -1}, limit: 20}).toArray();
+        const result = await db.collection("items").find().sort({dateCreated: -1}).limit(20).toArray();
         if (result == null) {
             res.status(200).json({success: true, data: []})
         } else {

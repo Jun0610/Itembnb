@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/signup.css";
 
@@ -15,16 +16,29 @@ const ImgUpload =({
     
 const SignUp = () => {
     const [selectedImage, setSelectedImage] = useState(null);
+    const [imgFile, setImgFile] = useState(null);
     const [description, setDescription] = useState(null);
     const [name, setName] = useState(null);
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [confirmPass, setConfirmPass] = useState(true);
+    const [emailError, setEmailError] = useState(false);
+    const [signUpSuccess, setSignUpSuccess] = useState("Sign Up");
+
+    var xhr = new XMLHttpRequest();
+
+    const nav = useNavigate();
 
     const handleImageChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             let img = e.target.files[0];
             setSelectedImage(URL.createObjectURL(img));
+            
+            let reader = new FileReader();
+            reader.readAsDataURL(img);
+            reader.onload = () => {
+                setImgFile(reader.result);
+            };
         }
     };
 
@@ -54,10 +68,43 @@ const SignUp = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (confirmPass)
-            console.log("submit");
+        if (confirmPass) {
+            var user = {
+                "name": name,
+                "email": email,
+                "password": password,
+                "favoritedItems": [],
+                "postedItems": [],
+                "requestPosts": [],
+                "profileDesc": description,
+                "reservHist": [],
+                "chatId": "12345",
+                "borrowerRating": 5,
+                "lenderRating": 5,
+                "profilePic": imgFile
+            };
+            fetch("http://localhost:8888/api/user/register-user", {
+                method: "POST",
+                body: JSON.stringify(user),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => {
+                if (res.status === 201) {
+                    console.log("success");
+                    setSignUpSuccess("Sign up successful! Redirecting...");
+                    setTimeout(() => {
+                        nav("/");
+                    }, 2000);
+                } else {
+                    console.log(user);
+                    console.log(xhr.status);
+                    setEmailError(true);
+                }
+            });
+        }
         else    
-            console.log("error");
+            console.log("passwords not matching");
     };
 
     return ( 
@@ -80,12 +127,13 @@ const SignUp = () => {
                             <input className="form-control" type="text" name="name" id="name" onChange={handleNameChange} required/>
                             <label className="form-label" htmlFor="email">Enter email</label>
                             <input className="form-control" type="email" name="email" id="email" onChange={handleEmailChange} required/>
+                            {emailError && <span id="email-error" className="error-message">Email already in use!</span>}
                             <label className="form-label" htmlFor="password">Enter a password</label>
                             <input className="form-control" type="password" name="password" id="password" onChange={handlePasswordChange} required/>
                             <label className="form-label" htmlFor="password2">Confirm password</label>
                             <input className="form-control" type="password" name="password2" id="password2" onChange={handleConfirmPassword} required/>
                             {!confirmPass && <span id="password-error" className="error-message">Your passwords don't match!</span>}
-                            <button className="btn custom-btn">Sign Up</button>
+                            <button className="btn custom-btn">{signUpSuccess}</button>
                         </form>
                     </div>
                 </div>
