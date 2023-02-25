@@ -45,6 +45,12 @@
     bottom: 0;
 }
 
+.login-success-message {
+    font-size: 12px;
+    margin-top: 5px;
+    color: greenyellow;
+}
+
 .custom-btn:hover {
     background-color: #c0a64e;
 }
