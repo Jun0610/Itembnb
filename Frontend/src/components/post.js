@@ -3,11 +3,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/post.css";
 
 const Post = ({item}) => {
-    const title = item.title;
+    const title = item.name;
     const description = item.description;
     const price = item.price;
-    const image = item.image;
-    const isRequest = item.isRequest;
+    let image=""; 
+    //if (item.images != null)
+      //image = item.images[0].data_url;
+    //else
+      //image = "";
+    const isRequest = true;
 
     const rating = 4;
 
