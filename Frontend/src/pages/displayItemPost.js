@@ -30,7 +30,7 @@ const DisplayItemPost = () => {
     }
 
     async function fetchItem() {
-        const data = await ItemService.getItem();;
+        const data = await ItemService.getItemE();;
         setItem(data);
     }
 
@@ -39,7 +39,7 @@ const DisplayItemPost = () => {
       console.log(item);
       const i = item.images;
       setImages(i);
-  }, {});
+  }, []);
 
   const onItemChange = (e) => {
     setItem({
@@ -85,9 +85,9 @@ const DisplayItemPost = () => {
         <div className="m-3 font-bold" style={{color: "#F0D061"}}>Your Item Post</div>
         <div>
             <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => setIsEditing(!isEditing)}>{isEditing ? 'Save' : 'Edit'}</button>
-            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={handleDeleteItem()}>Delete</button>
+            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => handleDeleteItem()}>Delete</button>
         </div>
-        <div>
+        <div style={isEditing ? undefined : {pointerEvents: 'none'}}>
             <ImageUploading
             multiple
             value={images}
@@ -107,17 +107,17 @@ const DisplayItemPost = () => {
             // write your building UI
             <div className="grid grid-rows-2 grid-flow-col gap-4 m-4 h-80">
                 <div className="row-span-2 col-span-2">
-                {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : 
+                {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : 
                 <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                    onClick={onImageUpload} onDoubleClick={() => onImageRemove(0)}
+                    onClick={onImageUpload}
                     {...dragProps}
                 >
                     Click or Drop here
                 </div>}
                 </div>
                 <div className="row-span-1 col-span-1">
-                {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                     onClick={onImageUpload} onDoubleClick={onImageRemove}
                     {...dragProps}
@@ -126,7 +126,7 @@ const DisplayItemPost = () => {
                 </div>}
                 </div>
                 <div className="row-span-1 col-span-1">
-                {imageList[2] ? <img src={imageList[2]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                {imageList[2] ? <img src={imageList[2]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                     onClick={onImageUpload} onDoubleClick={onImageRemove}
                     {...dragProps}
@@ -135,7 +135,7 @@ const DisplayItemPost = () => {
                 </div>}
                 </div>
                 <div className="row-span-1 col-span-1">
-                {imageList[3] ? <img src={imageList[3]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
+                {imageList[3] ? <img src={imageList[3]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                     onClick={onImageUpload} onDoubleClick={onImageRemove}
                     {...dragProps}
@@ -144,7 +144,7 @@ const DisplayItemPost = () => {
                 </div>}
                 </div>
                 <div className="row-span-1 col-span-1">
-                {imageList[4] ? <img src={imageList[4]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
+                {imageList[4] ? <img src={imageList[4]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
                     style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                     onClick={onImageUpload} onDoubleClick={onImageRemove}
                     {...dragProps}
