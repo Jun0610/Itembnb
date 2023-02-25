@@ -4,9 +4,8 @@ class RequestService {
     static async postRequest(request) {
         console.log(request);
 
-        // Date.now() gets converted to Unix timestamp (int?)
-        // new Date() gets converted to string-formatted Date
-        request.dateCreated = Date.now();
+        // new Date() gets converted to string-formatted Date through JSON.stringify
+        request.dateCreated = new Date();
 
         return new Promise((resolve, reject) => {
             fetch(`${url}/add-request`, {
@@ -24,7 +23,7 @@ class RequestService {
 
     static async getRequest(id) {
         return new Promise((resolve, reject) => {
-            fetch(`/get-request-post/${id}`).then(res => res.json()).then((res) => {
+            fetch(`${url}/get-request-post/${id}`).then(res => res.json()).then((res) => {
                 const data = res.data[0];
                 console.log(data);
                 resolve(data);
@@ -33,7 +32,6 @@ class RequestService {
             })
         })
     }
-
 
     static async editRequest(request, user) {
         console.log("edit an request");

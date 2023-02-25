@@ -8,6 +8,7 @@ import "../styles/userpage.css";
 
 const Userpage = () => {
 
+  // Get user info from the server
   const [userInfo, setUserInfo] = React.useState([]);
 
   useEffect(() => {
@@ -16,7 +17,7 @@ const Userpage = () => {
   .then((data) => {console.log("Data received", data[0]); setUserInfo(data); });
   }, []);
 
-  if (! Object.keys(userInfo).length) { // if object has loaded/isn't empty
+  if (! Object.keys(userInfo).length) { // if user info hasn't loaded
     return ""; // just show a blank screen
   }
 
