@@ -13,6 +13,7 @@ const CreateItemPost = () => {
     review: [],
     category: [],
     images: [],
+    ownerId: '',
   });
 
   const [images, setImages] = React.useState([null * 5]);
