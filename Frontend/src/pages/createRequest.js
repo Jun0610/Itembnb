@@ -33,7 +33,7 @@ const CreateRequest = () => {
     return true;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(request);
     if (validateRequest()) {
@@ -41,6 +41,14 @@ const CreateRequest = () => {
       setRequest({
         name: '',
         description: '',
+      });
+
+      await RequestService.postRequest(request).then((res) => {
+        alert("Request successfully posted!");
+        setRequest({
+          name: '',
+          description: '',
+        });
       });
     }
   }
