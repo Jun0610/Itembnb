@@ -5,14 +5,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
 
 const CreateRequest = () => {
-  const [request, setRequest] = React.useState({
+  const blankRequest = {
     name: '',
     description: '',
     dateCreated: '',
     ownerID: "TODO",
     resolved: false,
     recommendedItems: []
-  });
+  };
+
+  const [request, setRequest] = React.useState(blankRequest);
 
   const handleRequest = (e) => {
     setRequest({
@@ -43,10 +45,7 @@ const CreateRequest = () => {
     if (validateRequest()) {
       await RequestService.postRequest(request).then((res) => {
         alert("Request successfully posted!");
-        setRequest({
-          name: '',
-          description: '',
-        });
+        setRequest(blankRequest);
       });
     }
   }

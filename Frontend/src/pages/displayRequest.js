@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {useParams} from "react-router-dom";
+import {useParams, Navigate} from "react-router-dom";
 import RequestService from '../tools/requestService';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
@@ -42,7 +42,19 @@ const DisplayRequestPost = () => {
         buttons: [
             {
                 label: 'Yes',
-                onClick: () => RequestService.deleteRequest(request, id)
+                onClick: () => {
+
+                  async function deleteRequest() {
+                      const deleteResult = await RequestService.deleteRequest(request, id);
+                      console.log("deleteresult", deleteResult);
+                      if (deleteResult.success) {
+                        alert("Deletion successful. Please return to the homepage.");
+                      }
+                      return deleteResult;
+                  } 
+                  console.log("stuff", deleteRequest());
+
+                }
             }, 
             {
                 label: 'No',
