@@ -31,10 +31,27 @@ router.get('/get-request-posts', async (req, res) => {
     
 })
 
+//sending a specific request post
+router.get('/get-request-post/:id', async(req, res) => {
+    try {
+        const id = new mongo.ObjectId(req.params.id)
+        const result = await db.collection("requests").findOne({_id: id});
+        res.status(200).json({success: true, data: result})
+    } catch (err) {
+        res.status(404).json({success: false, data: err});
+    }
+        
+})
+
+
 
 //create request post
 router.post('/add-request', async(req, res) => {
+
+    
     try {
+        //save date as date object
+        req.body.dateCreated = new Date(Date.now());
         const results = await db.collection("requests").insertOne(req.body);
         res.status(201).json({success: true, data: "successfully added request!"})
     } catch (err) {

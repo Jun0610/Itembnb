@@ -22,8 +22,6 @@ const DisplayItemPost = () => {
   const [categories, setCategories] = React.useState([]);
   const maxNumber = 20;
 
-  //const authUser = useContext(userContext);
-
   useEffect(() => {
     // call API to fetch the item data
     async function fetchCategories() {
