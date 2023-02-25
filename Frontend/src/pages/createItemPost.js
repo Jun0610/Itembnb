@@ -137,6 +137,14 @@ const CreateItemPost = () => {
     if (!flag || imagesDisplay.length === 0) setImagesDisplay([...imagesDisplay, imageList[0]]);
   }
 
+  const deleteAllImages = () => {
+    setImage1([]);
+    setImage2([]);
+    setImage3([]);
+    setImage4([]);
+    setImage5([]);
+  }
+
   const onChangeImageDisplay = (imageList, addUpdateIndex) => {
     const lenBefore = imagesDisplay.length;
     setImagesDisplay(imageList);
@@ -146,11 +154,7 @@ const CreateItemPost = () => {
 
     //handle delete
     if (imageList.length === 0) {
-      setImage1([]);
-      setImage2([]);
-      setImage3([]);
-      setImage4([]);
-      setImage5([]);
+      deleteAllImages();
       return;
     }
     const IMAGE_LIST = [image1[0], image2[0], image3[0], image4[0], image5[0]];
@@ -218,6 +222,16 @@ const CreateItemPost = () => {
       alert("Please upload/choose at least one image!");
       return;
     }
+    // check if images are adjacent
+    var adjFlag = true;
+    console.log(images);
+    for (var i = 0; i < images.length; i++) {
+      if (images[i] && !adjFlag) {
+        alert("Please make sure no empty slots between images!");
+        return;
+      }
+      if (!images[i]) adjFlag = false;
+    }
     item.images = imagesDisplay;
     await ItemService.postItem(item).then((res) => {
       alert("Item Successfully posted!");
@@ -231,7 +245,9 @@ const CreateItemPost = () => {
         category: [],
         images: [],
       });
+      deleteAllImages();
       setImages([]);
+      setImagesDisplay([]);
     });
   }
 
@@ -329,8 +345,8 @@ const CreateItemPost = () => {
         </div>
         <div className="row-span-1 col-span-1">
           <ImageUploading
-              value={image3}
-              onChange={onChangeImage3}
+              value={image4}
+              onChange={onChangeImage4}
               acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} 
               dataURLKey="data_url"
               >
@@ -359,8 +375,8 @@ const CreateItemPost = () => {
         </div>
         <div className="row-span-1 col-span-1">
           <ImageUploading
-              value={image4}
-              onChange={onChangeImage4}
+              value={image3}
+              onChange={onChangeImage3}
               acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} 
               dataURLKey="data_url"
               >
