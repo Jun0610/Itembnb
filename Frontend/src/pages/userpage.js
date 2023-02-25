@@ -43,37 +43,42 @@ const Userpage = () => {
     return ""; // just show a blank screen
   }
 
-  const returnUserItems = () => {
+  const returnUserItems = async () => {
     if (userInfo.postedItems.length == 0) {
         return <div>{userInfo.name} has no items!</div>
     }
 
     let userItems = [];
     for (let i = 0; i < userInfo.postedItems.length; i++) {
-        let itemData = ItemService.getItem(userInfo.postedItems[i]);
-        userItems.push(
-            <Post item={
-                {name: itemData.name,
-                description: itemData.description,
-                price: itemData.price,
-                image: itemData.image,
-                isRequest: false}
-            } />
-        );
+        async function fetchData() {
+            const itemData = await ItemService.getItem(userInfo.postedItems[i]);
+            console.log("ITEM DATA RECIVED", itemData);
+            /*
+            userItems.push(
+                <Post key={i} item={
+                    {name: itemData.name,
+                    description: itemData.description,
+                    price: itemData.price,
+                    image: itemData.image,
+                    isRequest: false}
+                } />
+            );
+            */
+        }
+        fetchData();
     }
     return userItems;
   }
-
 
   return (
     <div id="page_content_container">
         <div id="profile_leftbox" className="add_padding">
             <div>
-                <img id="profilepic" src="https://images.gr-assets.com/users/1674487597p6/614430.jpg"/>
+                <img id="profilepic" src={userInfo.profilePic}/>
 
                 <h6 className="user_stat">{userInfo.postedItems.length} posted items</h6>
 
-                <h6 className="user_stat">USERNAME has left X reviews</h6>
+                <h6 className="user_stat">{userInfo.name} has left X reviews</h6>
             </div>
         </div>
 
@@ -85,11 +90,11 @@ const Userpage = () => {
                 <p><strong>Profile Description: </strong>{userInfo.profileDesc}</p>
             </div>
 
-        <h3 className="item-post-header">USERNAME's Posted Items</h3>
+        <h3 className="item-post-header">{userInfo.name}'s Posted Items</h3>
             <div className="cardcontainer">
                 {returnUserItems()}
             </div>
-        <h3 className="item-post-header">USERNAME's Item Requests</h3>
+        <h3 className="item-post-header">{userInfo.name}'s Item Requests</h3>
         <div className="cardcontainer">
             <Post item={
                     {title: "Item 1",
