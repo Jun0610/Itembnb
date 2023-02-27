@@ -33,11 +33,11 @@ const Homepage = () => {
     <div>
       <h1 className="item-post-header">Item posts</h1>
         <div className="cardcontainer">
-          {itemPosts.map((item, i) => (<Post key={i} item={item} />))}
+          {itemPosts.map((item, i) => (<Post key={i} item={item} isRequest={false}/>))}
         </div>
         <h1 className="item-post-header">Item requests</h1>
         <div className="cardcontainer">
-          {itemRequests.map((item, i) => (<Post key={i} item={item} />))}
+          {itemRequests.map((item, i) => (<Post key={i} item={item} isRequest={true}/>))}
           </div>
     </div>
   );
