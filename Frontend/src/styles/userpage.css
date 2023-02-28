@@ -1,0 +1,52 @@
+/* Size-sensitive rules based on user's screen width */
+
+/* #profile_leftbox only shows if width > certain number */
+@media (max-width: 1000px) {
+    #profile_leftbox {
+        display: none;
+    }
+
+    #profile_main {
+        width: 90%;
+    }
+}
+@media (min-width: 1000px) {
+    #profile_main {
+        width: 66.6%;
+    }
+}
+
+/* Multi-use simple classes */
+
+.add_padding {
+    padding: 10px;
+}
+
+/* General CSS rules */
+
+#page_content_container {
+    display: flex;
+    padding: 10px;
+}
+
+/* Small box on the left that displays user info preview */
+
+#profile_leftbox {
+    width: 33.3%;
+    max-width: 300px;
+
+    text-align: center;
+}
+
+#profile_leftbox > div {
+    border: 1px solid gray;
+    border-radius: 12px;
+}
+
+#profilepic {
+    border: 1px solid black;
+    border-radius: 100%;
+    width: 75px;
+    height: 75px;
+    margin: 10px;
+}
