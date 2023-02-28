@@ -32,6 +32,7 @@ const Userpage = () => {
   // Get user info from the server
   const [userInfo, setUserInfo] = React.useState([]);
 
+  /*
   const getOneItem = async() => {
     // const itemData = await ItemService.getItem(userInfo.postedItems[i]);
     const itemData = await ItemService.getItem("63ec624c09acb0b1c1fe9173");
@@ -42,13 +43,14 @@ const Userpage = () => {
         <Post post={itemData} isRequest = {false}/>
     ]);
     console.log("add item", userItems);
-  };
+  }; */
 
   useEffect(() => {
     async function fetchData() {
         const data = await UserService.getUser(id);
         setUserInfo(data);
 
+        /*
         const returnUserItems = async (data) => {
             console.log("data", data);
 
@@ -63,6 +65,7 @@ const Userpage = () => {
             }
         }
         // returnUserItems(data);
+        */
 
     } 
     fetchData();
