@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import Post from "../components/post";
+import userContext from "../contexts/userContext";
 
 import "../styles/homepage.css";
 
@@ -8,6 +9,7 @@ const Homepage = () => {
   const [itemPosts, setItemPosts] = React.useState([]);
   const [itemRequests, setItemRequests] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const selectedUser = useContext(userContext);
 
   useEffect(() => {
     async function getItemPosts() {
@@ -27,14 +29,26 @@ const Homepage = () => {
     getRequestPosts();
   }, []);
 
+  let favorites = [];
+  if (selectedUser.user.isAuth !== false) {
+    favorites = selectedUser.user.user.favoritedItems
+  }
+  console.log(favorites);
+
   if (isLoading) return (<div>Bruh</div>);
+
+
+
+
+
+
   else
     return (
       <div>
         <h1 className='item-post-header'>Item posts</h1>
         <div className='cardcontainer'>
           {itemPosts.map((item) => (
-            <Post key={item._id} post={item} isRequest={false} />
+            <Post key={item._id} post={item} isRequest={false} favorites={favorites} />
           ))}
         </div>
         <h1 className='item-post-header'>Item requests</h1>

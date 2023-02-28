@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { favoritingItem, unfavoritingItem } from '../tools/userServices';
 
-const Post = ({ post, isRequest }) => {
+const Post = ({ post, isRequest, favorites }) => {
 	const title = post.name;
 	const description = post.description;
 	const price = post.price;
@@ -24,11 +24,11 @@ const Post = ({ post, isRequest }) => {
 		nav('/selected-item-post');
 	};
 
+
 	//need to set the favorite status based on whether the item is favorited or not
-	const favorites = ['63fa6821a3a98f73a0565c27'];
 	const [favStatus, setFavStatus] = useState(() => {
-		if (isRequest) {
-			return;
+		if (isRequest || favorites.length === 0) {
+			return 'unfavorite';
 		}
 		for (const item of favorites) {
 			if (item === post._id) {
