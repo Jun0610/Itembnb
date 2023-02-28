@@ -1,6 +1,6 @@
 import '../styles/navbar.css';
 import { NavLink } from 'react-router-dom';
-import {useContext} from 'react';
+import { useContext } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import userContext from '../contexts/userContext';
@@ -12,6 +12,7 @@ const Navbar = () => {
 
   const logout = (e) => {
     e.preventDefault();
+    sessionStorage.removeItem('curUser')
     authUser.logout();
   };
 
