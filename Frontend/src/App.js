@@ -9,7 +9,9 @@ import DisplayItemPost from "./pages/displayItemPost";
 import DisplayRequestPost from "./pages/displayRequest";
 import SignUp from "./pages/signup";
 import Login from "./pages/login";
+import SelectedItemPost from "./pages/selectedItemPost";
 import {UserContextProvider} from "./contexts/userContext";
+import {ItemContextProvider} from "./contexts/itemContext";
 
 function App() {
   return (

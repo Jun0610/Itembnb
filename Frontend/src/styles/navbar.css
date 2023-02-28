@@ -14,12 +14,20 @@
 
 .custom-ul {
     list-style-type: none;
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
     margin: 0;
 }
 
 .custom-nav-link {
+    text-decoration: none;
+    font-family: sans-serif;
+    color: #fff;
+    font-size: 20px;
+    padding: 10px 16px;
+}
+
+.custom-logout-btn {
     text-decoration: none;
     font-family: sans-serif;
     color: #fff;
