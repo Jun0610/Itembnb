@@ -52,10 +52,10 @@ class ItemService {
         });
     }
 
-    static async editItem(item, user) {
+    static async editItem(item, userid) {
         console.log("edit an item");
         return new Promise((resolve, reject) => {
-            fetch(`${url}/edit-item/item-id/${item.id}/user-id/${user.id}`, {
+            fetch(`${url}/edit-item/item-id/${item.id}/user-id/${userid}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(item),
@@ -69,10 +69,10 @@ class ItemService {
         })
     }
 
-    static async deleteItem(item, user) {
+    static async deleteItem(item, userid) {
         console.log("delete an item");
         return new Promise((resolve, reject) => {
-            fetch(`${url}/delete-item/item-id/${item.id}/user-id/${user.id}`, {
+            fetch(`${url}/delete-item/item-id/${item.id}/user-id/${userid}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             }).then(res => res.json()).then(
