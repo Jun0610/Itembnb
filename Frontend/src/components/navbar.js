@@ -10,6 +10,11 @@ const Navbar = () => {
 
   const authUser = useContext(userContext);
 
+  const logout = (e) => {
+    e.preventDefault();
+    authUser.logout();
+  };
+
   return (
     <nav className="navbar customNavBar">
       <div className="container-fluid">
@@ -28,7 +33,12 @@ const Navbar = () => {
               Login
             </NavLink>
           </li>}
-          {!authUser.isAuth && <li>
+          {authUser.isAuth && <li>
+            <NavLink to="/logout" onClick={logout} className="custom-nav-link">
+              Logout
+            </NavLink>
+          </li>}
+          {authUser.isAuth && <li>
             <NavLink to="/create-item-post" className="custom-nav-link">
               Create Item Post!
             </NavLink>
