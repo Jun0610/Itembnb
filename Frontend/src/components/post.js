@@ -24,7 +24,6 @@ const Post = ({ post, isRequest, favorites }) => {
 		nav('/selected-item-post');
 	};
 
-
 	//need to set the favorite status based on whether the item is favorited or not
 	const [favStatus, setFavStatus] = useState(() => {
 		if (isRequest || favorites.length === 0) {

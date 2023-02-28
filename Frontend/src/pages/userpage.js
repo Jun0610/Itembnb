@@ -75,7 +75,7 @@ const Userpage = () => {
   useEffect(() => {
     async function loadItems() {
         const componentPromises =
-        userInfo.postedItems().map(async index => {
+        userInfo.postedItems.map(async index => {
             const itemData = await ItemService.getItem("63ec624c09acb0b1c1fe9173");
             return <Post post={itemData} isRequest = {false}/>;
         });
@@ -140,48 +140,7 @@ const Userpage = () => {
             </div>
         <h3 className="item-post-header">{userInfo.name}'s Item Requests</h3>
         <div className="cardcontainer">
-            <Post item={
-                    {title: "Item 1",
-                    description: "This is item 1",
-                    price: 10,
-                    image: "",
-                    isRequest: true}
-                } />
-                <Post item={
-                    {title: "Item 1",
-                    description: "This is item 1",
-                    price: 10,
-                    image: "",
-                    isRequest: true}
-                } />
-                <Post item={
-                    {title: "Item 1",
-                    description: "This is item 1",
-                    price: 10,
-                    image: "",
-                    isRequest: true}
-                } /><Post item={
-                    {title: "Item 1",
-                    description: "This is item 1",
-                    price: 10,
-                    image: "",
-                    isRequest: true}
-                } />
-                <Post item={
-                    {title: "Item 1",
-                    description: "This is item 1",
-                    price: 10,
-                    image: "",
-                    isRequest: true}
-                } />
-                <Post item={
-                    {title: "Item 1",
-                    description: "This is item 1",
-                    price: 10,
-                    image: "",
-                    isRequest: true}
-                } />
-            </div>
+        </div>
         </div>
     </div>
   );
