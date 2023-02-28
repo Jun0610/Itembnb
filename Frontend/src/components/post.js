@@ -1,8 +1,10 @@
-import React from "react";
+import React, {useContext} from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/post.css";
+import itemContext from "../contexts/itemContext";
+import { useNavigate } from "react-router-dom";
 
-const Post = ({item}) => {
+const Post = ({item, isRequest}) => {
     const title = item.name;
     const description = item.description;
     const price = item.price;
@@ -11,9 +13,18 @@ const Post = ({item}) => {
       image = item.images[0]['data_url'];
     else
       image = "";*/
-    const isRequest = true;
-
     const rating = 4;
+
+    const selectedItem = useContext(itemContext);
+
+    const nav = useNavigate();
+
+    const handleClick = () => {
+      console.log("clicked");
+      selectedItem.setSelectedItem(item);
+      nav("/selected-item-post");
+    }
+    
 
     return ( 
         
@@ -33,10 +44,10 @@ const Post = ({item}) => {
           <div className="card-body custom-card-body-left">
             <h5 className="card-title"> {title} </h5>
             <p className="card-text item-desc"> {description} </p>
-            <a href="/" class="btn custom-card-button">Read more</a>
+            {!isRequest && <button className="btn custom-card-button" onClick={handleClick}>Read more</button>}
           </div>
 
-        {isRequest === false &&
+        {!isRequest &&
           <div className="card-body custom-card-body-right">
             <p className="card-text item-pr"> ${price} </p>
             <p className="card-text item-pr"> {rating}/5 </p>
