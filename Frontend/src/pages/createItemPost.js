@@ -303,7 +303,7 @@ const CreateItemPost = () => {
               dragProps,
               errors,
             }) => (!errors ? <div>
-              {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onDoubleClick={() => onImageRemove(0)}/> : 
+              {imageList[0] ? <img src={imageList[0]['data_url']} className="rounded-l-lg object-cover mx-auto h-80 flex justify-center items-center" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)}/> : 
                 <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
                   style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                   onClick={onImageUpload} 
@@ -396,7 +396,7 @@ const CreateItemPost = () => {
                 isDragging,
                 dragProps,
                 errors
-                }) => (!errors ? <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                }) => (!errors ? <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="rounded-tr-lg mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}
@@ -427,7 +427,7 @@ const CreateItemPost = () => {
                 isDragging,
                 dragProps,
                 errors
-                }) => (!errors ? <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
+                }) => (!errors ? <div>{imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-36 rounded-br-lg" alt="first" width="100%" height="100%" onDoubleClick={() => onImageRemove(0)} style={{objectFit: "cover"}}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
                 style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
                 onClick={onImageUpload} onDoubleClick={onImageRemove}
                 {...dragProps}

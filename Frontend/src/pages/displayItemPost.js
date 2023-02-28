@@ -4,25 +4,20 @@ import ImageUploading from 'react-images-uploading';
 import ItemService from '../tools/itemsService';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
+import userContext from '../contexts/userContext';
+import {faAppleAlt} from '@fortawesome/free-solid-svg-icons';
 
-const DisplayItemPost = () => {
-  /*const [item, setItem] = React.useState({
-    name: "Music Box",
-    description: "This is a pretty music box.",
-    price: 50,
-    revservHist: [],
-    unavailList: [],
-    review: [],
-    category: [{value: 'ACADEMICS', label: "Academics"}, {value: 'HOUSEHOLD', label: "Household"}],
-    images: [],
-  });*/
-  const [item, setItem] = React.useState({});
+const DisplayItemPost = ({ itemProp }) => {
+  const [item, setItem] = React.useState(itemProp);
   const [isEditing, setIsEditing] = React.useState(false);
   const [images, setImages] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const maxNumber = 20;
 
   const currentC = [];
+
+  const authUser = React.useContext(userContext);
+  
 
   useEffect(() => {
     // call API to fetch the item data
@@ -33,12 +28,19 @@ const DisplayItemPost = () => {
     }
 
     async function fetchItem() {
+        await ItemService.getItem(authUser.user.user._id, itemProp._id).then((data) => {
+            console.log(data);
+            setItem(data);
+            setImages(data.images);
+            return data.category;
+        });
+        /*
         await ItemService.getItemE().then((data) => {
             console.log(data);
             setItem(data)
             setImages(data.images);
             return data.category;
-        });
+        });*/
     }
 
       fetchCategories().then((categories) => {
@@ -85,7 +87,7 @@ const DisplayItemPost = () => {
         buttons: [
             {
                 label: 'Yes',
-                onClick: () => ItemService.deleteItem(item)
+                onClick: () => ItemService.deleteItem(item, authUser.user.user._id)
             }, 
             {
                 label: 'No',
@@ -95,11 +97,27 @@ const DisplayItemPost = () => {
     });
   }
 
+  const handleSaveItem = () => {
+    async function editItem() {
+        await ItemService.editItem(item, authUser.user.user._id).then(alert("Edit item successfully!"));
+    }
+    //handle validation
+    if (!item.description && !item.name && !item.price && !item.category) {
+        alert("Please make sure all of these fields are filled!");
+        return;
+    } 
+    if (!item.images && item.images.length === 0) {
+        alert("Make sure there is at least one image!");
+        return;
+    }
+    editItem();
+  }
+
   return (
     <div>
         <div className="m-3 font-bold" style={{color: "#F0D061"}}>Your Item Post</div>
         <div>
-            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => setIsEditing(!isEditing)}>{isEditing ? 'Save' : 'Edit'}</button>
+            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => { isEditing ? () => handleSaveItem() : setIsEditing(!isEditing)}}>{isEditing ? 'Save' : 'Edit'}</button>
             <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => handleDeleteItem()}>Delete</button>
         </div>
         <div style={isEditing ? undefined : {pointerEvents: 'none'}}>
