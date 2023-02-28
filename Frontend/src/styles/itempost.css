@@ -1,0 +1,17 @@
+.custom-itempost-image {
+    width: auto;
+    height: 350px;
+    object-fit: cover;
+}
+
+.item-post-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+}
+
+.itempost-outer {
+    margin: 15px 30px;
+}

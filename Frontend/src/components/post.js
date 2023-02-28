@@ -44,10 +44,10 @@ const Post = ({item, isRequest}) => {
           <div className="card-body custom-card-body-left">
             <h5 className="card-title"> {title} </h5>
             <p className="card-text item-desc"> {description} </p>
-            <button className="btn custom-card-button" onClick={handleClick}>Read more</button>
+            {!isRequest && <button className="btn custom-card-button" onClick={handleClick}>Read more</button>}
           </div>
 
-        {isRequest === false &&
+        {!isRequest &&
           <div className="card-body custom-card-body-right">
             <p className="card-text item-pr"> ${price} </p>
             <p className="card-text item-pr"> {rating}/5 </p>
