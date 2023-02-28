@@ -5,7 +5,7 @@ class ItemService {
         console.log(item);
         return new Promise((resolve, reject) => {
             fetch(`${url}/add-item`, {
-                method: 'POST', 
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(item),
             }).then(res => res.json()).then((res) => {
@@ -56,7 +56,7 @@ class ItemService {
         console.log("edit an item");
         return new Promise((resolve, reject) => {
             fetch(`${url}/edit-item/item-id/${item.id}/user-id/${user.id}`, {
-                method: 'PUT', 
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(item),
             }).then(res => res.json()).then(
@@ -73,7 +73,7 @@ class ItemService {
         console.log("delete an item");
         return new Promise((resolve, reject) => {
             fetch(`${url}/delete-item/item-id/${item.id}/user-id/${user.id}`, {
-                method: 'DELETE', 
+                method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             }).then(res => res.json()).then(
                 (result) => {
