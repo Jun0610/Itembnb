@@ -11,6 +11,13 @@ const Homepage = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const selectedUser = useContext(userContext);
 
+
+  useEffect(() => {
+    if (sessionStorage.getItem('curUser') !== null) {
+      selectedUser.login(JSON.parse(sessionStorage.getItem('curUser')))
+    }
+  }, [])
+
   useEffect(() => {
     async function getItemPosts() {
       await fetch("http://localhost:8888/api/item/get-item-posts")
@@ -29,11 +36,6 @@ const Homepage = () => {
     getRequestPosts();
   }, []);
 
-  let favorites = [];
-  if (selectedUser.user.isAuth !== false) {
-    favorites = selectedUser.user.user.favoritedItems
-  }
-  console.log(favorites);
 
   if (isLoading) return (<div>Bruh</div>);
 
@@ -48,7 +50,7 @@ const Homepage = () => {
         <h1 className='item-post-header'>Item posts</h1>
         <div className='cardcontainer'>
           {itemPosts.map((item) => (
-            <Post key={item._id} post={item} isRequest={false} favorites={favorites} />
+            <Post key={item._id} post={item} isRequest={false} />
           ))}
         </div>
         <h1 className='item-post-header'>Item requests</h1>

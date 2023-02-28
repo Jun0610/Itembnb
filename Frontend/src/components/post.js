@@ -1,13 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/post.css';
 import itemContext from '../contexts/itemContext';
+import userContext from '../contexts/userContext';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { favoritingItem, unfavoritingItem } from '../tools/userServices';
+import { favoritingItem, unfavoritingItem, getUserData } from '../tools/userServices';
 
-const Post = ({ post, isRequest, favorites }) => {
+const Post = ({ post, isRequest }) => {
 	const title = post.name;
 	const description = post.description;
 	const price = post.price;
@@ -15,6 +16,29 @@ const Post = ({ post, isRequest, favorites }) => {
 	const rating = 4;
 
 	const selectedItem = useContext(itemContext);
+	const selectedUser = useContext(userContext);
+
+	//need to set the favorite status based on whether the item is favorited or not
+	const [favStatus, setFavStatus] = useState('unfavorite')
+
+
+	//grabbing favorite status from db
+	useEffect(() => {
+		async function getFavStatus() {
+			if (isRequest || sessionStorage.getItem('curUser') === null) {
+				setFavStatus('unfavorite');
+				return;
+			}
+			const res = await getUserData(selectedUser.user.user._id)
+
+			for (const item of res.data.favoritedItems) {
+				if (item === post._id) {
+					setFavStatus('favorite');
+				}
+			}
+		}
+		getFavStatus();
+	})
 
 	const nav = useNavigate();
 
@@ -24,32 +48,21 @@ const Post = ({ post, isRequest, favorites }) => {
 		nav('/selected-item-post');
 	};
 
-
-	//need to set the favorite status based on whether the item is favorited or not
-	const [favStatus, setFavStatus] = useState(() => {
-		if (isRequest || favorites.length === 0) {
-			return 'unfavorite';
-		}
-		for (const item of favorites) {
-			if (item === post._id) {
-				return 'favorite'
-			}
-		}
-		return 'unfavorite'
-	});
-
-
 	//onClick function to handle favoriting items
 	const favoriteItem = async () => {
 		try {
+			if (sessionStorage.getItem('curUser') === null) {
+				alert('Log in or sign up to favorite an item!')
+				return;
+			}
 			if (favStatus === 'favorite') {
-				const res = await unfavoritingItem(post._id, '63fa909808cade2e5541a6ba');
+				const res = await unfavoritingItem(post._id, selectedUser.user.user._id);
 				if (res.status === 400) {
 					throw new Error(res.data)
 				}
 				setFavStatus('unfavorite');
 			} else {
-				const res = await favoritingItem(post._id, '63fa909808cade2e5541a6ba');
+				const res = await favoritingItem(post._id, selectedUser.user.user._id);
 				if (res.status === 400) {
 					throw new Error(res.data)
 				}
