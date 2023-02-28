@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {lazy, useEffect} from "react";
 import ItemService from '../tools/itemsService';
 import {useParams} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -31,7 +31,6 @@ const Userpage = () => {
 
   // Get user info from the server
   const [userInfo, setUserInfo] = React.useState([]);
-  const [userItems, setUserItems] = React.useState([]);
 
   const getOneItem = async() => {
     // const itemData = await ItemService.getItem(userInfo.postedItems[i]);
@@ -39,13 +38,8 @@ const Userpage = () => {
     console.log("ITEM DATA RECIVED", itemData);
     setUserItems(() => [
         userItems,
-        <Post item={
-            {name: itemData.name,
-            description: itemData.description,
-            price: itemData.price,
-            image: itemData.image,
-            isRequest: false}
-        } />
+        // <Post key={item._id} post={item} isRequest={false} favorites={favorites} />
+        <Post post={itemData} isRequest = {false}/>
     ]);
     console.log("add item", userItems);
   };
@@ -72,26 +66,27 @@ const Userpage = () => {
 
     } 
     fetchData();
-
-    /*
-    async function loadViews() {
-        const componentPromises =
-        userInfo().map(async subreddit => {
-            const View = await importView(subreddit);
-            return <View key={shortid.generate()} />;
-        });
-
-        Promise.all(componentPromises).then(setViews);
-    }
-    loadViews();
-    */
-
   }, []);
 
-  if (! Object.keys(userInfo).length) { // if user info hasn't loaded
-    return ""; // just show a blank screen
-  }
+  const [userItems, setUserItems] = React.useState([]);
+  useEffect(() => {
+    async function loadItems() {
+        const componentPromises =
+        userInfo.postedItems().map(async index => {
+            const itemData = await ItemService.getItem("63ec624c09acb0b1c1fe9173");
+            return <Post post={itemData} isRequest = {false}/>;
+        });
 
+        Promise.all(componentPromises).then(setUserItems);
+    }
+    loadItems();
+  }, []);
+
+  /* if (! Object.keys(userInfo).length) { // if user info hasn't loaded
+    return ""; // just show a blank screen
+  } */
+
+  /*
   const returnUserItems = () => {
     if (userInfo.postedItems.length == 0) {
         return <div>{userInfo.name} has no items!</div>
@@ -100,18 +95,15 @@ const Userpage = () => {
     let userItems = [];
     for (let i = 0; i < userInfo.postedItems.length; i++) {
         let itemData = ItemService.getItem(userInfo.postedItems[i]);
-        userItems.push(
-            <Post item={
-                {name: itemData.name,
-                description: itemData.description,
-                price: itemData.price,
-                image: itemData.image,
-                isRequest: false}
-            } />
-        );
+        setUserItems(() => [
+        userItems,
+        // <Post key={item._id} post={item} isRequest={false} favorites={favorites} />
+        <Post post={itemData} isRequest = {false}/>
+        ]);
     }
     return userItems;
   }
+  */
 
   /*
   const wrapper = () => {
@@ -127,8 +119,6 @@ const Userpage = () => {
             <div>
                 <img id="profilepic" src={userInfo.profilePic}/>
 
-                <h6 className="user_stat">{userInfo.postedItems.length} posted items</h6>
-
                 <h6 className="user_stat">{userInfo.name} has left X reviews</h6>
             </div>
         </div>
@@ -143,7 +133,7 @@ const Userpage = () => {
 
         <h3 className="item-post-header">{userInfo.name}'s Posted Items</h3>
             <div className="cardcontainer">
-                {returnUserItems()}
+                {userItems}
             </div>
         <h3 className="item-post-header">{userInfo.name}'s Item Requests</h3>
         <div className="cardcontainer">
