@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import ItemService from "../tools/itemsService";
 import Select from 'react-select';
 import ImageUploading from 'react-images-uploading';
+import userContext from "../contexts/userContext";
 
 const CreateItemPost = () => {
   const [item, setItem] = React.useState({
@@ -27,6 +28,9 @@ const CreateItemPost = () => {
   const [imagesDisplay, setImagesDisplay] = React.useState([]);
 
   const [categories, setCategories] = React.useState([]);
+
+  const authUser = React.useContext(userContext);
+  console.log(authUser.user.user._id);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -233,6 +237,8 @@ const CreateItemPost = () => {
       }
       if (!images[i]) adjFlag = false;
     }
+    
+    item.ownerId = authUser.user.user._id;
     item.images = imagesDisplay;
     await ItemService.postItem(item).then((res) => {
       alert("Item Successfully posted!");
