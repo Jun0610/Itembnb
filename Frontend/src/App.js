@@ -10,8 +10,9 @@ import DisplayRequestPost from "./pages/displayRequest";
 import SignUp from "./pages/signup";
 import Login from "./pages/login";
 import SelectedItemPost from "./pages/selectedItemPost";
-import {UserContextProvider} from "./contexts/userContext";
-import {ItemContextProvider} from "./contexts/itemContext";
+import { UserContextProvider } from "./contexts/userContext";
+import { ItemContextProvider } from "./contexts/itemContext";
+import FavoriteItems from "./pages/FavoriteItems";
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
           <Route exact path="/signup" element={<SignUp />} />
           <Route exact path="/login" element={<Login />} />
           <Route path='/user/:id' element={<UserProfile />} />
+          <Route exact path="/selected-item-post" element={<SelectedItemPost />} />
+          <Route exact path="/favorite-items" element={<FavoriteItems />} />
         </Routes>
       </Router>
       </UserContextProvider>

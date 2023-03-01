@@ -1,6 +1,6 @@
 import '../styles/navbar.css';
 import { NavLink } from 'react-router-dom';
-import {useContext} from 'react';
+import { useContext } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import userContext from '../contexts/userContext';
@@ -12,8 +12,14 @@ const Navbar = () => {
 
   const logout = (e) => {
     e.preventDefault();
+    sessionStorage.removeItem('curUser')
     authUser.logout();
   };
+
+  const a = () => {
+    console.log("authhhhh?", authUser);
+    console.log("auhh?", authUser.user.user._id);
+  }
 
   return (
     <nav className="navbar customNavBar">
@@ -41,6 +47,14 @@ const Navbar = () => {
           {authUser.isAuth && <li>
             <NavLink to="/create-item-post" className="custom-nav-link">
               Create Item Post!
+            </NavLink>
+          </li>
+          }
+          {authUser.isAuth && <li>
+            <NavLink
+              to={"/user/"+authUser.user.user._id}
+              className="custom-nav-link">
+            {a}
             </NavLink>
           </li>}
         </ul>
