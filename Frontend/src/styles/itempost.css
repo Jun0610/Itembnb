@@ -15,3 +15,32 @@
 .itempost-outer {
     margin: 15px 30px;
 }
+
+.owner-img {
+    grid-area: img;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    margin: 0 0.5rem;
+    align-self: center;
+    justify-self: center;
+}
+
+.owner {
+    display: grid;
+    grid-template-areas: 
+    '. img'
+    '. img';
+    max-width: 600px;
+}
+
+
+.about-owner {
+    padding-top: 10px;
+    align-self: center;
+}
+
+.owner-desc {
+    max-width: 400px;
+    text-justify: inter-word;
+}

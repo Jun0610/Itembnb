@@ -34,6 +34,23 @@ export const unfavoritingItem = async (itemId, userId) => {
     } catch (err) {
         console.log(err);
     }
+
+}
+
+export const getUserData = async (userId) => {
+    console.log("getting user data");
+    const request = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    }
+    try {
+        const res = await fetch(`${url}/profile-data/${userId}`, request);
+        const response = await res.json();
+        response.status = res.status
+        return response
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 

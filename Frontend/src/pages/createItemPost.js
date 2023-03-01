@@ -1,10 +1,14 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useContext} from "react";
 import ItemService from "../tools/itemsService";
 import Select from 'react-select';
 import ImageUploading from 'react-images-uploading';
 import userContext from "../contexts/userContext";
 
+import userContext from '../contexts/userContext';
+
 const CreateItemPost = () => {
+  const authUser = useContext(userContext);
+
   const [item, setItem] = React.useState({
     name: '',
     description: '',
@@ -240,7 +244,7 @@ const CreateItemPost = () => {
     
     item.ownerId = authUser.user.user._id;
     item.images = imagesDisplay;
-    await ItemService.postItem(item).then((res) => {
+    await ItemService.postItem(item, authUser.user.user._id).then((res) => {
       alert("Item Successfully posted!");
       setItem({
         name: '',
