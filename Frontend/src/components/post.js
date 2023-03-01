@@ -45,7 +45,7 @@ const Post = ({ post, isRequest }) => {
 	const handleClick = () => {
 		console.log('clicked');
 		selectedItem.setSelectedItem(post);
-		nav('/selected-item-post');
+		nav(`/selected-item-post/${post._id}`);
 	};
 
 	//onClick function to handle favoriting items
