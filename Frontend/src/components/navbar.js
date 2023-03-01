@@ -1,7 +1,8 @@
 import '../styles/navbar.css';
 import { NavLink } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { getUserData } from '../tools/userServices';
 
 import userContext from '../contexts/userContext';
 
@@ -9,6 +10,25 @@ const Navbar = () => {
   const logo = require("../resources/logo-no-background.png");
 
   const authUser = useContext(userContext);
+  const [userData, setUserData] = useState({});
+
+  //keeps user logged in
+  useEffect(() => {
+    if (sessionStorage.getItem('curUser') !== null) {
+      authUser.login(JSON.parse(sessionStorage.getItem('curUser')))
+    }
+
+    const fetchUserData = async () => {
+      try {
+        const res = await getUserData(JSON.parse(sessionStorage.getItem('curUser'))._id);
+        setUserData(res.data);
+      } catch (err) {
+        return err
+      }
+    }
+    fetchUserData();
+  }, [])
+
 
   const logout = (e) => {
     e.preventDefault();
@@ -48,13 +68,10 @@ const Navbar = () => {
             <NavLink to="/create-item-post" className="custom-nav-link">
               Create Item Post!
             </NavLink>
-          </li>
-          }
+          </li>}
           {authUser.isAuth && <li>
-            <NavLink
-              to={"/user/"+authUser.user.user._id}
-              className="custom-nav-link">
-            {a}
+            <NavLink to={"/user/"+authUser.user.user._id} className="nav-link-img">
+              <img src={userData.profilePic} alt="" className='nav-img' />
             </NavLink>
           </li>}
         </ul>

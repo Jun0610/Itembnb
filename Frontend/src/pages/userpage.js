@@ -84,7 +84,7 @@ const Userpage = () => {
 
         <h3 className="item-post-header">{userInfo.name}'s Posted Items</h3>
             <div className="cardcontainer">
-                {itemsLoaded ? userItems : "loading..."}
+                {itemsLoaded ? userItems : "Loading..."}
             </div>
         <h3 className="item-post-header">{userInfo.name}'s Item Requests</h3>
         <div className="cardcontainer">
