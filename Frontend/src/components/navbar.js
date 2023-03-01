@@ -36,6 +36,11 @@ const Navbar = () => {
     authUser.logout();
   };
 
+  const a = () => {
+    console.log("authhhhh?", authUser);
+    console.log("auhh?", authUser.user.user._id);
+  }
+
   return (
     <nav className="navbar customNavBar">
       <div className="container-fluid">
@@ -65,7 +70,7 @@ const Navbar = () => {
             </NavLink>
           </li>}
           {authUser.isAuth && <li>
-            <NavLink to="/signup" className="nav-link-img">
+            <NavLink to={"/user/"+authUser.user.user._id} className="nav-link-img">
               <img src={userData.profilePic} alt="" className='nav-img' />
             </NavLink>
           </li>}

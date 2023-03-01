@@ -1,10 +1,10 @@
 const url = "http://localhost:8888/api/item";
 
 class ItemService {
-    static async postItem(item) {
+    static async postItem(item, userId) {
         console.log(item);
         return new Promise((resolve, reject) => {
-            fetch(`${url}/add-item`, {
+            fetch(`${url}/add-item/user-id/${userId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(item),
@@ -52,7 +52,7 @@ class ItemService {
     static async getItemE() {
         return new Promise((resolve, reject) => {
             fetch(`${url}/get-item-posts-1`).then(res => res.json()).then((res) => {
-                const data = res.data[0];
+                const data = res.data;
                 resolve(data);
             }).catch((err) => {
                 reject(err);

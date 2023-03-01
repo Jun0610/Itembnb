@@ -85,16 +85,17 @@ router.get('/categories', async (req, res) => {
 })
 
 //add item to database
-router.post('/add-item', async (req, res) => {
+router.post('/add-item/user-id/:userId', async (req, res) => {
     //save date as date object
     req.body.dateCreated = new Date(Date.now());
     try {
         await db.collection("items").insertOne(req.body);
+        // idk lol
+        // await db.collection('users').updateOne({_id: new mongo.ObjectId(userId)}, {$push: {postedItems: req.body._id}})
         res.status(201).json({success: true, data: "successfully added item!"})
     } catch (err) {
         res.status(404).json({success: false, data: err})
     }
-    
 })
 
 
