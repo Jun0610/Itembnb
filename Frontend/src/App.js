@@ -24,7 +24,7 @@ function App() {
               <Route exact path="/display-item-post" element={<DisplayItemPost />} />
               <Route exact path="/signup" element={<SignUp />} />
               <Route exact path="/login" element={<Login />} />
-              <Route exact path="/selected-item-post" element={<SelectedItemPost />} />
+              <Route exact path="/selected-item-post/:itemId" element={<SelectedItemPost />} />
               <Route exact path="/favorite-items" element={<FavoriteItems />} />
             </Routes>
           </Router>
