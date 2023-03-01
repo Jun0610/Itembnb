@@ -1,0 +1,61 @@
+.fav-card {
+    margin-bottom: 1rem;
+    justify-self: center;
+    border: none;
+    box-shadow: none;
+    border-radius: 1.5rem;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    align-self: center;
+}
+
+.fav-item-pic-container {
+    height: 300px;
+    display:inline-block;
+    padding: 0rem 3.3rem;
+}
+
+.fav-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+
+.fav-item-pic-container .favorite {
+  position: relative;
+  top: -95%;
+  left: 85%;
+  opacity: 0.9;
+  color: #ff1818;
+  transition: transform 0.3s;
+}
+
+.unfavorite:hover {
+  opacity: 0.9;
+  /* color: #ff1818; */
+  cursor: pointer;
+  transform: scale(1.2);
+  transition: transform 0.3s;
+}
+
+.favorite:hover {
+  opacity: 0.9;
+  /* color: #ff1818; */
+  transform: scale(1.2);
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.fav-item-pic-container .fav-item-image {
+    align-self: top;
+    border-radius: 1rem;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    object-fit: fill;
+    height: 100%;
+}
+
+.fav-item-pic-container:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: transform 0.3s;
+}
