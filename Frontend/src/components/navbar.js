@@ -27,7 +27,7 @@ const Navbar = () => {
       }
     }
     fetchUserData();
-  }, [])
+  }, [sessionStorage.getItem('curUser')])
 
   const logout = (e) => {
     e.preventDefault();
@@ -64,7 +64,7 @@ const Navbar = () => {
             </NavLink>
           </li>}
           {authUser.isAuth && <li>
-            <NavLink to={"/user/"+authUser.user.user._id} className="nav-link-img">
+            <NavLink to={"/user/" + authUser.user.user._id} className="nav-link-img">
               <img src={userData.profilePic} alt="" className='nav-img' />
             </NavLink>
           </li>}
