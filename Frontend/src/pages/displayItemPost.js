@@ -45,7 +45,6 @@ const DisplayItemPost = () => {
     const imagesDisplayCopy = [];
     imagesDisplay.forEach(e => imagesDisplayCopy.push(e));
     setImagesDisplay([...imageList]);
-
   }
 
   useEffect(() => {
@@ -88,6 +87,25 @@ const DisplayItemPost = () => {
       ...item, 
       category: categories,
     })
+  }
+
+  const [currentImg, setCurrentImg] = React.useState(null);
+
+  const handleDragStart = (key) => {
+    setCurrentImg(imagesBar[key])
+  }
+
+  const handleImageInsert = (key) => {
+    // insert the image before the key
+    const newImages = [];
+    for (var i = 0; i < imagesDisplay.length; i++) {
+      if (i === key) {
+        newImages.push(currentImg);
+      }
+      newImages.push(imagesDisplay[i]);
+    }
+    setImagesDisplay(newImages);
+    setCurrentImg(null);
   }
 
   const handleDeleteItem = () => {
@@ -171,13 +189,14 @@ const DisplayItemPost = () => {
                     errors,
                 }) => (!errors ? <div className="grid grid-flow-col auto-cols-max h-80">
                     {imageList.map((image, index) => (
-                        <div key={index}>
-                        <div className="m-3 bg-cyan-700 h-80 w-92">
+                        <div key={index} className="grid grid-flow-col">
+                          <div className="h-80 w-2" {...dragProps} onDrop={(e) => {handleImageInsert(index)}}></div>
+                          <div className="m-3 bg-cyan-700 h-80 w-92">
                             <img src={image['data_url']} alt="" className="object-cover" style={{height: '100%', margin: "auto", display: "block"}} onDoubleClick={() => onImageRemove(index)}/>
-                        </div>
+                          </div>
                         </div>
                     ))}
-                    <div className="m-3 bg-slate-400 h-80 w-92 items-center text-center rounded-lg" style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}} {...dragProps}>
+                    <div className="m-3 bg-slate-400 h-80 w-92 items-center text-center rounded-lg" {...dragProps}>
                     <div className="p-3 text-white">Drag pictures from Image Bar to preview!</div>
                     </div>
                 </div> : 
@@ -215,7 +234,7 @@ const DisplayItemPost = () => {
                     {imageList.map((image, index) => (
                         <div key={index}>
                         <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
-                        <img src={image['data_url']} alt="" className="auto" style={{width: '100%', height: '12rem', objectFit: "cover"}}/>
+                        <img src={image['data_url']} alt="" className="auto" style={{width: '100%', height: '12rem', objectFit: "cover"}} onDragStart={() => handleDragStart(index)} onDragEnd={() => isDragging = false}/>
                         <i className="fa-solid fa-trash mt-1 icon-3x" style={{cursor: "pointer"}} onClick={() => onImageRemove(index)}></i>
                         </div>
                         </div>

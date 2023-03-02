@@ -180,8 +180,7 @@ const CreateItemPost = () => {
           }) => (!errors ? <div className="grid grid-flow-col auto-cols-max h-80">
             {imageList.map((image, index) => (
                 <div key={index} className="grid grid-flow-col">
-                  <div className="h-80 w-2" {...dragProps} onDrop={(e) => {handleImageInsert(index)}}>
-                  </div>
+                  <div className="h-80 w-2" {...dragProps} onDrop={(e) => {handleImageInsert(index)}}></div>
                   <div className="m-3 bg-cyan-700 h-80 w-92">
                     <img src={image['data_url']} alt="" className="object-cover" style={{height: '100%', margin: "auto", display: "block"}} onDoubleClick={() => onImageRemove(index)}/>
                   </div>
