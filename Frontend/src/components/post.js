@@ -45,16 +45,26 @@ const Post = ({ post, isRequest }) => {
 	const nav = useNavigate();
 
 	const handleClick = () => {
-		console.log('clicked');
-		console.log(post);
-		console.log(selectedItem);
-		selectedItem.setSelectedItem(post);
-		nav(`/selected-item-post/${post._id}`);
+		if (!isRequest) {
+			console.log('clicked');
+			console.log(post);
+			console.log(selectedItem);
+			selectedItem.setSelectedItem(post);
+			nav(`/selected-item-post/${post._id}`);
+		}
+		else {
+			nav(`/display-request-post/${post._id}`)
+		}
 	};
 
 	const handleOwnerClick = () => {
-		selectedItem.setSelectedItem(post);
-		nav(`/display-item-post/${post._id}`);
+		if (!isRequest) {
+			selectedItem.setSelectedItem(post);
+			nav(`/display-item-post/${post._id}`);
+		}
+		else {
+			nav(`/display-request-post/${post._id}`)
+		}
 	}
 
 	//onClick function to handle favoriting items
@@ -100,10 +110,9 @@ const Post = ({ post, isRequest }) => {
 				<div className='card-body custom-card-body-left'>
 					<h4 className='card-title'> {title} </h4>
 					<p className='card-text item-desc'> {description} </p>
-					{!isRequest &&
-						<button className='btn custom-card-button' onClick={selectedUser.user.user && selectedUser.user.user._id === post.ownerId ? handleOwnerClick : handleClick}>
-							Read more
-						</button>}
+					<button className='btn custom-card-button' onClick={selectedUser.user.user && selectedUser.user.user._id === post.ownerId ? handleOwnerClick : handleClick}>
+						Read more
+					</button>
 				</div>
 
 				{!isRequest &&

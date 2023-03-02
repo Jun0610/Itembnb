@@ -1,20 +1,19 @@
 const url = "http://localhost:8888/api/request";
 
 class RequestService {
-    static async postRequest(request) {
+    static async postRequest(request, id) {
         console.log(request);
 
         // new Date() gets converted to string-formatted Date through JSON.stringify
         request.dateCreated = new Date();
 
         return new Promise((resolve, reject) => {
-            fetch(`${url}/add-request`, {
+            fetch(`${url}/add-request/user-id/${id}`, {
                 method: 'post', 
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(request),
             }).then(res => res.json()).then((res) => {
-                const data = res.data;
-                resolve(data);
+                resolve(res);
             }).catch((err) => {
                 reject(err);
             })

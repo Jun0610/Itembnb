@@ -1,13 +1,16 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useContext} from "react";
 import {useParams, Navigate} from "react-router-dom";
 import RequestService from '../tools/requestService';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
+import userContext from '../contexts/userContext';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
 
 const DisplayRequestPost = () => {
+	const userAuth = useContext(userContext);
+
   const [isEditing, setIsEditing] = React.useState(false);
   const {id} = useParams(); // id of request post
 
@@ -74,11 +77,12 @@ const DisplayRequestPost = () => {
 
   return (
     <div>
-        <div className="m-3 font-bold" style={{color: "#F0D061"}}>Your Item Request</div>
+        <div className="m-3 font-bold" style={{color: "#F0D061"}}>View Item Request</div>
+        {(userAuth.user.user._id === 0) && (
         <div>
             <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={handleEditRequest}>{isEditing ? 'Save' : 'Edit'}</button>
             <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={handleDeleteRequest}>Delete</button>
-        </div>
+        </div>)}
         <div className='m-3'>
             <div className="flex gap-6 mb-6">
                 <div className="flex-none">
