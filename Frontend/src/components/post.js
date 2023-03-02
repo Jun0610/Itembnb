@@ -23,7 +23,6 @@ const Post = ({ post, isRequest }) => {
 	//need to set the favorite status based on whether the item is favorited or not
 	const [favStatus, setFavStatus] = useState('unfavorite')
 
-
 	//grabbing favorite status from db
 	useEffect(() => {
 		async function getFavStatus() {
