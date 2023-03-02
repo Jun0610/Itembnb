@@ -12,7 +12,7 @@ const CreateRequest = () => {
     name: '',
     description: '',
     dateCreated: '',
-    ownerID: "TODO",
+    ownerID: authUser.user.user._id,
     resolved: false,
     recommendedItems: []
   };

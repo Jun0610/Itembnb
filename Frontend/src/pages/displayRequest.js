@@ -1,5 +1,5 @@
 import React, {useEffect, useContext} from "react";
-import {useParams, Navigate} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import RequestService from '../tools/requestService';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
@@ -9,6 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
 
 const DisplayRequestPost = () => {
+  const navigate = useNavigate();
 	const userAuth = useContext(userContext);
 
   const [isEditing, setIsEditing] = React.useState(false);
@@ -38,6 +39,7 @@ const DisplayRequestPost = () => {
   }
 
   const handleDeleteRequest = () => {
+
     console.log("deletion message");
     confirmAlert({
         name: 'Confirm to delete',
@@ -48,15 +50,17 @@ const DisplayRequestPost = () => {
                 onClick: () => {
 
                   async function deleteRequest() {
-                      const deleteResult = await RequestService.deleteRequest(request, id);
+                      const deleteResult = await RequestService.deleteRequest(request, userAuth.user.user._id);
                       console.log("deleteresult", deleteResult);
                       if (deleteResult.success) {
-                        alert("Deletion successful. Please return to the homepage.");
+                        alert("Deletion successful.");
+                        return navigate("/");
                       }
-                      return deleteResult;
+                      else {
+                        alert("Deletion failed. Sorry.");
+                      }
                   } 
-                  console.log("stuff", deleteRequest());
-
+                  deleteRequest();
                 }
             }, 
             {
@@ -69,7 +73,7 @@ const DisplayRequestPost = () => {
 
   const handleEditRequest = () => {
     if (isEditing) {
-      RequestService.editRequest(request, id);
+      RequestService.editRequest(request, userAuth.user.user._id);
     }
 
     setIsEditing(!isEditing);
@@ -78,7 +82,7 @@ const DisplayRequestPost = () => {
   return (
     <div>
         <div className="m-3 font-bold" style={{color: "#F0D061"}}>View Item Request</div>
-        {(userAuth.user.user._id === 0) && (
+        {(userAuth.user.user._id === request.ownerID) && (
         <div>
             <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={handleEditRequest}>{isEditing ? 'Save' : 'Edit'}</button>
             <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={handleDeleteRequest}>Delete</button>

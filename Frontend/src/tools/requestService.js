@@ -51,7 +51,7 @@ class RequestService {
     }
 
     static async deleteRequest(request, userId) {
-        console.log("delete an request");
+        console.log("delete an request", request, userId);
         return new Promise((resolve, reject) => {
             fetch(`${url}/delete-request/request-id/${request._id}/user-id/${userId}`, {
                 method: 'delete', 
