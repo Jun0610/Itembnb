@@ -95,7 +95,8 @@ const CreateItemPost = () => {
       return;
     }
 
-    item.images = imagesBar;
+    item.images = imagesDisplay;
+    item.ownerId = authUser.user.user._id;
     await ItemService.postItem(item, authUser.user.user._id).then((res) => {
       alert("Item Successfully posted!");
       setItem({
@@ -107,8 +108,10 @@ const CreateItemPost = () => {
         review: [],
         category: [],
         images: [],
+        ownerId: '',
       });
       setImagesBar([]);
+      setImagesDisplay([]);
     });
   }
 

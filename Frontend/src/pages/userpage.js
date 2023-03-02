@@ -37,9 +37,11 @@ const Userpage = () => {
 
     // optimal way to fetch with arrays: combine Promise.all + map w/ async function
     async function loadUserItems(userInfo) {
+        console.log(userInfo.postedItems);
         return Promise.all(userInfo.postedItems.map(async id => {
             const itemData = await ItemService.getItem(id);
-            return <Post post={itemData} isRequest = {false} favorites={[]} />;
+            console.log("id: ", id, ", item data: ",  itemData);
+            return <Post post={itemData.data} key={id} isRequest = {false} favorites={[]} />;
         }));
     }
 
