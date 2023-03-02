@@ -91,7 +91,8 @@ const Userpage = () => {
             const itemData = await ItemService.getItem(id);
            if (itemData !== undefined && itemData.success) {
                 // if this doesn't work check if object is in itemData or itemData.data
-                return <Post post={itemData.data} isRequest = {false} key={itemData.data._id} />;
+                console.log("item data: ", itemData.data);
+                if (itemData && itemData.data) return <Post post={itemData.data} isRequest = {false} key={itemData.data._id} />;
            }
            return "Error!"; // should NOT HAPPEN - happens if return new Promise is not used in ItemService.getItem ?
         }));
