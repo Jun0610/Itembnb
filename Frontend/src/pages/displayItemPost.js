@@ -78,6 +78,10 @@ const DisplayItemPost = () => {
   }
 
   const handleCategory = (o) => {
+    if (o.length > 3) {
+        alert("Please only select at most 3 categories!");
+        return;
+    }
     var categories = [];
     o.forEach((element) => categories.push(element['value']));
     setItem({
@@ -116,6 +120,9 @@ const DisplayItemPost = () => {
     if (!item.images && item.images.length === 0) {
         alert("Make sure there is at least one image!");
         return;
+    }
+    if (item.category.length > 3) {
+        alert("Please make sure to select at most 3 categories!");
     }
     editItem();
   }
