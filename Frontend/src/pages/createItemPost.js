@@ -22,8 +22,8 @@ const CreateItemPost = () => {
   const [imagesBar, setImagesBar] = React.useState([]);
   const [imagesBarFile, setImagesBarFile] = React.useState([]);
   const [imagesDisplay, setImagesDisplay] = React.useState([]);
-  const [currentImg, setCurrentImg] = React.useState(null);
-
+  const [imagesDisplayFile, setImagesDisplayFile] = React.useState([]);
+  const [currentImgIdx, setCurrentImgIdx] = React.useState(null);
   const [categories, setCategories] = React.useState([]);
 
   useEffect(() => {
@@ -41,9 +41,14 @@ const CreateItemPost = () => {
     }
 
   const handleEndDrag = (e) => {
-    console.log("im here: ", currentImg);
-    setImagesDisplay([...imagesDisplay, currentImg]);
-    setCurrentImg(null);
+    setImagesDisplay([...imagesDisplay, imagesBar[currentImgIdx]]);
+
+    let reader = new FileReader();
+    reader.readAsDataURL(imagesBarFile[currentImgIdx]);
+    reader.onload = () => {
+        setImagesDisplayFile([...imagesDisplay, reader.result]);
+    }
+    setCurrentImgIdx(null);
   }
 
   const handleItem = (e) => {
@@ -62,6 +67,51 @@ const CreateItemPost = () => {
     })
   }
 
+  const handleRemoveImageDisplay = (key) => {
+    const newImageDisplay = [];
+    const newImagesDisplayFile = [];
+    for (let i = 0; i < imagesDisplay.length; i++) {
+      if (i === key) {
+        continue;
+      } else {
+        newImageDisplay.push(imagesDisplay[i]);
+        newImagesDisplayFile.push(imagesDisplayFile[i]);
+      }
+    }
+    setImagesDisplay(newImageDisplay);
+    setImagesDisplayFile(newImagesDisplayFile);
+  }
+
+  const handleRemoveImageBar = (key) => {
+    const newImageBar = [];
+    const newImagesBarFile = [];
+    const removedImage = imagesBar[key];
+    for (let i = 0; i < imagesBar.length; i++) {
+      if (i === key) {
+        continue;
+      } else {
+        newImageBar.push(imagesBar[i]);
+        newImagesBarFile.push(imagesBarFile[i]);
+      }
+    }
+    setImagesBar(newImageBar);
+    setImagesBarFile(newImageBar);
+
+    // find if the image exist in imagesDisplay
+    const newImageDisplay = [];
+    const newImagesDisplayFile = [];
+    for (let i = 0; i < imagesDisplay.length; i++) {
+      if (imagesDisplay[i] === removedImage) {
+        continue;
+      } else {
+        newImageDisplay.push(imagesDisplay[i]);
+        newImagesDisplayFile.push(imagesDisplayFile[i]);
+      }
+    }
+    setImagesDisplay(newImageDisplay);
+    setImagesDisplayFile(newImagesDisplayFile);
+  }
+
   const handleImageInsert = (e) => {
     const cib = [];
     const cibf = [];
@@ -71,16 +121,37 @@ const CreateItemPost = () => {
         let img = file;
         console.log("img: ", img);
         cib.push(URL.createObjectURL(img));
-
-        let reader = new FileReader();
-        reader.readAsDataURL(img);
-        reader.onload = () => {
-            cibf.push(reader.result);
-        };
+        
+        cibf.push(img);
       }
       setImagesBar([...imagesBar, ...cib]);
       setImagesBarFile([...imagesBarFile, ...cibf]);
     }
+  }
+
+  const handleBeforeInsert = (key) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(imagesBarFile[currentImgIdx]);
+    reader.onload = () => {
+      const newImagesFile = [];
+      for (var i = 0; i < imagesDisplayFile.length; i++) {
+        if (i === key) {
+          newImagesFile.push(reader.result);
+        }
+        newImagesFile.push(imagesDisplayFile[i]);
+      }
+      setImagesDisplayFile(newImagesFile);
+    }
+
+    const newImages = [];
+    for (var i = 0; i < imagesDisplay.length; i++) {
+      if (i === key) {
+        newImages.push(imagesBar[currentImgIdx]);
+      }
+      newImages.push(imagesDisplay[i]);
+    }
+    setImagesDisplay(newImages);
+    setCurrentImgIdx(null);
   }
 
   const handleRemoveAllImage = () => {
@@ -102,8 +173,7 @@ const CreateItemPost = () => {
       alert("Please upload/choose at least one image!");
       return;
     }
-
-    item.images = imagesDisplay;
+    item.images = imagesDisplayFile;
     item.ownerId = authUser.user.user._id;
     await ItemService.postItem(item, authUser.user.user._id).then((res) => {
       alert("Item Successfully posted!");
@@ -121,6 +191,7 @@ const CreateItemPost = () => {
       setImagesBar([]);
       setImagesBarFile([]);
       setImagesDisplay([]);
+      setImagesDisplayFile([]);
     });
   }
 
@@ -158,26 +229,30 @@ const CreateItemPost = () => {
       </div>
       <div className="mb-4 h-80 cardcontainer">
         <div className="grid grid-flow-col auto-cols-max h-80">
-            {imagesDisplay.map((e, i) => (<div className="ml-3 bg-cyan-700 h-80">
-              <img className="object-cover" key={i} src={e} style={{height: '100%', margin: "auto", display: "block"}}/>
+            {imagesDisplay.map((e, i) => (
+              <div key={i} className="grid grid-flow-col">   
+                <div className="h-80 w-2" onDragOver={handleDrag} onDrop={(e) => handleBeforeInsert(i)}></div>
+                <div className="ml-3 bg-cyan-700 h-80">
+                  <img className="object-cover" style={{height: '100%', margin: "auto", display: "block"}} key={i} src={e} onDoubleClick={() => handleRemoveImageDisplay(i)}/>
+                </div>
             </div>))}
-          <div id="form-file-upload" className="grid grid-flow-col auto-cols-max h-80">
-            <label id="label-file-upload" htmlFor="input-file-upload" className="bg-slate-300" onDragOver={handleDrag} onDrop={handleEndDrag}>
-              <div>Drag and drop an image from the Image Bar!</div> 
+          <div id="form-file-upload" className="ml-3 grid grid-flow-col auto-cols-max h-80">
+            <label id="label-file-upload" htmlFor="input-file-upload" className="rounded-lg p-3 bg-slate-300" onDragOver={handleDrag} onDrop={handleEndDrag}>
+              <div className="text-white">Drag and drop an image from the Image Bar!</div> 
             </label>
           </div>
         </div>
       </div>
       <div>
-        <input id="photos" type="file" multiple className="btn btn-primary btn-lg m-3" onChange={handleImageInsert} style={{backgroundColor: "#F0D061", border: "none"}} name="Click here to upload image"></input>
+        <input id="photos" type="file" multiple className="btn btn-primary btn-lg m-3  rounded-lg" onChange={handleImageInsert} style={{backgroundColor: "#F0D061", border: "none"}} name="Click here to upload image"></input>
          &nbsp;
         <button className="btn btn-primary btn-lg m-3" onClick={handleRemoveAllImage} style={{backgroundColor: "#F0D061", border: "none"}}>Remove all images</button>
-        <div className="grid grid-flow-col auto-cols-max h-60">
+        <div className="grid grid-flow-col auto-cols-max h-60" style={imagesBar.length > 0 ? undefined : {display: "none"}}>
           {imagesBar.map((imagesrc, i) => (<div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
-            <img key={i} src={imagesrc} onDragStart={() => setCurrentImg(imagesrc)} draggable="true"/>
+            <img key={i} src={imagesrc} className="auto" style={{width: '100%', height: '12rem', objectFit: "cover"}} onDragStart={() => setCurrentImgIdx(i)} draggable="true"/>
+            <i className="fa-solid fa-trash mt-1 icon-3x" style={{cursor: "pointer"}} onClick={() => handleRemoveImageBar(i)}></i>
           </div>))}
         </div>
-        <div>bruh</div>
       </div>
     </div>
   );
