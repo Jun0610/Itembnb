@@ -141,7 +141,7 @@ const DisplayItemPost = () => {
             <div className="flex gap-6 mb-6">        
                 <div className="flex-none">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Price</label>
-                    <input id="price" className="mt-1 block px-3 rounded-md" type="number" value={item.price} readOnly={isEditing ? false: true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onItemChange}/>
+                    <input id="price" className="mt-1 block px-3 rounded-md" type="number" value={item.price} min="1" readOnly={isEditing ? false: true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onItemChange}/>
                 </div>
                 <div className="flex-auto">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Category tags</label>
