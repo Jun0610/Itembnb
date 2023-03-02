@@ -168,9 +168,12 @@ const Userpage = () => {
         // equivalent of userInfo but just for ProfileHeader so it doesn't update everything else when you change stuff
         const [localUserInfo, setLocalUserInfo] = useState(userInfo);
 
+        // object that stores error messages for invalid inputs
+        const [inputErrors, setInputErrors] = useState({name: "", profileDesc: ""});
+
         const handleEditProfile = () => {
             async function sendData() {
-                if (isEditing) {
+                if (isEditing && noInputErrors()) {
                     const result = await editProfile(localUserInfo, id);
                     console.log("result", result);
 
@@ -202,6 +205,28 @@ const Userpage = () => {
                 ...localUserInfo,
                 [e.target.id]: e.target.value
             });
+
+            validateField(e.target.id, e.target.value);
+        }
+
+        const validateField = (fieldId, fieldValue) => {
+            if (fieldValue.length === 0) {
+                setInputErrors({
+                    ...inputErrors,
+                    [fieldId]: fieldId + " must have at least 1 character!"
+                });
+            }
+            else {
+                setInputErrors({
+                    ...inputErrors,
+                    [fieldId]: ""
+                });
+            }
+        }
+        // check that every string in inputErrors is empty
+        // from https://stackoverflow.com/questions/27709636/determining-if-all-attributes-on-a-javascript-object-are-null-or-an-empty-string 
+        const noInputErrors = () => {
+            return Object.values(inputErrors).every(x => x === '');
         }
 
         const handleImageChange = (e) => {
@@ -249,6 +274,7 @@ const Userpage = () => {
 
                 <div className="flex-none">
                 <label htmlFor="name" className="font-bold" style={{color: "#F0D061"}}>Name</label>
+                <p style={{color: "red"}}>{inputErrors.name}</p>
                 <input className="mt-1 block px-3 border border-slate-300 py-2 rounded-md text-sm shadow-sm placeholder-slate-400 bg-white" id="name" type="text" value={localUserInfo.name} onChange={onProfileChange} name="name"/>
                 </div>
 
@@ -256,6 +282,7 @@ const Userpage = () => {
 
                 <div className="flex-auto">
                 <label htmlFor="profileDesc" className="font-bold" style={{color: "#F0D061"}}>Profile Description</label>
+                <p style={{color: "red"}}>{inputErrors.profileDesc}</p>
                 <textarea className="mt-1 border border-slate-300 rounded-md w-full text-sm shadow-sm placeholder-slate-400 block px-3 py-8 bg-white" id="profileDesc" rol={10} value={localUserInfo.profileDesc} onChange={onProfileChange} name="profileDesc"/>
                 </div>
             </div> )
