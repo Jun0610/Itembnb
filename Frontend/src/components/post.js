@@ -101,7 +101,7 @@ const Post = ({ post, isRequest }) => {
 					<h4 className='card-title'> {title} </h4>
 					<p className='card-text item-desc'> {description} </p>
 					{!isRequest &&
-						<button className='btn custom-card-button' onClick={selectedUser.user.user._id === post.ownerId ? handleOwnerClick : handleClick}>
+						<button className='btn custom-card-button' onClick={selectedUser.user.user && selectedUser.user.user._id === post.ownerId ? handleOwnerClick : handleClick}>
 							Read more
 						</button>}
 				</div>
