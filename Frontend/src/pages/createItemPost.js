@@ -133,7 +133,7 @@ const CreateItemPost = () => {
           <div className="flex gap-6 mb-6">
             <div className="flex-none">
               <label htmlFor="price" className="font-bold" style={{color: "#F0D061"}}>Price</label>
-              <input className="mt-1 block border border-slate-300 rounded-md" id="price" type="number" value={item.price} onChange={handleItem} name="price"/>
+              <input className="mt-1 block border border-slate-300 rounded-md" id="price" type="number" value={item.price} min="1" onChange={handleItem} name="price"/>
             </div>
             <div className="flex-auto">
               <label htmlFor="category" className="font-bold" style={{color: "#F0D061"}}>Category</label>
@@ -147,7 +147,7 @@ const CreateItemPost = () => {
       <div className="m-3 text-xl font-bold" style={{color: "#F0D061"}}>
         Upload your images here. (Double click on the preview image to delete it)
       </div>
-      <div className="mb-4 h-80">
+      <div className="mb-4 h-80 cardcontainer">
         <ImageUploading multiple value={imagesDisplay} onChange={onChangeImagesDisplay} acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} dataURLKey="data_url">{
           ({
             imageList,
