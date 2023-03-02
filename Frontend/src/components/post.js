@@ -16,7 +16,9 @@ const Post = ({ post, isRequest }) => {
 	const rating = 4;
 
 	const selectedItem = useContext(itemContext);
+	console.log(selectedItem);
 	const selectedUser = useContext(userContext);
+	console.log(selectedUser);
 
 	//need to set the favorite status based on whether the item is favorited or not
 	const [favStatus, setFavStatus] = useState('unfavorite')
@@ -44,6 +46,8 @@ const Post = ({ post, isRequest }) => {
 
 	const handleClick = () => {
 		console.log('clicked');
+		console.log(post);
+		console.log(selectedItem);
 		selectedItem.setSelectedItem(post);
 		nav(`/selected-item-post/${post._id}`);
 	};
