@@ -15,7 +15,7 @@
     border-radius: 10px;
     margin: auto;
     width: 80%;
-    height: 100%;
+    height: 650px;
     padding: 20px;
 }
 
@@ -75,13 +75,13 @@
 }
 
 .custom-btn {
-    width: 100%;
+    width: 50%;
     margin-top: 25px;
     background-color: #F0D061;
     font-weight: bold;
     color: #fff;
     border: 0;
-    position: absolute;
+    position: absolute !important;
     bottom: 0;
 }
 
