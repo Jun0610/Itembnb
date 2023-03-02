@@ -46,7 +46,8 @@ const SelectedItemPost = () => {
             <div className="itempost-outer">
                 <div className="item-post-row">
                     <h1>{selectedItem.item.name}</h1>
-                    <h1>{selectedItem.item.review.length ? selectedItem.item.rating : 4}/5</h1>
+                    {/* NEED TO FIX REVIEWS */}
+                    <h1>4/5</h1>
                 </div>
 
                 <div className="cardcontainer">
