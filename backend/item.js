@@ -91,7 +91,6 @@ router.post('/add-item/user-id/:userId', async (req, res) => {
     try {
         const check = await db.collection("items").insertOne(req.body);
         const itemId = check.insertedId.toString();
-        console.log(itemId);
         await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.params.userId) }, { $push: { postedItems: itemId } })
         res.status(201).json({ success: true, data: "successfully added item!" })
     } catch (err) {
