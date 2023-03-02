@@ -60,14 +60,11 @@ const Navbar = () => {
             </NavLink>
           </li>}
           {authUser.isAuth && <li>
-<<<<<<< HEAD
-=======
             <NavLink to="/logout" onClick={logout} className="custom-nav-link">
               Logout
             </NavLink>
           </li>}
           {authUser.isAuth && <li>
->>>>>>> 50386c91e035d8ccde4661beb3c87160c2c00f0d
             <NavLink to="/create-item-post" className="custom-nav-link">
               Create Item Post!
             </NavLink>

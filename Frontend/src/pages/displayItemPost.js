@@ -117,7 +117,7 @@ const DisplayItemPost = ({ itemProp }) => {
     <div>
         <div className="m-3 font-bold" style={{color: "#F0D061"}}>Your Item Post</div>
         <div>
-            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => { isEditing ? () => handleSaveItem() : setIsEditing(!isEditing)}}>{isEditing ? 'Save' : 'Edit'}</button>
+            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => { isEditing ? handleSaveItem() : setIsEditing(!isEditing)}}>{isEditing ? 'Save' : 'Edit'}</button>
             <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => handleDeleteItem()}>Delete</button>
         </div>
         <div style={isEditing ? undefined : {pointerEvents: 'none'}}>

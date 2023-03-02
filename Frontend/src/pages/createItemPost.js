@@ -4,10 +4,7 @@ import Select from 'react-select';
 import ImageUploading from 'react-images-uploading';
 import userContext from "../contexts/userContext";
 
-import userContext from '../contexts/userContext';
-
 const CreateItemPost = () => {
-  const authUser = useContext(userContext);
 
   const [item, setItem] = React.useState({
     name: '',
