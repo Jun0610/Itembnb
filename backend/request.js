@@ -63,7 +63,7 @@ router.put('/edit-request/request-id/:requestId/user-id/:userId', async (req, re
     try {
         const requestId = new mongo.ObjectId(req.params.requestId);
         const request = await db.collection("requests").findOne({ _id: requestId });
-        if (request.ownerId != req.params.userId) {
+        if (request.ownerID != req.params.userId) {
             res.status(400).json({ success: false, data: "not owner of item!" })
         } else {
             //need to insert id into body
@@ -90,7 +90,7 @@ router.delete('/delete-request/request-id/:requestId/user-id/:userId', async (re
 })
 async function deleteRequest(db, requestId, userId) {
     try {
-        await db.collection('users').updateOne({ _id: new mongo.ObjectId(userId) }, { $pull: { postedItems: requestId } })
+        await db.collection('users').updateOne({ _id: new mongo.ObjectId(userId) }, { $pull: { requestPosts: requestId } })
         await db.collection('requests').deleteOne({ _id: new mongo.ObjectId(requestId) })
         await db.collection("users").updateMany({ favoritedItems: requestId }, { $pull: { favoritedItems: requestId } })
 
