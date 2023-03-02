@@ -64,6 +64,11 @@ const Navbar = () => {
             </NavLink>
           </li>}
           {authUser.isAuth && <li>
+            <NavLink to="/create-item-request" className="custom-nav-link">
+              Create Item Request!
+            </NavLink>
+          </li>}
+          {authUser.isAuth && <li>
             <NavLink to={"/user/"+authUser.user.user._id} className="nav-link-img">
               <img src={userData.profilePic} alt="" className='nav-img' />
             </NavLink>
