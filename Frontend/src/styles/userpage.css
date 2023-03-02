@@ -29,6 +29,14 @@
     padding: 10px;
 }
 
+button {
+    background-color: rgb(247, 214, 90);
+}
+
+div {
+    word-wrap: break-word;
+}
+
 /* Small box on the left that displays user info preview */
 
 #profile_leftbox {
