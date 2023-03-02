@@ -18,19 +18,17 @@ class ItemService {
     }
 
     static async getItem(itemId) {
-        console.log("getting item data");
-        const request = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        }
-        try {
-            const res = await fetch(`${url}/get-item-post/${itemId}`, request);
-            const response = await res.json();
-            response.status = res.status
-            return response
-        } catch (err) {
-            console.log(err);
-        }
+        return new Promise((resolve, reject) => {
+            fetch(`${url}/get-item-post/${itemId}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            }).then(res => res.json()).then((res) => {
+                // const data = res.data;
+                resolve(res);
+            }).catch((err) => {
+                reject(err);
+            })
+        })
     }
 
 

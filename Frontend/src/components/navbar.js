@@ -29,17 +29,11 @@ const Navbar = () => {
     fetchUserData();
   }, [])
 
-
   const logout = (e) => {
     e.preventDefault();
     sessionStorage.removeItem('curUser')
     authUser.logout();
   };
-
-  const a = () => {
-    console.log("authhhhh?", authUser);
-    console.log("auhh?", authUser.user.user._id);
-  }
 
   return (
     <nav className="navbar customNavBar">
