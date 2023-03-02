@@ -1,7 +1,6 @@
 import React, {useEffect, useContext} from "react";
 import ItemService from "../tools/itemsService";
 import Select from 'react-select';
-import ImageUploading from 'react-images-uploading';
 
 import userContext from '../contexts/userContext';
 
@@ -19,10 +18,11 @@ const CreateItemPost = () => {
     images: [],
     ownerId: '',
   });
-  const maxNumber = 20;
 
   const [imagesBar, setImagesBar] = React.useState([]);
+  const [imagesBarFile, setImagesBarFile] = React.useState([]);
   const [imagesDisplay, setImagesDisplay] = React.useState([]);
+  const [currentImg, setCurrentImg] = React.useState(null);
 
   const [categories, setCategories] = React.useState([]);
 
@@ -35,34 +35,15 @@ const CreateItemPost = () => {
     fetchCategories();
   }, []);
 
-  const onChangeImagesBar = (imageList, addUpdateIndex) => {
-    console.log("in change image bar");
-    const lenBfor = imagesBar.length;
-    setImagesBar([...imageList]);
-    console.log(imagesBar);
-
-    // delete images that are in the imageDisplay
-    if (lenBfor > imageList.length) {
-      const newImageDisplay = [];
-      for (const id of imagesDisplay) {
-        var flag = false;
-        for (const ib of imageList) {
-          if (id['data_url'] === ib['data_url']) {
-            flag = true;
-            break;
-          }
-        }
-        if(flag) newImageDisplay.push(id);
-      }
-      setImagesDisplay(newImageDisplay);
+  // handle drag events
+  const handleDrag = (e) => {
+    e.preventDefault();
     }
-  }
 
-  const onChangeImagesDisplay = (imageList, addUpdateIndex) => {
-    const imagesDisplayCopy = [];
-    imagesDisplay.forEach(e => imagesDisplayCopy.push(e));
-    setImagesDisplay([...imageList]);
-
+  const handleEndDrag = (e) => {
+    console.log("im here: ", currentImg);
+    setImagesDisplay([...imagesDisplay, currentImg]);
+    setCurrentImg(null);
   }
 
   const handleItem = (e) => {
@@ -81,23 +62,31 @@ const CreateItemPost = () => {
     })
   }
 
-  const [currentImg, setCurrentImg] = React.useState(null);
+  const handleImageInsert = (e) => {
+    const cib = [];
+    const cibf = [];
+    if (e.target.files) {
+      console.log(e.target.files);
+      for (var file of e.target.files) {
+        let img = file;
+        console.log("img: ", img);
+        cib.push(URL.createObjectURL(img));
 
-  const handleDragStart = (key) => {
-    setCurrentImg(imagesBar[key])
+        let reader = new FileReader();
+        reader.readAsDataURL(img);
+        reader.onload = () => {
+            cibf.push(reader.result);
+        };
+      }
+      setImagesBar([...imagesBar, ...cib]);
+      setImagesBarFile([...imagesBarFile, ...cibf]);
+    }
   }
 
-  const handleImageInsert = (key) => {
-    // insert the image before the key
-    const newImages = [];
-    for (var i = 0; i < imagesDisplay.length; i++) {
-      if (i === key) {
-        newImages.push(currentImg);
-      }
-      newImages.push(imagesDisplay[i]);
-    }
-    setImagesDisplay(newImages);
-    setCurrentImg(null);
+  const handleRemoveAllImage = () => {
+    setImagesBar([]);
+    setImagesBarFile([]);
+    setImagesDisplay([]);
   }
 
   const handleSubmit = async (e) => {
@@ -130,6 +119,7 @@ const CreateItemPost = () => {
         ownerId: '',
       });
       setImagesBar([]);
+      setImagesBarFile([]);
       setImagesDisplay([]);
     });
   }
@@ -167,72 +157,27 @@ const CreateItemPost = () => {
         Upload your images here. (Double click on the preview image to delete it)
       </div>
       <div className="mb-4 h-80 cardcontainer">
-        <ImageUploading multiple value={imagesDisplay} onChange={onChangeImagesDisplay} acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} dataURLKey="data_url">{
-          ({
-            imageList,
-            onImageUpload,
-            onImageRemoveAll,
-            onImageUpdate,
-            onImageRemove,
-            isDragging,
-            dragProps,
-            errors,
-          }) => (!errors ? <div className="grid grid-flow-col auto-cols-max h-80">
-            {imageList.map((image, index) => (
-                <div key={index} className="grid grid-flow-col">
-                  <div className="h-80 w-2" {...dragProps} onDrop={(e) => {handleImageInsert(index)}}></div>
-                  <div className="m-3 bg-cyan-700 h-80 w-92">
-                    <img src={image['data_url']} alt="" className="object-cover" style={{height: '100%', margin: "auto", display: "block"}} onDoubleClick={() => onImageRemove(index)}/>
-                  </div>
-                </div>
-            ))}
-            <div className="m-3 bg-slate-400 h-80 w-92 items-center text-center rounded-lg" {...dragProps}>
-              <div className="p-3 text-white">Drag pictures from Image Bar to preview!</div>
-            </div>
-          </div> : 
-          errors && 
-          <div>
-            {errors.acceptType && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Your selected file type is not allow</span>}
-            {errors.maxFileSize && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file size exceed maxFileSize</span>}
-            {errors.resolution && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file is not match your desired resolution</span>}
-          </div>)
-        }</ImageUploading>
+        <div className="grid grid-flow-col auto-cols-max h-80">
+            {imagesDisplay.map((e, i) => (<div className="ml-3 bg-cyan-700 h-80">
+              <img className="object-cover" key={i} src={e} style={{height: '100%', margin: "auto", display: "block"}}/>
+            </div>))}
+          <div id="form-file-upload" className="grid grid-flow-col auto-cols-max h-80">
+            <label id="label-file-upload" htmlFor="input-file-upload" className="bg-slate-300" onDragOver={handleDrag} onDrop={handleEndDrag}>
+              <div>Drag and drop an image from the Image Bar!</div> 
+            </label>
+          </div>
+        </div>
       </div>
       <div>
-      <ImageUploading
-        multiple
-        value={imagesBar}
-        onChange={onChangeImagesBar}
-        maxNumber={maxNumber}
-        dataURLKey="data_url"
-      >
-        {({
-          imageList,
-          onImageUpload,
-          onImageRemoveAll,
-          onImageUpdate,
-          onImageRemove,
-          isDragging,
-          dragProps,
-        }) => (
-          // write your building UI
-          <div>
-            <button className="btn btn-primary btn-lg m-3" onClick={onImageUpload} style={{backgroundColor: "#F0D061", border: "none"}}>Click here to upload image</button>
-            &nbsp;
-            <button className="btn btn-primary btn-lg m-3" onClick={onImageRemoveAll} style={{backgroundColor: "#F0D061", border: "none"}}>Remove all images</button>
-            <div className="grid grid-flow-col auto-cols-max h-60" style={imagesBar.length > 0 ? {maxHeight: "32rem", overflowX: "scroll", overflowY: "hidden"} : {display: "None"}}>            
-              {imageList.map((image, index) => (
-                <div key={index}>
-                  <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
-                  <img src={image['data_url']} alt="" className="auto" style={{width: '100%', height: '12rem', objectFit: "cover"}} onDragStart={() => handleDragStart(index)} onDragEnd={() => isDragging = false}/>
-                  <i className="fa-solid fa-trash mt-1 icon-3x" style={{cursor: "pointer"}} onClick={() => onImageRemove(index)}></i>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </ImageUploading>
+        <input id="photos" type="file" multiple className="btn btn-primary btn-lg m-3" onChange={handleImageInsert} style={{backgroundColor: "#F0D061", border: "none"}} name="Click here to upload image"></input>
+         &nbsp;
+        <button className="btn btn-primary btn-lg m-3" onClick={handleRemoveAllImage} style={{backgroundColor: "#F0D061", border: "none"}}>Remove all images</button>
+        <div className="grid grid-flow-col auto-cols-max h-60">
+          {imagesBar.map((imagesrc, i) => (<div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
+            <img key={i} src={imagesrc} onDragStart={() => setCurrentImg(imagesrc)} draggable="true"/>
+          </div>))}
+        </div>
+        <div>bruh</div>
       </div>
     </div>
   );

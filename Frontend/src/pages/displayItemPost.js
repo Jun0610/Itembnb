@@ -131,7 +131,7 @@ const DisplayItemPost = () => {
         await ItemService.editItem(item, authUser.user.user._id).then(alert("Edit item successfully!"));
     }
     //handle validation
-    if (!item.description && !item.name && !item.price && !item.category) {
+    if (!item.description && item.description.length !== 0 && !item.name && item.name.length !== 0 && !item.price && item.price !== 0 && !item.category) {
         alert("Please make sure all of these fields are filled!");
         return;
     } 
