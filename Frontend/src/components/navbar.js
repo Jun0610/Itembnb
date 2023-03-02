@@ -27,7 +27,7 @@ const Navbar = () => {
       }
     }
     fetchUserData();
-  }, [])
+  }, [sessionStorage.getItem('curUser')])
 
   const logout = (e) => {
     e.preventDefault();
