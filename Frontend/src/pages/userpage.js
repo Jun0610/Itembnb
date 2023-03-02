@@ -134,6 +134,12 @@ const Userpage = () => {
 
     const ProfileHeader = () => {
         const navigate = useNavigate(); // for redirect to homepage
+
+        const logout = () => {
+            sessionStorage.removeItem('curUser')
+            authUser.logout();
+        };
+
         const handleDeleteUser= () => {
 
             console.log("deletion message");
@@ -149,6 +155,7 @@ const Userpage = () => {
                                 console.log("deleteresult", deleteResult);
                                 if (deleteResult.success) {
                                     alert("Deletion successful.");
+                                    logout();
                                     return navigate("/");
                                 }
                             } 
@@ -170,7 +177,7 @@ const Userpage = () => {
         const [localUserInfo, setLocalUserInfo] = useState(userInfo);
 
         // object that stores error messages for invalid inputs
-        const [inputErrors, setInputErrors] = useState({name: "", profileDesc: ""});
+        const [inputErrors, setInputErrors] = useState({name: [], profileDesc: []});
 
         const handleEditProfile = () => {
             async function sendData() {
@@ -211,23 +218,29 @@ const Userpage = () => {
         }
 
         const validateField = (fieldId, fieldValue) => {
-            if (fieldValue.length === 0) {
+            if (fieldId === "name" && fieldValue.length > 20) {
                 setInputErrors({
                     ...inputErrors,
-                    [fieldId]: fieldId + " must have at least 1 character!"
+                    [fieldId]: [fieldId + " cannot be more than 20 characters long!"]
+                });
+            }
+            else if (fieldValue.length === 0) {
+                setInputErrors({
+                    ...inputErrors,
+                    [fieldId]: [fieldId + " must have at least 1 character!"]
                 });
             }
             else {
                 setInputErrors({
                     ...inputErrors,
-                    [fieldId]: ""
+                    [fieldId]: []
                 });
             }
         }
-        // check that every string in inputErrors is empty
+        // check that every error array in inputErrors is empty
         // from https://stackoverflow.com/questions/27709636/determining-if-all-attributes-on-a-javascript-object-are-null-or-an-empty-string 
         const noInputErrors = () => {
-            return Object.values(inputErrors).every(x => x === '');
+            return Object.values(inputErrors).every(x => x.length === 0);
         }
 
         const handleImageChange = (e) => {
