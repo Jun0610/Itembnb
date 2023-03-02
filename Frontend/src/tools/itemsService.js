@@ -17,21 +17,6 @@ class ItemService {
         })
     }
 
-    // static async getItem(id) {
-    //     return new Promise((resolve, reject) => {
-    //         fetch(`${url}/get-item-post/${id}`, {
-    //             method: 'GET',
-    //             headers: { 'Content-Type': 'application/json' },
-    //         }).then(res => res.json()).then((res) => {
-    //             const data = res.data[0];
-    //             console.log(data);
-    //             resolve(data);
-    //         }).catch((err) => {
-    //             reject(err);
-    //         })
-    //     })
-    // }
-
     static async getItem(itemId) {
         console.log("getting item data");
         const request = {
@@ -72,10 +57,10 @@ class ItemService {
         });
     }
 
-    static async editItem(item, user) {
+    static async editItem(item, userid) {
         console.log("edit an item");
         return new Promise((resolve, reject) => {
-            fetch(`${url}/edit-item/item-id/${item.id}/user-id/${user.id}`, {
+            fetch(`${url}/edit-item/item-id/${item._id}/user-id/${userid}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(item),
@@ -89,10 +74,10 @@ class ItemService {
         })
     }
 
-    static async deleteItem(item, user) {
+    static async deleteItem(item, userid) {
         console.log("delete an item");
         return new Promise((resolve, reject) => {
-            fetch(`${url}/delete-item/item-id/${item.id}/user-id/${user.id}`, {
+            fetch(`${url}/delete-item/item-id/${item._id}/user-id/${userid}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             }).then(res => res.json()).then(

@@ -2,27 +2,51 @@ import React, {useEffect, useContext} from 'react';
 import Select from 'react-select';
 import ImageUploading from 'react-images-uploading';
 import ItemService from '../tools/itemsService';
-import { confirmAlert } from 'react-confirm-alert'; // Import
+import { confirmAlert } from 'react-confirm-alert';
+import {useParams, useNavigate} from "react-router-dom";
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
+import userContext from '../contexts/userContext';
 
 const DisplayItemPost = () => {
-  /*const [item, setItem] = React.useState({
-    name: "Music Box",
-    description: "This is a pretty music box.",
-    price: 50,
-    revservHist: [],
-    unavailList: [],
-    review: [],
-    category: [{value: 'ACADEMICS', label: "Academics"}, {value: 'HOUSEHOLD', label: "Household"}],
-    images: [],
-  });*/
+  const {id} = useParams();
   const [item, setItem] = React.useState({});
   const [isEditing, setIsEditing] = React.useState(false);
-  const [images, setImages] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
+
+  const [imagesBar, setImagesBar] = React.useState([]);
+  const [imagesDisplay, setImagesDisplay] = React.useState([]);
   const maxNumber = 20;
 
-  const currentC = [];
+  const authUser = React.useContext(userContext);
+  const nav = useNavigate();
+
+  const onChangeImagesBar = (imageList, addUpdateIndex) => {
+    const lenBfor = imagesBar.length;
+    setImagesBar([...imageList]);
+
+    // delete images that are in the imageDisplay
+    if (lenBfor > imageList.length) {
+      const newImageDisplay = [];
+      for (const id of imagesDisplay) {
+        var flag = false;
+        for (const ib of imageList) {
+          if (id['data_url'] === ib['data_url']) {
+            flag = true;
+            break;
+          }
+        }
+        if(flag) newImageDisplay.push(id);
+      }
+      setImagesDisplay(newImageDisplay);
+    }
+  }
+
+  const onChangeImagesDisplay = (imageList, addUpdateIndex) => {
+    const imagesDisplayCopy = [];
+    imagesDisplay.forEach(e => imagesDisplayCopy.push(e));
+    setImagesDisplay([...imageList]);
+
+  }
 
   useEffect(() => {
     // call API to fetch the item data
@@ -33,27 +57,17 @@ const DisplayItemPost = () => {
     }
 
     async function fetchItem() {
-        await ItemService.getItemE().then((data) => {
-            console.log(data);
-            setItem(data)
-            setImages(data.images);
-            return data.category;
+        console.log("fetch item");
+        await ItemService.getItem(id).then((data) => {
+            console.log('data:', data.data);
+            setItem(data.data);
+            setImagesBar(data.data.images);
+            setImagesDisplay(data.data.images);
+            console.log("data category: ", data.data.category);
         });
     }
 
-      fetchCategories().then((categories) => {
-        fetchItem().then((cats) => {
-            console.log("data category: ", cats);
-            for (const c of cats) {
-                categories.forEach((e) => {
-                    console.log(e['value'], ": ", c['value'])
-                    if (e['value'] === c['value']) currentC.push(e);
-                });
-            }
-            console.log("current c: ", currentC);
-          });
-        } 
-      );
+      fetchCategories().then(fetchItem());
   }, []);
 
   const onItemChange = (e) => {
@@ -61,12 +75,6 @@ const DisplayItemPost = () => {
         ...item,
         [e.target.id]: e.target.value
     });
-  }
-
-  const onChangeImage = (imageList, addUpdateIndex) => {
-    console.log(imageList, addUpdateIndex);
-    setImages(imageList);
-    item.images = imageList;
   }
 
   const handleCategory = (o) => {
@@ -85,7 +93,8 @@ const DisplayItemPost = () => {
         buttons: [
             {
                 label: 'Yes',
-                onClick: () => ItemService.deleteItem(item)
+                onClick: async () => {await ItemService.deleteItem(item, authUser.user.user._id).then(() => alert("Successfully deleted!")); nav(`/user/${authUser.user.user._id}`)}
+
             }, 
             {
                 label: 'No',
@@ -95,81 +104,28 @@ const DisplayItemPost = () => {
     });
   }
 
+  const handleSaveItem = () => {
+    async function editItem() {
+        await ItemService.editItem(item, authUser.user.user._id).then(alert("Edit item successfully!"));
+    }
+    //handle validation
+    if (!item.description && !item.name && !item.price && !item.category) {
+        alert("Please make sure all of these fields are filled!");
+        return;
+    } 
+    if (!item.images && item.images.length === 0) {
+        alert("Make sure there is at least one image!");
+        return;
+    }
+    editItem();
+  }
+
   return (
     <div>
         <div className="m-3 font-bold" style={{color: "#F0D061"}}>Your Item Post</div>
         <div>
-            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => setIsEditing(!isEditing)}>{isEditing ? 'Save' : 'Edit'}</button>
+            <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => { isEditing ? handleSaveItem() : setIsEditing(!isEditing)}}>{isEditing ? 'Save' : 'Edit'}</button>
             <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{backgroundColor: '#F7D65A'}} onClick={() => handleDeleteItem()}>Delete</button>
-        </div>
-        <div style={isEditing ? undefined : {pointerEvents: 'none'}}>
-            <ImageUploading
-            multiple
-            value={images}
-            onChange={onChangeImage}
-            maxNumber={maxNumber}
-            dataURLKey="data_url"
-        >
-            {({
-            imageList,
-            onImageUpload,
-            onImageRemoveAll,
-            onImageUpdate,
-            onImageRemove,
-            isDragging,
-            dragProps,
-            }) => (
-            // write your building UI
-            <div className="grid grid-rows-2 grid-flow-col gap-4 m-4 h-80">
-                <div className="row-span-2 col-span-2">
-                {imageList[0] ? <img src={imageList[0]['data_url']} className="mx-auto h-80" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(0)}/> : 
-                <div className="bg-slate-300 font-semibold text-slate-600 h-80 rounded-l-lg flex justify-center items-center"
-                    style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                    onClick={onImageUpload}
-                    {...dragProps}
-                >
-                    Click or Drop here
-                </div>}
-                </div>
-                <div className="row-span-1 col-span-1">
-                {imageList[1] ? <img src={imageList[1]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(1)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
-                    style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                    onClick={onImageUpload} onDoubleClick={onImageRemove}
-                    {...dragProps}
-                >
-                    Click or Drop here
-                </div>}
-                </div>
-                <div className="row-span-1 col-span-1">
-                {imageList[2] ? <img src={imageList[2]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(2)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center"
-                    style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                    onClick={onImageUpload} onDoubleClick={onImageRemove}
-                    {...dragProps}
-                >
-                    Click or Drop here
-                </div>}
-                </div>
-                <div className="row-span-1 col-span-1">
-                {imageList[3] ? <img src={imageList[3]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(3)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-tr-lg"
-                    style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                    onClick={onImageUpload} onDoubleClick={onImageRemove}
-                    {...dragProps}
-                >
-                    Click or Drop here
-                </div>}
-                </div>
-                <div className="row-span-1 col-span-1">
-                {imageList[4] ? <img src={imageList[4]['data_url']} className="mx-auto h-36" alt="first" width="100%" height="100%" style={{objectFit: "cover"}} onClick={onImageUpdate} onDoubleClick={() => onImageRemove(4)}/> : <div className="bg-slate-300 font-semibold text-slate-600 h-36 flex justify-center items-center rounded-br-lg"
-                    style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}}
-                    onClick={onImageUpload} onDoubleClick={onImageRemove}
-                    {...dragProps}
-                >
-                    Click or Drop here
-                </div>}
-                </div>
-            </div>
-            )}
-            </ImageUploading>
         </div>
         <div className='m-3'>
             <div className="flex gap-6 mb-6">
@@ -189,10 +145,80 @@ const DisplayItemPost = () => {
                 </div>
                 <div className="flex-auto">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Category tags</label>
-                    <Select isDisabled={!isEditing} className="mt-1 block basic-multi-select" id="category" defaultValue={[categories[5]]} isMulti name="category" options={categories} classNamePrefix="select" onChange={handleCategory}/>
+                    {item.category ? item.category.map((e, i) => (<div key={i}>{e}</div>)) : undefined}
+                    <Select isDisabled={!isEditing} className="mt-1 block basic-multi-select" id="category" isMulti name="category" options={categories} classNamePrefix="select" onChange={handleCategory}/>
                 </div>
             </div>
         </div>
+        <div style={isEditing ? undefined : {pointerEvents: 'none'}}>
+            <div className="mb-4 h-80">
+                <ImageUploading multiple value={imagesDisplay} onChange={onChangeImagesDisplay} acceptType={['jpg', 'gif', 'png']} allowNonImageType={false} dataURLKey="data_url">{
+                ({
+                    imageList,
+                    onImageUpload,
+                    onImageRemoveAll,
+                    onImageUpdate,
+                    onImageRemove,
+                    isDragging,
+                    dragProps,
+                    errors,
+                }) => (!errors ? <div className="grid grid-flow-col auto-cols-max h-80">
+                    {imageList.map((image, index) => (
+                        <div key={index}>
+                        <div className="m-3 bg-cyan-700 h-80 w-92">
+                            <img src={image['data_url']} alt="" className="object-cover" style={{height: '100%', margin: "auto", display: "block"}} onDoubleClick={() => onImageRemove(index)}/>
+                        </div>
+                        </div>
+                    ))}
+                    <div className="m-3 bg-slate-400 h-80 w-92 items-center text-center rounded-lg" style={isDragging ? { backgroundColor: '#d99932' } : {cursor: "pointer"}} {...dragProps}>
+                    <div className="p-3 text-white">Drag pictures from Image Bar to preview!</div>
+                    </div>
+                </div> : 
+                errors && 
+                <div>
+                    {errors.acceptType && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Your selected file type is not allow</span>}
+                    {errors.maxFileSize && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file size exceed maxFileSize</span>}
+                    {errors.resolution && <span onClick={onImageUpload} style={{cursor: "pointer"}}>Selected file is not match your desired resolution</span>}
+                </div>)
+                }</ImageUploading>
+            </div>
+            <div>
+            <ImageUploading
+                multiple
+                value={imagesBar}
+                onChange={onChangeImagesBar}
+                maxNumber={maxNumber}
+                dataURLKey="data_url"
+            >
+                {({
+                imageList,
+                onImageUpload,
+                onImageRemoveAll,
+                onImageUpdate,
+                onImageRemove,
+                isDragging,
+                dragProps,
+                }) => (
+                // write your building UI
+                <div>
+                    <button className="btn btn-primary btn-lg m-3" onClick={onImageUpload} style={{backgroundColor: "#F0D061", border: "none"}}>Click here to upload image</button>
+                    &nbsp;
+                    <button className="btn btn-primary btn-lg m-3" onClick={onImageRemoveAll} style={{backgroundColor: "#F0D061", border: "none"}}>Remove all images</button>
+                    <div className="grid grid-flow-col auto-cols-max h-60" style={imagesBar.length > 0 ? {maxHeight: "32rem", overflowX: "scroll", overflowY: "hidden"} : {display: "None"}}>            
+                    {imageList.map((image, index) => (
+                        <div key={index}>
+                        <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
+                        <img src={image['data_url']} alt="" className="auto" style={{width: '100%', height: '12rem', objectFit: "cover"}}/>
+                        <i className="fa-solid fa-trash mt-1 icon-3x" style={{cursor: "pointer"}} onClick={() => onImageRemove(index)}></i>
+                        </div>
+                        </div>
+                    ))}
+                    </div>
+                </div>
+                )}
+            </ImageUploading>
+        </div>
+      </div>
     </div>
   )
 }
