@@ -1,10 +1,13 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useContext} from "react";
 import RequestService from '../tools/requestService';
+import userContext from '../contexts/userContext';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
 
 const CreateRequest = () => {
+  const authUser = useContext(userContext);
+
   const blankRequest = {
     name: '',
     description: '',
@@ -43,7 +46,7 @@ const CreateRequest = () => {
     e.preventDefault();
     console.log(request);
     if (validateRequest()) {
-      await RequestService.postRequest(request).then((res) => {
+      await RequestService.postRequest(request, authUser.user.user._id).then((res) => {
         alert("Request successfully posted!");
         setRequest(blankRequest);
       });
