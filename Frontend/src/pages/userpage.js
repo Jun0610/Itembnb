@@ -181,22 +181,22 @@ const Userpage = () => {
 
         const handleEditProfile = () => {
             async function sendData() {
-                if (isEditing && noInputErrors()) {
-                    const result = await editProfile(localUserInfo, id);
-                    console.log("result", result);
+                const result = await editProfile(localUserInfo, id);
+                console.log("result", result);
 
-                    if (result.success) {
-                        setUserInfo(localUserInfo);
-                        setIsEditing(false);
+                if (result.success) {
+                    setUserInfo(localUserInfo);
+                    setIsEditing(false);
 
-                        // to refresh navbar avatar image - todo find better way
-                        window.location.reload();
-                    }
+                    // to refresh navbar avatar image - todo find better way
+                    window.location.reload();
                 }
             }
 
             if (isEditing) {
-                sendData();
+                if (noInputErrors()) {
+                    sendData();
+                }
             }
             else {
                 setIsEditing(true);
@@ -205,6 +205,7 @@ const Userpage = () => {
 
         const handleEditCancel = () => {
             setLocalUserInfo(userInfo);
+            setInputErrors({ name: [], profileDesc: [] });
             setIsEditing(false);
         }
 
