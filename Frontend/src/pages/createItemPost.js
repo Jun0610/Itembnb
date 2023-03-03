@@ -218,7 +218,7 @@ const CreateItemPost = () => {
         </form>
       </div>
       <div className="m-3 text-xl font-bold" style={{color: "#F0D061"}}>
-        Upload your images here. (Double click on the preview image to delete it)
+        Image Preview Section (Double click on the preview image to delete it)
       </div>
       <div className="mb-4 h-80 cardcontainer">
         <div className="grid grid-flow-col auto-cols-max h-80">
@@ -237,6 +237,7 @@ const CreateItemPost = () => {
         </div>
       </div>
       <div>
+        <div className="m-3 text-xl font-bold" style={{color: "#F0D061"}}>Image Bar (Upload your images here!)</div>
         <input id="photos" type="file" multiple className="btn btn-primary btn-lg m-3  rounded-lg" onChange={handleImageInsert} style={{backgroundColor: "#F0D061", border: "none"}} name="Click here to upload image"></input>
          &nbsp;
         <button className="btn btn-primary btn-lg m-3" onClick={handleRemoveAllImage} style={{backgroundColor: "#F0D061", border: "none"}}>Remove all images</button>
