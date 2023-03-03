@@ -1,6 +1,5 @@
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect} from 'react';
 import Select from 'react-select';
-import ImageUploading from 'react-images-uploading';
 import ItemService from '../tools/itemsService';
 import { confirmAlert } from 'react-confirm-alert';
 import {useParams, useNavigate} from "react-router-dom";
@@ -31,13 +30,12 @@ const DisplayItemPost = () => {
     }
 
     async function fetchItem() {
-        console.log("fetch item");
         await ItemService.getItem(id).then((data) => {
-            console.log('data:', data.data);
             setItem(data.data);
             setImagesBar(data.data.images);
+            setImagesBarFile(data.data.images);
             setImagesDisplay(data.data.images);
-            console.log("data category: ", data.data.category);
+            setImagesDisplayFile(data.data.images);
         });
     }
 
@@ -54,6 +52,7 @@ const DisplayItemPost = () => {
   const handleCategory = (o) => {
     if (o.length > 3) {
         alert("Please only select at most 3 categories!");
+        o.pop();
         return;
     }
     var categories = [];
@@ -83,10 +82,8 @@ const DisplayItemPost = () => {
     const cib = [];
     const cibf = [];
     if (e.target.files) {
-      console.log(e.target.files);
       for (var file of e.target.files) {
         let img = file;
-        console.log("img: ", img);
         cib.push(URL.createObjectURL(img));
         
         cibf.push(img);
@@ -124,7 +121,7 @@ const DisplayItemPost = () => {
       }
     }
     setImagesBar(newImageBar);
-    setImagesBarFile(newImageBar);
+    setImagesBarFile(newImagesBarFile);
 
     // find if the image exist in imagesDisplay
     const newImageDisplay = [];
@@ -192,12 +189,14 @@ const DisplayItemPost = () => {
   }
 
   const handleSaveItem = () => {
+    item.images = imagesDisplayFile;
     async function editItem() {
         await ItemService.editItem(item, authUser.user.user._id).then(alert("Edit item successfully!"));
         setIsEditing(!isEditing);
     }
     //handle validation
-    if (!item.description && item.description.length !== 0 && !item.name && item.name.length !== 0 && !item.price && item.price !== 0 && !item.category) {
+
+    if ( item.description === '' || item.name === '') {
         alert("Please make sure all of these fields are filled!");
         return;
     } 
@@ -223,7 +222,7 @@ const DisplayItemPost = () => {
             <div className="flex gap-6 mb-6">
                 <div className="flex-none">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Name</label>
-                    <input className="mt-1 block px-3 rounded-md" id="name" type="text" value={item.name} name="name" readOnly={isEditing ? false : true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onItemChange}/>
+                    <input className="mt-1 block px-3 rounded-md border border-slate-300 py-2 rounded-md" id="name" type="text" value={item.name} name="name" readOnly={isEditing ? false : true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onItemChange}/>
                 </div>
                 <div className="flex-auto">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Description</label>
@@ -233,11 +232,11 @@ const DisplayItemPost = () => {
             <div className="flex gap-6 mb-6">        
                 <div className="flex-none">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Price</label>
-                    <input id="price" className="mt-1 block px-3 rounded-md" type="number" value={item.price} min="1" readOnly={isEditing ? false: true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onItemChange}/>
+                    <input id="price" className="mt-1 block border border-slate-300 py-2 rounded-md" type="number" value={item.price} min="1" readOnly={isEditing ? false: true} style={isEditing ? {background: "white", color: "black"} : {background: "#F1F1F1", color: "#545454"}} onChange={onItemChange}/>
                 </div>
                 <div className="flex-auto">
                     <label htmlFor='name' className="font-bold" style={{color: "#F0D061"}}>Category tags</label>
-                    {item.category ? item.category.map((e, i) => (<div key={i}>{e}</div>)) : undefined}
+                    <div className='grid grid-flow-col auto-cols-max'>{item.category ? item.category.map((e, i) => (<div key={i} className="mr-4">{e}</div>)) : undefined}</div>
                     <Select isDisabled={!isEditing} className="mt-1 block basic-multi-select" id="category" isMulti name="category" options={categories} classNamePrefix="select" onChange={handleCategory}/>
                 </div>
             </div>

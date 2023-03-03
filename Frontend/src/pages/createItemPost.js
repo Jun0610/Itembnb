@@ -1,7 +1,7 @@
 import React, {useEffect, useContext} from "react";
 import ItemService from "../tools/itemsService";
 import Select from 'react-select';
-
+import { useNavigate } from 'react-router-dom';
 import userContext from '../contexts/userContext';
 
 const CreateItemPost = () => {
@@ -25,6 +25,8 @@ const CreateItemPost = () => {
   const [imagesDisplayFile, setImagesDisplayFile] = React.useState([]);
   const [currentImgIdx, setCurrentImgIdx] = React.useState(null);
   const [categories, setCategories] = React.useState([]);
+
+  const nav = useNavigate();
 
   useEffect(() => {
     async function fetchCategories() {
@@ -59,6 +61,11 @@ const CreateItemPost = () => {
   }
 
   const handleCategory = (o) => {
+    if (o.length > 3) {
+      alert("Please only choose at most 3 categories!");
+      o.pop();
+      return;
+    }
     var categories = [];
     o.forEach((element) => categories.push(element['value']));
     setItem({
@@ -80,6 +87,7 @@ const CreateItemPost = () => {
     }
     setImagesDisplay(newImageDisplay);
     setImagesDisplayFile(newImagesDisplayFile);
+    setCurrentImgIdx(null);
   }
 
   const handleRemoveImageBar = (key) => {
@@ -95,7 +103,7 @@ const CreateItemPost = () => {
       }
     }
     setImagesBar(newImageBar);
-    setImagesBarFile(newImageBar);
+    setImagesBarFile(newImagesBarFile);
 
     // find if the image exist in imagesDisplay
     const newImageDisplay = [];
@@ -110,16 +118,15 @@ const CreateItemPost = () => {
     }
     setImagesDisplay(newImageDisplay);
     setImagesDisplayFile(newImagesDisplayFile);
+    setCurrentImgIdx(null);
   }
 
   const handleImageInsert = (e) => {
     const cib = [];
     const cibf = [];
     if (e.target.files) {
-      console.log(e.target.files);
       for (var file of e.target.files) {
         let img = file;
-        console.log("img: ", img);
         cib.push(URL.createObjectURL(img));
         
         cibf.push(img);
@@ -158,6 +165,7 @@ const CreateItemPost = () => {
     setImagesBar([]);
     setImagesBarFile([]);
     setImagesDisplay([]);
+    setCurrentImgIdx(null);
   }
 
   const handleSubmit = async (e) => {
@@ -177,21 +185,7 @@ const CreateItemPost = () => {
     item.ownerId = authUser.user.user._id;
     await ItemService.postItem(item, authUser.user.user._id).then((res) => {
       alert("Item Successfully posted!");
-      setItem({
-        name: '',
-        description: '',
-        price: 0,
-        revservHist: [],
-        unavailList: [],
-        review: [],
-        category: [],
-        images: [],
-        ownerId: '',
-      });
-      setImagesBar([]);
-      setImagesBarFile([]);
-      setImagesDisplay([]);
-      setImagesDisplayFile([]);
+      nav('/');
     });
   }
 
@@ -217,8 +211,7 @@ const CreateItemPost = () => {
             </div>
             <div className="flex-auto">
               <label htmlFor="category" className="font-bold" style={{color: "#F0D061"}}>Category</label>
-              <Select className="mt-1 block basic-multi-select" id="category" defaultValue={[categories[5]]} isMulti name="category" options={categories} classNamePrefix="select" onChange={handleCategory
-              }/>
+              <Select className="mt-1 block basic-multi-select" id="category" defaultValue={[categories[5]]} isMulti name="category" options={categories} classNamePrefix="select" onChange={handleCategory}/>
             </div>
           </div>
           <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full" style={{backgroundColor: '#F7D65A'}} type="submit" onClick={handleSubmit}>Submit</button>

@@ -94,7 +94,7 @@ const Post = ({ post, isRequest }) => {
 	return (
 		<div className='card'>
 			{post.images && post.images[0] ?
-				<img src={post.images[0]['data_url']} className='card-img-top custom-card-img' alt='...' /> :
+				<img src={post.images[0]['data_url'] ? post.images[0]['data_url'] : post.images[0]} className='card-img-top custom-card-img' alt='...' /> :
 				isRequest ?
 					<img src={require('../resources/itembnb-website-favicon-color.png')} className='req-img' alt='...' /> :
 					<img src='https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
