@@ -51,8 +51,10 @@ const SelectedItemPost = () => {
                 </div>
 
                 <div className="cardcontainer">
-                    {selectedItem.item.images ? selectedItem.item.images.map((image, i) => (<img className="custom-itempost-image" src={image['data_url']} alt="..." key={i} />)) :
-                        <img className="custom-itempost-image" src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="..." />}
+                    <div className="grid grid-flow-col auto-cols-max">
+                        {selectedItem.item.images ? selectedItem.item.images.map((image, i) => (<img className="custom-itempost-image mr-3" src={image['data_url'] ? image['data_url'] : image} alt="..." key={i} />)) :
+                            <img className="custom-itempost-image" src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="..." />}
+                    </div>
                 </div>
                 <div className="row">
                     <div className="col-6">
