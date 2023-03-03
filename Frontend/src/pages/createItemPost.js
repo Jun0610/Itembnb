@@ -125,10 +125,8 @@ const CreateItemPost = () => {
     const cib = [];
     const cibf = [];
     if (e.target.files) {
-      console.log(e.target.files);
       for (var file of e.target.files) {
         let img = file;
-        console.log("img: ", img);
         cib.push(URL.createObjectURL(img));
         
         cibf.push(img);
@@ -140,7 +138,6 @@ const CreateItemPost = () => {
 
   const handleBeforeInsert = (key) => {
     let reader = new FileReader();
-    console.log("in handle before insert: ", currentImgIdx);
     reader.readAsDataURL(imagesBarFile[currentImgIdx]);
     reader.onload = () => {
       const newImagesFile = [];
@@ -150,7 +147,6 @@ const CreateItemPost = () => {
         }
         newImagesFile.push(imagesDisplayFile[i]);
       }
-      console.log(newImagesFile);
       setImagesDisplayFile(newImagesFile);
     }
 

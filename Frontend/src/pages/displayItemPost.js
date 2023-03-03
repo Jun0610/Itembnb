@@ -1,6 +1,5 @@
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect} from 'react';
 import Select from 'react-select';
-import ImageUploading from 'react-images-uploading';
 import ItemService from '../tools/itemsService';
 import { confirmAlert } from 'react-confirm-alert';
 import {useParams, useNavigate} from "react-router-dom";
@@ -31,7 +30,6 @@ const DisplayItemPost = () => {
     }
 
     async function fetchItem() {
-        console.log("fetch item");
         await ItemService.getItem(id).then((data) => {
             setItem(data.data);
             setImagesBar(data.data.images);
@@ -84,10 +82,8 @@ const DisplayItemPost = () => {
     const cib = [];
     const cibf = [];
     if (e.target.files) {
-      console.log(e.target.files);
       for (var file of e.target.files) {
         let img = file;
-        console.log("img: ", img);
         cib.push(URL.createObjectURL(img));
         
         cibf.push(img);
@@ -193,7 +189,6 @@ const DisplayItemPost = () => {
   }
 
   const handleSaveItem = () => {
-    console.log('item: ', item);
     item.images = imagesDisplayFile;
     async function editItem() {
         await ItemService.editItem(item, authUser.user.user._id).then(alert("Edit item successfully!"));
@@ -270,7 +265,7 @@ const DisplayItemPost = () => {
               <div className="grid grid-flow-col auto-cols-max h-60" style={imagesBar.length > 0 ? undefined : {display: "none"}}>
                 {imagesBar.map((imagesrc, i) => (
                   <div className="ml-3 bg-cyan-700 h-16 w-56" style={{display: "flex", flexFlow: "row wrap"}}>
-                    <img key={i} src={imagesrc} className="auto" style={{width: '100%', height: '12rem', objectFit: "cover"}} onDragStart={() => setCurrentImgIdx(i)} onDragEnd={() => console.log('done')} draggable="true"/>
+                    <img key={i} src={imagesrc} className="auto" style={{width: '100%', height: '12rem', objectFit: "cover"}} onDragStart={() => setCurrentImgIdx(i)} draggable="true"/>
                     <i className="fa-solid fa-trash mt-1 icon-3x" style={{cursor: "pointer"}} onClick={() => handleRemoveImageBar(i)}></i>
                   </div>
                   ))}
