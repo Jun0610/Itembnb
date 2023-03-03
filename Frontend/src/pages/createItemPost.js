@@ -126,6 +126,11 @@ const CreateItemPost = () => {
     const cibf = [];
     if (e.target.files) {
       for (var file of e.target.files) {
+        console.log(file);
+        if (file.type !== "image/png" && file.type !== "image/jpeg") {
+          alert("File type is wrong! Please only upload png or jpeg files.");
+          return;
+        }
         let img = file;
         cib.push(URL.createObjectURL(img));
         
