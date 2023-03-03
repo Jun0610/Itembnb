@@ -73,7 +73,7 @@ const FavPost = ({ post, favItems, setFavItems, viewMode }) => {
         return (
             <div className='card fav-card' onClick={handleClick} >
                 {post.images && post.images[0] ?
-                    <img src={post.images[0]['data_url']} className='card-img-top custom-card-img' alt='...' /> :
+                    <img src={post.images[0]['data_url'] ? post.images[0]['data_url'] : post.images[0]} className='card-img-top custom-card-img' alt='...' /> :
                     <img src='https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
                         className='card-img-top custom-card-img'
                         alt='...' />
@@ -106,7 +106,7 @@ const FavPost = ({ post, favItems, setFavItems, viewMode }) => {
                 <div className='fav-item-pic-container'>
 
                     {post.images && post.images[0] ?
-                        <img src={post.images[0]['data_url']} className='fav-item-image' alt='...' onClick={handleClick} /> :
+                        <img src={post.images[0]['data_url'] ? post.images[0]['data_url'] : post.images[0]} className='fav-item-image' alt='...' onClick={handleClick} /> :
                         <img src='https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
                             className='fav-item-image'
                             alt='...' onClick={handleClick} />
