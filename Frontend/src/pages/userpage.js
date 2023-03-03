@@ -225,7 +225,7 @@ const Userpage = () => {
                     [fieldId]: [fieldId + " cannot be more than 20 characters long!"]
                 });
             }
-            else if (fieldValue.length === 0) {
+            else if (fieldId === "name" && fieldValue.length === 0) {
                 setInputErrors({
                     ...inputErrors,
                     [fieldId]: [fieldId + " must have at least 1 character!"]
@@ -242,6 +242,14 @@ const Userpage = () => {
         // from https://stackoverflow.com/questions/27709636/determining-if-all-attributes-on-a-javascript-object-are-null-or-an-empty-string 
         const noInputErrors = () => {
             return Object.values(inputErrors).every(x => x.length === 0);
+        }
+
+        const displayProfileDescription = () => {
+            console.log(userInfo.profileDesc);
+            if (userInfo.profileDesc === "") {
+                return "This user has no profile description.";
+            }
+            return userInfo.profileDesc;
         }
 
         const handleImageChange = (e) => {
@@ -318,7 +326,7 @@ const Userpage = () => {
                             </span>
                         )}
 
-                    <p><strong>Profile Description: </strong>{userInfo.profileDesc}</p>
+                    <p><strong>Profile Description: </strong>{userInfo.profileDesc ? userInfo.profileDesc : <em>This user has no profile description.</em>}</p>
                 </div>)
         }
     }
