@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import Post from "../components/post";
+import Loading from "../components/Loading";
 import userContext from "../contexts/userContext";
 
 import "../styles/homepage.css";
@@ -9,6 +10,7 @@ const Homepage = () => {
   const [itemPosts, setItemPosts] = React.useState([]);
   const [itemRequests, setItemRequests] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoadingItem, setIsLoadingItem] = React.useState(true);
   const selectedUser = useContext(userContext);
 
 
@@ -22,7 +24,7 @@ const Homepage = () => {
     async function getItemPosts() {
       await fetch("http://localhost:8888/api/item/get-item-posts")
         .then((response) => response.json())
-        .then((data) => { console.log(data.data); setItemPosts(data.data) });
+        .then((data) => { console.log(data.data); setItemPosts(data.data); setIsLoadingItem(false) });
     }
     getItemPosts();
   }, []);
@@ -37,11 +39,7 @@ const Homepage = () => {
   }, []);
 
 
-  if (isLoading) return (<div>Bruh</div>);
-
-
-
-
+  if (isLoading || isLoadingItem) return (<Loading />);
 
 
   else

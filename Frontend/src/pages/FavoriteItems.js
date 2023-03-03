@@ -3,12 +3,14 @@ import userContext from '../contexts/userContext'
 import { getUserData } from '../tools/userServices'
 import ItemService from '../tools/itemsService'
 import FavPost from "../components/FavPost";
+import Loading from '../components/Loading';
 import '../styles/favItemPage.css'
 
 const FavoriteItems = () => {
 
     const [favItems, setFavItems] = useState([]);
     const [viewMode, setViewMode] = useState('More Details')
+    const [isLoading, setIsLoading] = useState(true)
     const curUser = useContext(userContext)
 
     //keep user logged in on page load, get user data, load favorited items
@@ -30,6 +32,7 @@ const FavoriteItems = () => {
                     newFavItems.push(data.data)
                 }
                 setFavItems(newFavItems);
+                setIsLoading(false);
 
 
             } catch (err) {
@@ -53,6 +56,9 @@ const FavoriteItems = () => {
             }
 
         }
+        if (isLoading) {
+            return <Loading />
+        }
 
         return (
             <>
@@ -68,7 +74,7 @@ const FavoriteItems = () => {
                     ))}
 
                 </div>
-                {favItems.length == 0 && <h2 className='no-fav'>You have no favorited items yet!</h2>}
+                {favItems.length === 0 && <h2 className='no-fav'>You have no favorited items yet!</h2>}
 
 
             </>
