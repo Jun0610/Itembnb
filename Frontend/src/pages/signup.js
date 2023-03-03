@@ -117,7 +117,7 @@ const SignUp = () => {
                             <div id="center-img">
                                 <ImgUpload onChange={handleImageChange} src={selectedImage} />
                             </div>
-                            <label className="form-label" htmlFor="text">Add user description</label>
+                            <label className="form-label" htmlFor="text">Add user description (optional)</label>
                             <textarea className="form-control" name="description" id="description" cols="30" rows="10" onChange={handleDescriptionChange}></textarea>
                         </form>
                     </div>
