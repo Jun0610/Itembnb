@@ -59,7 +59,7 @@ const CreateRequest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (noInputErrors()) {
+    if (noInputErrors() && (request.name.length > 0 && request.description.length > 0)) {
       console.log("creation of " + request);
       request.ownerID = authUser.user.user._id;
       await RequestService.postRequest(request, authUser.user.user._id).then((res) => {
