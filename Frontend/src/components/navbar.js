@@ -1,5 +1,5 @@
 import '../styles/navbar.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { getUserData } from '../tools/userServices';
@@ -11,6 +11,7 @@ const Navbar = () => {
 
   const authUser = useContext(userContext);
   const [userData, setUserData] = useState({});
+  const nav = useNavigate();
 
   //keeps user logged in
   useEffect(() => {
@@ -32,6 +33,7 @@ const Navbar = () => {
   const logout = (e) => {
     e.preventDefault();
     sessionStorage.removeItem('curUser')
+    nav('/')
     authUser.logout();
   };
 
@@ -69,7 +71,7 @@ const Navbar = () => {
             </NavLink>
           </li>}
           {authUser.isAuth && <li>
-            <NavLink to={"/user/"+authUser.user.user._id} className="nav-link-img">
+            <NavLink to={"/user/" + authUser.user.user._id} className="nav-link-img">
               <img src={userData.profilePic} alt="" className='nav-img' />
             </NavLink>
           </li>}
