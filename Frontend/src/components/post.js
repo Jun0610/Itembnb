@@ -102,7 +102,6 @@ const Post = ({ post, isRequest }) => {
 						alt='...' />
 			}
 
-
 			{!isRequest && <FontAwesomeIcon icon={faHeart} className={favStatus} size='lg' onClick={favoriteItem} />}
 
 			<div className='row'>
