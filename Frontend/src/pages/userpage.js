@@ -94,7 +94,7 @@ const Userpage = () => {
                 console.log("item data: ", itemData.data);
                 if (itemData && itemData.data) return <Post post={itemData.data} isRequest = {false} key={itemData.data._id} />;
            }
-           return "Error!"; // should NOT HAPPEN - happens if return new Promise is not used in ItemService.getItem ?
+           //return "Error!"; // should NOT HAPPEN - happens if return new Promise is not used in ItemService.getItem ?
         }));
     }
 
