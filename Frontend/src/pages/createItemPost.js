@@ -48,7 +48,7 @@ const CreateItemPost = () => {
     let reader = new FileReader();
     reader.readAsDataURL(imagesBarFile[currentImgIdx]);
     reader.onload = () => {
-        setImagesDisplayFile([...imagesDisplay, reader.result]);
+        setImagesDisplayFile([...imagesDisplayFile, reader.result]);
     }
     setCurrentImgIdx(null);
   }
