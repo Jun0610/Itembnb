@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import RequestService from '../tools/requestService';
 import userContext from '../contexts/userContext';
@@ -21,7 +21,8 @@ const CreateRequest = () => {
   };
 
   const [request, setRequest] = React.useState(blankRequest);
-  const [inputErrors, setInputErrors] = React.useState({ name: [], description: [] });
+  const startingErrors = { name: [], description: [] };
+  const [inputErrors, setInputErrors] = React.useState(startingErrors);
 
   const handleRequest = (e) => {
     setRequest({
@@ -31,26 +32,38 @@ const CreateRequest = () => {
     validateField(e.target.id, e.target.value);
   }
 
-  const validateField = (fieldId, fieldValue) => {
+  const getErrors = (fieldId, fieldValue) => {
+    const errorArray = [];
+
     if (fieldId === "name" && fieldValue.length > 20) {
-      setInputErrors({
-        ...inputErrors,
-        [fieldId]: [fieldId + " cannot be more than 20 characters long!"]
-      });
+      errorArray.push(fieldId + " cannot be more than 20 characters long!");
     }
-    else if (fieldValue.length === 0) {
-      setInputErrors({
-        ...inputErrors,
-        [fieldId]: [fieldId + " must have at least 1 character!"]
-      });
+    if (fieldValue.length === 0) {
+      errorArray.push(fieldId + " must have at least 1 character!");
     }
-    else {
-      setInputErrors({
-        ...inputErrors,
-        [fieldId]: []
-      });
-    }
+
+    return errorArray;
   }
+
+  const validateField = (fieldId, fieldValue) => {
+    setInputErrors({
+      ...inputErrors,
+      [fieldId]: getErrors(fieldId, fieldValue)
+    });
+  }
+
+  // show error messages by default with useEffect
+  // setstate with new object instead of calling validateField in loop
+  // because setInputErrors relies on the previous value of inputErrors from the last render (I think)
+  // therefore calling validateField in a loop only updates the error message for the last field, not all of them, because it uses the empty inputErrors as default
+  const validateAllFields = () => {
+    let newInputErrors = startingErrors;
+    for (let key in newInputErrors) {
+      newInputErrors[key] = getErrors(key, request[key]);
+    }
+    setInputErrors(newInputErrors);
+  }
+
   // check that every error array in inputErrors is empty
   // from https://stackoverflow.com/questions/27709636/determining-if-all-attributes-on-a-javascript-object-are-null-or-an-empty-string 
   const noInputErrors = () => {
@@ -59,7 +72,8 @@ const CreateRequest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (noInputErrors() && (request.name.length > 0 && request.description.length > 0)) {
+
+    if (noInputErrors()) {
       console.log("creation of " + request);
       request.ownerID = authUser.user.user._id;
       await RequestService.postRequest(request, authUser.user.user._id).then((res) => {
@@ -68,6 +82,11 @@ const CreateRequest = () => {
       });
       navigate('/')
     }
+  }
+
+  // show error messages by default
+  if (inputErrors === startingErrors) {
+    validateAllFields();
   }
 
   if (authUser.user.user == null) {
