@@ -20,7 +20,7 @@ const FavPost = ({ post, favItems, setFavItems, viewMode }) => {
     const selectedUser = useContext(userContext);
 
     //need to set the favorite status based on whether the item is favorited or not
-    const [favStatus, setFavStatus] = useState('unfavorite')
+    const [favStatus, setFavStatus] = useState('favorite')
 
 
     //grabbing favorite status from db
