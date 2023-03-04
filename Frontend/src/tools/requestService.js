@@ -9,7 +9,7 @@ class RequestService {
 
         return new Promise((resolve, reject) => {
             fetch(`${url}/add-request/user-id/${id}`, {
-                method: 'post', 
+                method: 'post',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(request),
             }).then(res => res.json()).then((res) => {
@@ -36,7 +36,7 @@ class RequestService {
         console.log("edit an request", request);
         return new Promise((resolve, reject) => {
             fetch(`${url}/edit-request/request-id/${request._id}/user-id/${userId}`, {
-                method: 'put', 
+                method: 'put',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(request),
             }).then(res => res.json()).then(
@@ -54,7 +54,7 @@ class RequestService {
         console.log("delete an request", request, userId);
         return new Promise((resolve, reject) => {
             fetch(`${url}/delete-request/request-id/${request._id}/user-id/${userId}`, {
-                method: 'delete', 
+                method: 'delete',
                 headers: { 'content-type': 'application/json' },
             }).then(res => res.json()).then(
                 (result) => {

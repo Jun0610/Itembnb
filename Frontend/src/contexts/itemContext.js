@@ -10,7 +10,7 @@ export const ItemContextProvider = (props) => {
     };
 
     return (
-        <itemContext.Provider value={{item, setSelectedItem}}>
+        <itemContext.Provider value={{ item, setSelectedItem }}>
             {props.children}
         </itemContext.Provider>
     )
