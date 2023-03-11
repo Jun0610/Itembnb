@@ -1,21 +1,41 @@
 import React from 'react'
 
 const BorrowingRequestList = ({brList}) => {
-  console.log("brlist: ", brList);
+
+  const handleUserRedirect = () => {
+    alert("Bring user to another page");
+  }
+
+  const [selectedUser, setSelectedUser] = React.useState(null);
+
+  const highlightUser = (i) => {
+    setSelectedUser(i);
+  }
+
+  const removeHighlightUser = () => {
+    setSelectedUser(null);
+  }
+
   return (
     <div>
       <div>BorrowingRequestList</div>
       <div class="h-48 overflow-auto grid grid-rows-auto">
       {brList.map((e, i) => (
-        <div key={i} className="grid grid-cols-2 bg-red-300 m-3">
-          <div className='col-start-1'>
-            <div>Start date: {e.start_date}</div>
-            <div>End date: {e.end_date}</div>
-            <div>Borrower: {e.borrower.name}</div>
-            <div>Borrower email: {e.borrower.email}</div>
+        <div key={i+1} onMouseEnter={() => highlightUser(i+1)} onMouseLeave={removeHighlightUser} className={selectedUser && (i+1) == selectedUser ? 'bg-lime-300 m-3 p-3' : 'bg-red-300 m-3 p-3'}>
+          <div className='font-semibold text-lg'>Request {i+1}</div>
+          <div className="flex">
+            <div className='h-auto w-5/6 object-center'>
+              <div>Start date: {e.start_date}</div>
+              <div>End date: {e.end_date}</div>
+              <div>Borrower: {e.borrower.name}</div>
+              <div>Borrower email: {e.borrower.email}</div>
+            </div>
+            <div className='object-center mt-2'>
+              <img onClick={handleUserRedirect}  className="flex-none object-scale-down h-20" style={{borderRadius: "50%",  width: "auto", cursor: "pointer"}} src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt=""/>
+            </div>
           </div>
-          <img style={{borderRadius: "50%", height: "70%", width: "auto"}} src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt=""/>
-        </div>))}
+        </div>
+        ))}
       </div>
     </div>
   )
