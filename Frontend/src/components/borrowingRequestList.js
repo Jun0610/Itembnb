@@ -2,11 +2,17 @@ import React from 'react'
 
 const BorrowingRequestList = ({brList}) => {
 
+  const [selectedUser, setSelectedUser] = React.useState(null);
+  const [redirect, setRedirect] = React.useState(false);
+
   const handleUserRedirect = () => {
     alert("Bring user to another page");
+    setRedirect(true);
   }
 
-  const [selectedUser, setSelectedUser] = React.useState(null);
+  const handleRequestClick = () => {
+    alert("confirm deny message here")
+  }
 
   const highlightUser = (i) => {
     setSelectedUser(i);
@@ -18,11 +24,11 @@ const BorrowingRequestList = ({brList}) => {
 
   return (
     <div>
-      <div>BorrowingRequestList</div>
+      <div className='font-bold text-4xl m-3'>Borrowing Request List</div>
       <div class="h-48 overflow-auto grid grid-rows-auto">
       {brList.map((e, i) => (
         <div key={i+1} onMouseEnter={() => highlightUser(i+1)} onMouseLeave={removeHighlightUser} className={selectedUser && (i+1) == selectedUser ? 'bg-lime-300 m-3 p-3' : 'bg-red-300 m-3 p-3'}>
-          <div className='font-semibold text-lg'>Request {i+1}</div>
+          <div onClick={handleRequestClick} style={{cursor: "pointer"}} className='font-semibold text-lg'>Request {i+1}</div>
           <div className="flex">
             <div className='h-auto w-5/6 object-center'>
               <div>Start date: {e.start_date}</div>
