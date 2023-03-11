@@ -4,6 +4,39 @@ import userContext from "../contexts/userContext";
 import ItemService from "../tools/itemsService";
 import { getUserData } from "../tools/userServices";
 import "../styles/itempost.css";
+import BorrowingRequestList from "../components/borrowingRequestList";
+
+const brList = [
+    {
+        start_date: "04-13-2023", 
+        end_date: "04-14-2023",
+        borrower: {
+            id: 1, 
+            name: 'Borrower 1',
+            email: 'Borrower1@gmail.com',
+        }
+    },
+    {
+        
+        start_date: "04-15-2023", 
+        end_date: "04-16-2023",
+        borrower: {
+            id: 1, 
+            name: 'Borrower 2',
+            email: 'Borrower2@gmail.com',
+        }
+    },
+    {
+        
+        start_date: "04-17-2023", 
+        end_date: "04-18-2023",
+        borrower: {
+            id: 1, 
+            name: 'Borrower 3',
+            email: 'Borrower3@gmail.com',
+        }
+    },
+  ];
 
 const SelectedItemPost = () => {
 
@@ -73,7 +106,7 @@ const SelectedItemPost = () => {
                         </div>
                     </div>
                     <div className="col-6">
-                        <h1>Placeholder for future components</h1>
+                        <BorrowingRequestList brList={brList}/>
                         <h1>Placeholder for future components</h1>
                         <h1>Placeholder for future components</h1>
                         <h1>Placeholder for future components</h1>
