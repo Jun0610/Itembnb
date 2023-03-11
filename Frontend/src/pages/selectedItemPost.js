@@ -3,6 +3,7 @@ import itemContext from "../contexts/itemContext";
 import userContext from "../contexts/userContext";
 import ItemService from "../tools/itemsService";
 import { getUserData } from "../tools/userServices";
+import ItemCalendar from "../components/calendar";
 import "../styles/itempost.css";
 
 const SelectedItemPost = () => {
@@ -73,10 +74,7 @@ const SelectedItemPost = () => {
                         </div>
                     </div>
                     <div className="col-6">
-                        <h1>Placeholder for future components</h1>
-                        <h1>Placeholder for future components</h1>
-                        <h1>Placeholder for future components</h1>
-                        <h1>Placeholder for future components</h1>
+                        <ItemCalendar />
                     </div>
                 </div>
             </div>
