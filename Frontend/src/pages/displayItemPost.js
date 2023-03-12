@@ -5,6 +5,40 @@ import { confirmAlert } from 'react-confirm-alert';
 import { useParams, useNavigate } from "react-router-dom";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
+import BorrowingRequestList from '../components/borrowingRequestList';
+
+const brList = [
+    {
+        start_date: "04-13-2023", 
+        end_date: "04-14-2023",
+        borrower: {
+            id: 1, 
+            name: 'Borrower 1',
+            email: 'Borrower1@gmail.com',
+        }
+    },
+    {
+        
+        start_date: "04-15-2023", 
+        end_date: "04-16-2023",
+        borrower: {
+            id: 1, 
+            name: 'Borrower 2',
+            email: 'Borrower2@gmail.com',
+        }
+    },
+    {
+        
+        start_date: "04-17-2023", 
+        end_date: "04-18-2023",
+        borrower: {
+            id: 1, 
+            name: 'Borrower 3',
+            email: 'Borrower3@gmail.com',
+        }
+    },
+  ];
+
 
 const DisplayItemPost = () => {
     const { id } = useParams();
@@ -280,6 +314,7 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
+            <BorrowingRequestList brList={brList} item={item}/>
         </div>
     )
 }

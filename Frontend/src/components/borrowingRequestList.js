@@ -1,17 +1,36 @@
-import React from 'react'
+import React from 'react';
+import BorrowService from '../tools/borrowService';
 
-const BorrowingRequestList = ({brList}) => {
+const BorrowingRequestList = ({brList, item}) => {
 
   const [selectedUser, setSelectedUser] = React.useState(null);
-  const [redirect, setRedirect] = React.useState(false);
 
   const handleUserRedirect = () => {
     alert("Bring user to another page");
-    setRedirect(true);
   }
 
-  const handleRequestClick = () => {
-    alert("confirm deny message here")
+  const handleRequestClick = (borrowerId) => {
+    confirmAlert({
+      title: 'Approve/Deny Borrowing Request',
+      message: "Do you want to approve or deny this borrowing request?",
+      buttons: [
+          {
+              label: 'Approve',
+              onClick: async () => { 
+                await BorrowService.approveRequest(item.itemId, borrowerId).then(() => alert("Successfully approved!")); 
+                // handle email notification or live notification here
+              }
+
+          },
+          {
+              label: 'Deny',
+              onClick: async () => {
+                 await BorrowService.denyRequest(item.itemId, borrowerId).then(() => alert("Successfully denied!"));
+                 // handle email notification or live notification here
+            },
+          }
+      ],
+  });
   }
 
   const highlightUser = (i) => {
@@ -28,7 +47,7 @@ const BorrowingRequestList = ({brList}) => {
       <div class="h-48 overflow-auto grid grid-rows-auto">
       {brList.map((e, i) => (
         <div key={i+1} onMouseEnter={() => highlightUser(i+1)} onMouseLeave={removeHighlightUser} className={selectedUser && (i+1) == selectedUser ? 'bg-lime-300 m-3 p-3' : 'bg-red-300 m-3 p-3'}>
-          <div onClick={handleRequestClick} style={{cursor: "pointer"}} className='font-semibold text-lg'>Request {i+1}</div>
+          <div onClick={() => handleRequestClick(e.borrower.id)} style={{cursor: "pointer"}} className='font-semibold text-lg'>Request {i+1}</div>
           <div className="flex">
             <div className='h-auto w-5/6 object-center'>
               <div>Start date: {e.start_date}</div>

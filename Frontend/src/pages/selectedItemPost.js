@@ -6,40 +6,6 @@ import ReservationService from "../tools/reservationService";
 import { getUserData } from "../tools/userServices";
 import Loading from "../components/Loading";
 import "../styles/itempost.css";
-import BorrowingRequestList from "../components/borrowingRequestList";
-
-const brList = [
-    {
-        start_date: "04-13-2023", 
-        end_date: "04-14-2023",
-        borrower: {
-            id: 1, 
-            name: 'Borrower 1',
-            email: 'Borrower1@gmail.com',
-        }
-    },
-    {
-        
-        start_date: "04-15-2023", 
-        end_date: "04-16-2023",
-        borrower: {
-            id: 1, 
-            name: 'Borrower 2',
-            email: 'Borrower2@gmail.com',
-        }
-    },
-    {
-        
-        start_date: "04-17-2023", 
-        end_date: "04-18-2023",
-        borrower: {
-            id: 1, 
-            name: 'Borrower 3',
-            email: 'Borrower3@gmail.com',
-        }
-    },
-  ];
-
 
 const SelectedItemPost = () => {
 
@@ -47,6 +13,7 @@ const SelectedItemPost = () => {
     const authUser = useContext(userContext);
     const [owner, setOwner] = useState({});
     const [userReserv, setUserReserv] = useState({});
+
 
     //make sure user is logged in and get item details
     useEffect(() => {
@@ -214,7 +181,6 @@ const SelectedItemPost = () => {
                             </div>
                         </div>
                         <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
-                            <BorrowingRequestList />
                             <h1>Placeholder for future components</h1>
                             <h1>Placeholder for future components</h1>
                             <h1>Placeholder for future components</h1>
