@@ -45,7 +45,7 @@ const FavPost = ({ post, favItems, setFavItems, viewMode }) => {
     const handleClick = () => {
         console.log('clicked');
         selectedItem.setSelectedItem(post);
-        nav(`/selected-item-post/${post._id}`);
+        nav(`/selected-item-post/${post._id}/user/${selectedUser.user.user._id}`);
     };
 
     //onClick function to handle favoriting items

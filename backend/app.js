@@ -32,6 +32,10 @@ app.use("/api/request", request)
 const user = require("./user")
 app.use("/api/user", user)
 
+//reservation-related processing
+const reservation = require('./reservation');
+app.use("/api/reservation", reservation);
+
 
 
 
