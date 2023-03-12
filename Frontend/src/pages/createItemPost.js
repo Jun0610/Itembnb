@@ -11,7 +11,7 @@ const CreateItemPost = () => {
         name: '',
         description: '',
         price: 0,
-        revservHist: [],
+        reservHist: [],
         unavailList: [],
         review: [],
         category: [],

@@ -30,7 +30,7 @@ function App() {
                             <Route exact path="/signup" element={<SignUp />} />
                             <Route exact path="/login" element={<Login />} />
                             <Route path='/user/:id' element={<UserProfile />} />
-                            <Route exact path="/selected-item-post/:itemId" element={<SelectedItemPost />} />
+                            <Route exact path="/selected-item-post/:itemId/user/:userId" element={<SelectedItemPost />} />
                             <Route exact path="/favorite-items" element={<FavoriteItems />} />
                         </Routes>
                     </Router>
