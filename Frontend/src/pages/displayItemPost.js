@@ -6,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
 import BorrowingRequestList from '../components/borrowingRequestList';
+import ReservationService from '../tools/reservationService';
 
 const brList = [
     {
@@ -45,6 +46,7 @@ const DisplayItemPost = () => {
     const [item, setItem] = React.useState({});
     const [isEditing, setIsEditing] = React.useState(false);
     const [categories, setCategories] = React.useState([]);
+    const [pendingReservations, setPendingReservations] = React.useState([]);
 
     const [imagesBar, setImagesBar] = React.useState([]);
     const [imagesBarFile, setImagesBarFile] = React.useState([]);
@@ -73,7 +75,13 @@ const DisplayItemPost = () => {
             });
         }
 
-        fetchCategories().then(fetchItem());
+        async function fetchPendingReservations() {
+            await ReservationService.getAllReservationRequest(id).then((data) => {
+                setPendingReservations(data.data);
+            });
+        }
+
+        fetchCategories().then(fetchItem()).then(fetchPendingReservations());
     }, []);
 
     const onItemChange = (e) => {
@@ -314,7 +322,7 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
-            <BorrowingRequestList brList={brList} item={item}/>
+            <BorrowingRequestList brList={pendingReservations} item={item}/>
         </div>
     )
 }

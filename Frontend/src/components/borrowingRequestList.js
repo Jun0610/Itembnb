@@ -1,5 +1,5 @@
 import React from 'react';
-import BorrowService from '../tools/borrowService';
+import ReservationService from '../tools/reservationService';
 
 const BorrowingRequestList = ({brList, item}) => {
 
@@ -17,7 +17,7 @@ const BorrowingRequestList = ({brList, item}) => {
           {
               label: 'Approve',
               onClick: async () => { 
-                await BorrowService.approveRequest(item.itemId, borrowerId).then(() => alert("Successfully approved!")); 
+                await ReservationService.approveRequest(item.itemId, borrowerId).then(() => alert("Successfully approved!")); 
                 // handle email notification or live notification here
               }
 
@@ -25,7 +25,7 @@ const BorrowingRequestList = ({brList, item}) => {
           {
               label: 'Deny',
               onClick: async () => {
-                 await BorrowService.denyRequest(item.itemId, borrowerId).then(() => alert("Successfully denied!"));
+                 await ReservationService.denyRequest(item.itemId, borrowerId).then(() => alert("Successfully denied!"));
                  // handle email notification or live notification here
             },
           }
