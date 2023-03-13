@@ -355,6 +355,8 @@ const Userpage = () => {
             <div id="profile_main" className="add_padding">
                 <ProfileHeader />
 
+                <hr />
+
                 <h3 className="item-post-header">{userInfo.name}'s Posted Items</h3>
                 <div className="cardcontainer">
                     {itemsLoaded ? userItems : "Loading..."}
