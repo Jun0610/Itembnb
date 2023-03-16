@@ -49,7 +49,7 @@ const Post = ({ post, isRequest }) => {
             console.log(post);
             console.log(selectedItem);
             selectedItem.setSelectedItem(post);
-            nav(`/selected-item-post/${post._id}`);
+            nav(`/selected-item-post/${post._id}/user/${selectedUser.user.user._id}`);
         }
         else {
             nav(`/display-request-post/${post._id}`)

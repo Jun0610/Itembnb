@@ -26,7 +26,7 @@ router.get('/get-request-posts', async (req, res) => {
         }
 
     } catch (err) {
-        res.status(404).json({ success: false, data: err })
+        res.status(404).json({ success: false, data: err.message })
     }
 
 })
@@ -48,13 +48,13 @@ router.post('/add-request/user-id/:userId', async (req, res) => {
 
     try {
         //save date as date object
-        req.body.dateCreated = new Date(Date.now());
+        req.body.dateCreated = new Date(req.body.dateCreated);
         const results = await db.collection("requests").insertOne(req.body);
         const reqId = results.insertedId.toString();
         await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.params.userId) }, { $push: { requestPosts: reqId } })
         res.status(201).json({ success: true, data: "successfully added request!" })
     } catch (err) {
-        res.status(404).json({ success: false, data: err })
+        res.status(404).json({ success: false, data: err.message })
     }
 })
 
@@ -72,7 +72,7 @@ router.put('/edit-request/request-id/:requestId/user-id/:userId', async (req, re
             res.status(201).json({ success: true, data: result });
         }
     } catch (err) {
-        res.status(404).json({ success: false, data: err })
+        res.status(404).json({ success: false, data: err.message })
     }
 })
 
@@ -90,9 +90,10 @@ router.delete('/delete-request/request-id/:requestId/user-id/:userId', async (re
 })
 async function deleteRequest(db, requestId, userId) {
     try {
+        //first update a user's requestPosts list
         await db.collection('users').updateOne({ _id: new mongo.ObjectId(userId) }, { $pull: { requestPosts: requestId } })
+        //then delete the request post from the requests collection
         await db.collection('requests').deleteOne({ _id: new mongo.ObjectId(requestId) })
-        await db.collection("users").updateMany({ favoritedItems: requestId }, { $pull: { favoritedItems: requestId } })
 
     } catch (err) {
         console.log(err);

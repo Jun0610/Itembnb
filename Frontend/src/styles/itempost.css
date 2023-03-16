@@ -33,6 +33,7 @@
     '. img'
     '. img';
     max-width: 600px;
+    margin: 10px
 }
 
 
@@ -44,4 +45,11 @@
 .owner-desc {
     max-width: 400px;
     text-justify: inter-word;
+}
+
+.pendingContainter {
+    border: 2.5px solid #ffec18;
+    border-radius: 1rem;
+    /* padding: 0.5rem 2rem;
+    margin: 1rem 2.5rem; */
 }
