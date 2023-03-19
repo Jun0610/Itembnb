@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import itemContext from "../contexts/itemContext";
 import userContext from "../contexts/userContext";
 import ItemService from "../tools/itemsService";
+import UserService from "../tools/userService.js";
 import ReservationService from "../tools/reservationService";
-import { getUserData } from "../tools/userServices";
 import Loading from "../components/Loading";
 import "../styles/itempost.css";
 
@@ -33,7 +33,7 @@ const SelectedItemPost = () => {
 
             if (itemData.data.ownerId) {
                 const getOwnerData = async () => {
-                    const res = await getUserData(itemData.data.ownerId);
+                    const res = await UserService.getUserData(itemData.data.ownerId);
                     setOwner(res.data);
                 }
 
