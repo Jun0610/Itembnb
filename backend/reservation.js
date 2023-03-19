@@ -12,6 +12,15 @@ complete (when the item has been returned to the lender)
 */
 
 //makes user reservation
+//req expected:
+/*
+{
+    userId: the user's id
+    itemId: the item's id
+    startDate: the reservation's start date
+    endDate: the reservation's end date
+}
+*/
 router.post("/make-reservation", async (req, res) => {
     try {
         //add reservation to reservations collection
@@ -41,17 +50,30 @@ router.post("/make-reservation", async (req, res) => {
 })
 
 //approve reservation
-router.put("/approve-reservation/item/:itemId", async (req, res) => {
+//req expected:
+/*
+{
+    id: the reservation id
+    itemId: the item's id
+    startDate: the reservation's start date
+    endDate: the reservation's end date
+}
+*/
+router.put("/approve-reservation", async (req, res) => {
     try {
 
+        req.body.startDate = new Date(req.body.startDate);
+        req.body.endDate = new Date(req.body.endDate);
+
+
         //update reservation status to approved
-        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { status: "approved" })
+        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "approved" } })
 
         //remove reservation from item's pendingList
-        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.params.itemId) }, { $pull: { pendingList: { reservId: req.body.id } } })
+        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $pull: { pendingList: { reservId: req.body.id } } })
 
         //then add reservation to item's unavailList
-        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.params.itemId) }, { $push: { unavailList: { startDate: req.body.startDate, endDate: req.body.endDate, reservId: req.body.id } } })
+        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $push: { unavailList: { startDate: req.body.startDate, endDate: req.body.endDate, reservId: req.body.id } } })
 
         res.status(201).json({ success: true, data: "successfully approved reservation" });
     } catch (err) {
@@ -60,6 +82,30 @@ router.put("/approve-reservation/item/:itemId", async (req, res) => {
 })
 
 //deny reservation
+//req expected:
+/*
+{
+    id: the reservation id
+    itemId: the item's id
+    startDate: the reservation's start date
+    endDate: the reservation's end date
+}
+*/
+router.put("/deny-reservation", async (req, res) => {
+    try {
+
+        //update reservation status to denied
+        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "denied" } })
+
+        //remove reservation from item's pendingList
+        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $pull: { pendingList: { reservId: req.body.id } } })
+
+
+        res.status(201).json({ success: true, data: "successfully denied reservation" });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
 
 
 //activate reservation
