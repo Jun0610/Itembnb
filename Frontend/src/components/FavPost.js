@@ -7,7 +7,7 @@ import userContext from '../contexts/userContext';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import UserService from '../tools/userServices.js';
+import UserService from '../tools/userService.js';
 
 const FavPost = ({ post, favItems, setFavItems, viewMode }) => {
     const title = post.name;

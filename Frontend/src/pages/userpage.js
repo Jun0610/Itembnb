@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import ItemService from '../tools/itemsService';
 import RequestService from '../tools/requestService';
-import UserService from '../tools/userServices.js';
+import UserService from '../tools/userService.js';
 
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import { useParams } from "react-router-dom";

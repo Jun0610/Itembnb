@@ -2,7 +2,7 @@ import '../styles/navbar.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
-import UserService from '../tools/userServices.js';
+import UserService from '../tools/userService';
 
 import userContext from '../contexts/userContext';
 

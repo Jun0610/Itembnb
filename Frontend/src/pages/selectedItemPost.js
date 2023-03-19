@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import itemContext from "../contexts/itemContext";
 import userContext from "../contexts/userContext";
 import ItemService from "../tools/itemsService";
-import UserService from "../tools/userServices.js";
+import UserService from "../tools/userService.js";
 import ReservationService from "../tools/reservationService";
 import Loading from "../components/Loading";
 import "../styles/itempost.css";
