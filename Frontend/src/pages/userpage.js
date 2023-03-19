@@ -1,7 +1,10 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
+
 import ItemService from '../tools/itemsService';
 import RequestService from '../tools/requestService';
+import UserService from '../tools/userServices.js';
+
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,56 +14,6 @@ import userContext from '../contexts/userContext';
 
 import "../styles/homepage.css";
 import "../styles/userpage.css";
-
-const url = "http://localhost:8888/api/user";
-
-async function getUser(id) {
-    console.log(url + "/profile-data/" + id);
-    return new Promise((resolve, reject) => {
-        fetch(`${url}/profile-data/${id}`)
-            .then(res => res.json())
-            .then((res) => {
-                const data = res.data;
-                console.log(res.data);
-                resolve(data);
-            }).catch((err) => {
-                reject(err);
-            })
-    })
-}
-
-async function editProfile(newUserInfo, id) {
-    console.log("edit a profile " + id);
-    return new Promise((resolve, reject) => {
-        fetch(`${url}/edit-profile/${id}`, {
-            method: 'put',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify(newUserInfo),
-        }).then(res => res.json()).then(
-            (result) => {
-                console.log("edit res", result);
-                resolve(result);
-            }
-        ).catch((err) => {
-            reject(err);
-        })
-    })
-}
-
-async function deleteUser(id) {
-    return new Promise((resolve, reject) => {
-        fetch(`${url}/delete-user/${id}`, {
-            method: 'delete',
-            headers: { 'content-type': 'application/json' },
-        }).then(res => res.json()).then(
-            (result) => {
-                resolve(result);
-            }
-        ).catch((err) => {
-            reject(err);
-        })
-    })
-}
 
 const Userpage = () => {
     const authUser = useContext(userContext);
@@ -112,7 +65,8 @@ const Userpage = () => {
 
         async function fetchData() {
             // load user info (minus items/requests)
-            const userInfo = await getUser(id);
+            let userInfo = await UserService.getUserData(id);
+            userInfo = userInfo.data;
             setUserInfo(userInfo);
             setUserLoaded(true);
 
@@ -151,7 +105,7 @@ const Userpage = () => {
                         label: 'Yes',
                         onClick: () => {
                             async function fetchDeleteUser() {
-                                const deleteResult = await deleteUser(id);
+                                const deleteResult = await UserService.deleteUser(id);
                                 console.log("deleteresult", deleteResult);
                                 if (deleteResult.success) {
                                     alert("Deletion successful.");
@@ -181,7 +135,7 @@ const Userpage = () => {
 
         const handleEditProfile = () => {
             async function sendData() {
-                const result = await editProfile(localUserInfo, id);
+                const result = await UserService.editProfile(localUserInfo, id);
                 console.log("result", result);
 
                 if (result.success) {

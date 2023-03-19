@@ -1,17 +1,17 @@
-import React, { useContext, useEffect, useState, useRef } from 'react'
-import userContext from '../contexts/userContext'
-import { getUserData } from '../tools/userServices'
-import ItemService from '../tools/itemsService'
+import React, { useContext, useEffect, useState, useRef } from 'react';
+import userContext from '../contexts/userContext';
+import UserService from '../tools/userServices.js';
+import ItemService from '../tools/itemsService';
 import FavPost from "../components/FavPost";
 import Loading from '../components/Loading';
-import '../styles/favItemPage.css'
+import '../styles/favItemPage.css';
 
 const FavoriteItems = () => {
 
     const [favItems, setFavItems] = useState([]);
-    const [viewMode, setViewMode] = useState('More Details')
-    const [isLoading, setIsLoading] = useState(true)
-    const curUser = useContext(userContext)
+    const [viewMode, setViewMode] = useState('More Details');
+    const [isLoading, setIsLoading] = useState(true);
+    const curUser = useContext(userContext);
 
     //keep user logged in on page load, get user data, load favorited items
     useEffect(() => {
@@ -21,15 +21,15 @@ const FavoriteItems = () => {
                 return
             }
             try {
-                curUser.login(JSON.parse(sessionStorage.getItem('curUser')))
-                const userId = JSON.parse(sessionStorage.getItem('curUser'))._id
-                const res = await getUserData(userId);
+                curUser.login(JSON.parse(sessionStorage.getItem('curUser')));
+                const userId = JSON.parse(sessionStorage.getItem('curUser'))._id;
+                const res = await UserService.getUserData(userId);
                 const userData = res.data;
-                let newFavItems = []
+                let newFavItems = [];
 
                 for (const item of userData.favoritedItems) {
                     const data = await ItemService.getItem(item);
-                    newFavItems.push(data.data)
+                    newFavItems.push(data.data);
                 }
                 setFavItems(newFavItems);
                 setIsLoading(false);
@@ -50,9 +50,9 @@ const FavoriteItems = () => {
     if (sessionStorage.getItem('curUser') !== null) {
         const handleViewMode = () => {
             if (viewMode === 'More Details') {
-                setViewMode('Less Details')
+                setViewMode('Less Details');
             } else {
-                setViewMode('More Details')
+                setViewMode('More Details');
             }
 
         }

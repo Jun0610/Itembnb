@@ -6,7 +6,7 @@ import userContext from '../contexts/userContext';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { favoritingItem, unfavoritingItem, getUserData } from '../tools/userServices';
+import UserService from '../tools/userServices.js';
 
 const Post = ({ post, isRequest }) => {
     const title = post.name;
@@ -30,7 +30,7 @@ const Post = ({ post, isRequest }) => {
                 setFavStatus('unfavorite');
                 return;
             }
-            const res = await getUserData(selectedUser.user.user._id)
+            const res = await UserService.getUserData(selectedUser.user.user._id)
 
             for (const item of res.data.favoritedItems) {
                 if (item === post._id) {
@@ -74,13 +74,13 @@ const Post = ({ post, isRequest }) => {
                 return;
             }
             if (favStatus === 'favorite') {
-                const res = await unfavoritingItem(post._id, selectedUser.user.user._id);
+                const res = await UserService.unfavoritingItem(post._id, selectedUser.user.user._id);
                 if (res.status === 400) {
                     throw new Error(res.data)
                 }
                 setFavStatus('unfavorite');
             } else {
-                const res = await favoritingItem(post._id, selectedUser.user.user._id);
+                const res = await UserService.favoritingItem(post._id, selectedUser.user.user._id);
                 if (res.status === 400) {
                     throw new Error(res.data)
                 }
