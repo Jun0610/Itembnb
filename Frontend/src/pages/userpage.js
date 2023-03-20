@@ -298,8 +298,8 @@ const Userpage = () => {
                     <h6 className="user_stat">Borrower Rating: {userInfo.borrowerRating}/5</h6>
                     <h6 className="user_stat">Lender Rating: {userInfo.lenderRating}/5</h6>
                     <hr />
-                    <h6 className="user_stat">{userInfo.name} has {userInfo.postedItems.length} items</h6>
-                    <h6 className="user_stat">{userInfo.name} has {userInfo.requestPosts.length} requests</h6>
+                    <h6 className="user_stat">{userInfo.name} has {userInfo.postedItems.length} {userInfo.postedItems.length === 1 ? "item" : "items"}</h6>
+                    <h6 className="user_stat">{userInfo.name} has {userInfo.requestPosts.length} {userInfo.requestPosts.length === 1 ? "request" : "requests"}</h6>
                 </div>
             </div>
 

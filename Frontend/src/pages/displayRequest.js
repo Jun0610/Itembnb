@@ -213,7 +213,9 @@ const DisplayRequestPost = () => {
             }
         }
 
-        console.log(selectedItems);
+        console.log("edit selecteditems", selectedItems);
+        // request.recommendedItems = selectedItems;
+        // RequestService.editRequest(request, userAuth.user.user._id);
     }
 
     const ItemSmall = (itemData) => {
@@ -257,7 +259,13 @@ const DisplayRequestPost = () => {
                 </div>
             )
         }
-        return <p>You are not logged in, so you can't try to fulfill this request!</p>
+        return (
+            <div className="requestDiv m-3">
+                <p className="yellowText">Does one of your items fulfill this request?</p>
+
+                <p>You are not logged in, so you can't try to fulfill this request!</p>
+            </div>
+        )
     }
 
     /* --- What to return/render --- */
