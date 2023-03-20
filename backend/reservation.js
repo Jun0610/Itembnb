@@ -107,8 +107,56 @@ router.put("/deny-reservation", async (req, res) => {
     }
 })
 
+//gets active reservation and item associated with that reservation
+//returns:
+/*
+[{
+    item: item
+    reservation: reservation
+}]
+*/
+router.get("/get-active-reservation/user/:userId", async (req, res) => {
+    try {
+        const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) });
+        const activeReservations = [];
+        for (const reservId of user.reservHist) {
+            const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(reservId) })
+            if (reservation.status === "approved" || reservation.status === "active") {
+                const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
+                activeReservations.push({ item, reservation })
+            }
+        }
 
-//activate reservation
+
+        res.status(201).json({ success: true, data: activeReservations });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+
+
+
+})
+
+
+//confirm that item was received
+//req expected:
+/*
+{
+    id: the reservation id
+}
+*/
+router.put('/item-received', async (req, res) => {
+    try {
+
+        //update reservation status to active
+        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "active" } })
+
+
+        res.status(201).json({ success: true, data: "successfully confirmed that item was received" });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
 
 
 //get user's reservation for that item
