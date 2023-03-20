@@ -3,3 +3,29 @@
     border-radius: 10px;
     padding: 15px;
 }
+
+.item-small {
+    border-top: 1px solid #999999;
+    border-bottom: 1px solid #999999;
+    padding: 10px;
+}
+.item-descr {
+    display: inline-block;
+    margin: 0 15px 0 15px;
+    color: #777777;
+}
+
+.inputNoOutline:focus {
+    outline: none;
+}
+
+.yellowText {
+    color: #f49600;
+}
+
+.userProfileLink {
+    color: #000000;
+}
+.userProfileLink:hover {
+    color: #222222;
+}

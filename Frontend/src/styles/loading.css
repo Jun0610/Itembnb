@@ -6,6 +6,14 @@
     align-items: center;
 }
 
+/* same as img-container w/o height value */
+.img-container-small {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .loading {
     animation: rotation 2s infinite linear;
 }

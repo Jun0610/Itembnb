@@ -1,9 +1,13 @@
 import React, { useEffect, useContext, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 import RequestService from '../tools/requestService';
+import ItemService from '../tools/itemsService';
+import UserService from '../tools/userService';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
+import { Loading, LoadingSmall } from "../components/Loading";
+import Post from "../components/post";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
@@ -12,31 +16,70 @@ import "../styles/requestPage.css";
 const DisplayRequestPost = () => {
     const navigate = useNavigate();
     const userAuth = useContext(userContext);
+    const { id: requestId } = useParams(); // id of request post
 
-    const [isEditing, setIsEditing] = useState(false);
-    const { id } = useParams(); // id of request post
-
-    // object that stores error messages for invalid inputs
-    const [inputErrors, setInputErrors] = useState({ name: [], description: [] });
+    /* --- Fetching info from the server --- */
 
     // Get info of user who asked for request
     const [requestUser, setRequestUser] = useState({});
 
     // Get request to be shown from the server
     const [request, setRequest] = useState({});
+
+    // Get user's posted items from the server
+    const [userItems, setUserItems] = useState([]);
+    const [itemsLoaded, setItemsLoaded] = useState(false);
+    // Checkboxes for selecting items
+    const [checkBoxes, setCheckBoxes] = useState({});
+
+    // Get items that have been linked to this request
+    const [linkedItems, setLinkedItems] = useState([]);
+    const [linkedItemsLoaded, setLinkedItemsLoaded] = useState(false);
+
     useEffect(() => {
 
         async function fetchRequest() {
-            const data = await RequestService.getRequest(id);
-            setRequest(data);
+            const requestData = await RequestService.getRequest(requestId);
+            setRequest(requestData);
+
+            const requestUserData = await UserService.getUserData(requestData.ownerID);
+            setRequestUser(requestUserData.data);
+
+            const linkedItemData = await RequestService.getRequestsFromList(requestData.recommendedItems);
+            setLinkedItems(linkedItemData);
+            setLinkedItemsLoaded(true);
         }
         fetchRequest();
 
-    }, []);
+        async function fetchUserData() {
+            if (userAuth.user.isAuth) { // if logged in
+                // load user info (minus items)
+                const userInfoData = await UserService.getUserData(userAuth.user.user._id);
 
-    if (!Object.keys(request).length) { // if request hasn't loaded
-        return ""; // just show a blank screen
-    }
+                // load user items
+                // must use userInfoData instead of userInfo or it doesn't load for some reason
+                const userItemData = await ItemService.getItemsFromList(userInfoData.data.postedItems);
+                setUserItems(userItemData);
+
+                // Set checkboxes for selecting items to recommend
+                let checkBoxes = {};
+                userItemData.forEach(
+                    item => checkBoxes[item._id] = false
+                );
+                setCheckBoxes(checkBoxes);
+                setItemsLoaded(true);
+            }
+        }
+        fetchUserData();
+
+    }, [userAuth.user.user]); // set user stuff as dependency b/c it takes a while to update to correct values after refreshing page (?)
+
+    /* --- For editing request --- */
+
+    const [isEditing, setIsEditing] = useState(false);
+
+    // object that stores error messages for invalid inputs
+    const [inputErrors, setInputErrors] = useState({ name: [], description: [] });
 
     const onRequestChange = (e) => {
         setRequest({
@@ -117,26 +160,151 @@ const DisplayRequestPost = () => {
         return Object.values(inputErrors).every(x => x.length === 0);
     }
 
-    return (
-        <div>
-            <div className="m-3 font-bold" style={{ color: "#F0D061" }}>{isEditing ? 'Modify Item Request' : 'View Item Request'}</div>
-            {(userAuth.user.isAuth) && (userAuth.user.user._id === request.ownerID) && (
+    const EditButtonHeader = () => {
+        if ((userAuth.user.isAuth) && (userAuth.user.user._id === request.ownerID)) {
+            return (
                 <div>
                     <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={handleEditRequest}>{isEditing ? 'Save' : 'Edit'}</button>
                     <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={handleDeleteRequest}>Delete</button>
-                </div>)}
-            <div className='requestDiv m-3'>
-                <label htmlFor='name' className="font-bold" style={{ color: "#F0D061" }}>Name</label>
-                <p className="input-error">{inputErrors.name}</p>
-                <input className="mt-1 block px-3 rounded-md" id="name" type="text" value={request.name} name="name" readOnly={isEditing ? false : true} style={isEditing ? { background: "white", color: "black" } : { background: "#F1F1F1", color: "#545454" }} onChange={onRequestChange} />
+                </div>
+            )
+        }
+        return;
+    }
 
-                <br /><hr /><br />
+    /* --- List of items that have been linked to the request --- */
+    const LinkedItemList = () => {
+        let linkedItemDisplay;
+        if (!linkedItemsLoaded) {
+            linkedItemDisplay = <LoadingSmall />;
+        }
+        else if (linkedItems.length === 0) {
+            linkedItemDisplay = <p>No items have been recommended for this request!</p>;
+        }
+        else {
+            linkedItemDisplay = linkedItems.map(itemData =>
+                <Post post={itemData} isRequest={false} key={itemData._id} />
+            );
+        }
 
-                <label htmlFor='description' className="font-bold" style={{ color: "#F0D061" }}>Description</label>
-                <p className="input-error">{inputErrors.description}</p>
-                <textarea className="mt-1 border rounded-md w-full text-sm block px-3 py-2" id="description" type="text" value={request.description} readOnly={isEditing ? false : true} rol={10} style={isEditing ? { background: "white", color: "black" } : { background: "#F1F1F1", color: "#545454" }} onChange={onRequestChange} />
+        return (
+            <div className="requestDiv m-3">
+                <p className="yellowText">Items recommended for this request</p>
+
+                {linkedItemDisplay}
             </div>
-        </div>
+        )
+    }
+
+    /* --- List of items that can be linked to the request --- */
+    const toggleCheckbox = (e) => {
+        setCheckBoxes({
+            ...checkBoxes,
+            [e.target.id]: e.target.checked
+        });
+    }
+
+    const submitRecommendation = () => {
+        const selectedItems = [];
+
+        for (let key in checkBoxes) {
+            if (checkBoxes[key]) {
+                selectedItems.push(key);
+            }
+        }
+
+        console.log("edit selecteditems", selectedItems);
+        // request.recommendedItems = selectedItems;
+        // RequestService.editRequest(request, userAuth.user.user._id);
+    }
+
+    const ItemSmall = (itemData) => {
+        let itemDescription = itemData.description;
+        if (itemDescription.length > 15) {
+            itemDescription = itemDescription.substring(0, 12) + "...";
+        }
+
+        return (
+            <div className="item-small" key={itemData._id}>
+                <NavLink to={"/selected-item-post/" + itemData._id} className="userProfileLink">{itemData.name}</NavLink>
+
+                <p className="item-descr">{itemDescription}</p>
+
+                <input type="checkbox" onChange={toggleCheckbox} key={itemData._id} id={itemData._id} name={itemData.name} checked={checkBoxes[itemData._id]}></input>
+            </div>
+        );
+    }
+
+    // Render list of user's items from userItems (a list of item data jsons)
+    // Only use this function if user's logged in + authorized
+    const displayUserItems = () => {
+        if (!itemsLoaded) {
+            return <LoadingSmall />
+        }
+        if (userItems.length === 0) {
+            return <p>You have no items!</p>
+        }
+        return userItems.map(itemData => ItemSmall(itemData));
+    }
+
+    const YourItemList = () => {
+        if (userAuth.user.isAuth) { // if logged in
+            return (
+                <div className="requestDiv m-3">
+                    <p className="yellowText">Does one of your items fulfill this request?</p>
+
+                    {displayUserItems()}
+
+                    <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={submitRecommendation}>Submit</button>
+                </div>
+            )
+        }
+        return (
+            <div className="requestDiv m-3">
+                <p className="yellowText">Does one of your items fulfill this request?</p>
+
+                <p>You are not logged in, so you can't try to fulfill this request!</p>
+            </div>
+        )
+    }
+
+    /* --- What to return/render --- */
+
+    if (!Object.keys(request).length) { // if request hasn't loaded
+        return <Loading />;
+    }
+    return (
+        <div>
+            <div className="m-3 font-bold yellowText">
+                <h2>{isEditing ? 'Modify Item Request' : 'View Item Request'}</h2>
+            </div>
+
+            <EditButtonHeader />
+            <div className='requestDiv m-3'>
+                <label htmlFor='name' className="font-bold yellowText">Name: </label>
+                <input className="mt-1 px-2 rounded-md inputNoOutline" id="name" type="text" value={request.name} name="name" readOnly={isEditing ? false : true} style={isEditing ? { background: "#f1f1f1", color: "black" } : { background: "none", color: "#545454" }} onChange={onRequestChange} />
+                <p className="input-error">{inputErrors.name}</p>
+
+                <p>
+                    <span className="font-bold yellowText">Created by: </span>
+
+                    {(!Object.keys(requestUser).length) ? // if request poster hasn't loaded
+                        "Loading..." :
+                        <NavLink to={"/user/" + requestUser._id} className="userProfileLink">{requestUser.name}</NavLink>
+                    }
+
+                    <span className="font-bold yellowText"> on </span>
+                    {new Date(request.dateCreated).toLocaleString()}
+                </p>
+
+                <textarea className="mt-1 border rounded-md w-full text-sm block px-3 py-2 inputNoOutline" id="description" type="text" value={request.description} readOnly={isEditing ? false : true} rol={10} style={isEditing ? { background: "#f1f1f1", color: "black" } : { background: "none", color: "#545454" }} onChange={onRequestChange} />
+                <p className="input-error">{inputErrors.description}</p>
+            </div>
+
+            <LinkedItemList />
+
+            <YourItemList />
+        </div >
     )
 }
 
