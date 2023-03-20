@@ -66,6 +66,13 @@ class RequestService {
         })
     }
 
+    // Given array of request ids (requestList), returns an array of data jsons for each request in requestList
+    static async getRequestsFromList(requestList) {
+        return Promise.all(requestList.map(async id => {
+            const request = await RequestService.getRequest(id);
+            return request;
+        }));
+    }
 }
 
 export default RequestService;

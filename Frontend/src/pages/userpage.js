@@ -1,16 +1,14 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-
+import UserService from '../tools/userService';
 import ItemService from '../tools/itemsService';
 import RequestService from '../tools/requestService';
-import UserService from '../tools/userService.js';
-
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Loading from "../components/Loading";
-import Post from "../components/post";
+import { Loading, LoadingSmall } from "../components/Loading";
 import userContext from '../contexts/userContext';
+import Post from "../components/post";
 
 import "../styles/homepage.css";
 import "../styles/userpage.css";
@@ -19,65 +17,38 @@ const Userpage = () => {
     const authUser = useContext(userContext);
     const { id } = useParams(); // id of user on webpage
 
-
     /* --- Fetching info from server --- */
 
     // Get user info from the server
     const [userInfo, setUserInfo] = useState({});
     const [userLoaded, setUserLoaded] = useState(false);
 
-    // Get user's posted items from the server
-    // Get user's posted items from the server
+    // Get list of data jsons for user's posted items from the server
     const [userItems, setUserItems] = useState([]);
     const [itemsLoaded, setItemsLoaded] = useState(false);
 
-    // Get user's requested items from the server
+    // Get list of data jsons for user's requests from the server
     const [userRequests, setUserRequests] = useState([]);
     const [requestsLoaded, setRequestsLoaded] = useState(false);
 
-    // optimal way to fetch with arrays: combine Promise.all + map w/ async function
-    async function loadUserItems(userInfo) {
-        if (userInfo.postedItems.length === 0) {
-            return <p>{userInfo.name} has no items!</p>
-        }
-        return Promise.all(userInfo.postedItems.map(async (id, index) => {
-            const itemData = await ItemService.getItem(id);
-            if (itemData !== undefined && itemData.success) {
-                // if this doesn't work check if object is in itemData or itemData.data
-                console.log("item data: ", itemData.data);
-                if (itemData && itemData.data) return <Post post={itemData.data} isRequest={false} key={itemData.data._id} />;
-            }
-            //return "Error!"; // should NOT HAPPEN - happens if return new Promise is not used in ItemService.getItem ?
-        }));
-    }
-
-    async function loadUserRequests(userInfo) {
-        if (userInfo.requestPosts.length === 0) {
-            return <p>{userInfo.name} has no item requests!</p>
-        }
-        return Promise.all(userInfo.requestPosts.map(async id => {
-            const request = await RequestService.getRequest(id);
-            return <Post post={request} isRequest={true} key={request._id} />;
-        }));
-    }
 
     useEffect(() => {
-
         async function fetchData() {
             // load user info (minus items/requests)
-            let userInfo = await UserService.getUserData(id);
-            userInfo = userInfo.data;
-            setUserInfo(userInfo);
+            let userInfoData = await UserService.getUserData(id);
+            userInfoData = userInfoData.data;
+            setUserInfo(userInfoData);
             setUserLoaded(true);
 
             // load user items
-            const userItems = await loadUserItems(userInfo);
-            setUserItems(userItems);
+            // must use userInfoData instead of userInfo or it doesn't load because of how await works
+            const userItemData = await ItemService.getItemsFromList(userInfoData.postedItems);
+            setUserItems(userItemData);
             setItemsLoaded(true);
 
             // load user requests
-            const userRequests = await loadUserRequests(userInfo);
-            setUserRequests(userRequests);
+            const userRequestData = await RequestService.getRequestsFromList(userInfoData.requestPosts);
+            setUserRequests(userRequestData);
             setRequestsLoaded(true);
         }
 
@@ -287,6 +258,32 @@ const Userpage = () => {
 
     /* --- What to return/render --- */
 
+    // Render list of user's items from userItems (a list of item data jsons)
+    const displayUserItems = () => {
+        if (!itemsLoaded) {
+            return <LoadingSmall />
+        }
+        if (userItems.length === 0) {
+            return <p>{userInfo.name} has no items!</p>
+        }
+        return userItems.map(itemData =>
+            <Post post={itemData} isRequest={false} key={itemData._id} />
+        );
+    }
+
+    // Render list of user's requests from userRequests (a list of request data jsons)
+    const displayUserRequests = () => {
+        if (!requestsLoaded) {
+            return <LoadingSmall />
+        }
+        if (userRequests.length === 0) {
+            return <p>{userInfo.name} has no requests!</p>
+        }
+        return userRequests.map(request =>
+            <Post post={request} isRequest={true} key={request._id} />
+        );
+    }
+
     if (!userLoaded) {
         return (
             <Loading />
@@ -313,12 +310,12 @@ const Userpage = () => {
 
                 <h3 className="item-post-header">{userInfo.name}'s Posted Items</h3>
                 <div className="cardcontainer">
-                    {itemsLoaded ? userItems : "Loading..."}
+                    {displayUserItems()}
                 </div>
 
                 <h3 className="item-post-header">{userInfo.name}'s Item Requests</h3>
                 <div className="cardcontainer">
-                    {requestsLoaded ? userRequests : "Loading..."}
+                    {displayUserRequests()}
                 </div>
             </div>
         </div>
