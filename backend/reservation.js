@@ -137,6 +137,19 @@ router.get("/get-active-reservation/user/:userId", async (req, res) => {
 
 })
 
+//get reservation based on reservId
+
+router.get("/get-reservation-by-id/:reservId", async (req, res) => {
+    try {
+        const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(req.params.reservId) })
+        if (reservation === null) {
+            throw new Error("reservation not found")
+        }
+        res.status(201).json({ success: true, data: reservation })
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
 
 //confirm that item was received
 //req expected:
@@ -159,7 +172,8 @@ router.put('/item-received', async (req, res) => {
 })
 
 
-//get user's reservation for that item
+//get user's reservation for that item 
+//important to display for select item post page
 //if no reservation exists, data = null
 //a user should only have one active reservation for an item at any given moment
 router.get("/get-user-reservation/user/:userId/item/:itemId", async (req, res) => {
@@ -173,12 +187,15 @@ router.get("/get-user-reservation/user/:userId/item/:itemId", async (req, res) =
             const endDate = new Date(reservation.endDate);
             endDate.setHours(0, 0, 0, 0)
 
+            const startDate = new Date(reservation.startDate);
+            startDate.setHours(0, 0, 0, 0)
+
             const curDate = new Date(Date.now());
             curDate.setHours(0, 0, 0, 0)
 
 
             //we should only return one reservation per user per item
-            if (reservation.status && endDate >= curDate && reservation.status === 'active' || reservation.status === 'approved' || reservation.status === 'pending') {
+            if (reservation.status && (endDate >= curDate && startDate <= curDate) && (reservation.status === 'active' || reservation.status === 'approved' || reservation.status === 'pending')) {
                 activeReservation = reservation;
                 count++;
             }
