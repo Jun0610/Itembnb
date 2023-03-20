@@ -1,11 +1,14 @@
 import React from 'react';
 import ReservationService from '../tools/reservationService';
-import {io} from 'socket.io-client';
 import { confirmAlert } from 'react-confirm-alert';
+import { socket } from '../tools/socketService';
+import SocketService from '../tools/socketService';
+import emailjs from '@emailjs/browser';
 
 const BorrowingRequestList = ({brList, item}) => {
 
   const [selectedUser, setSelectedUser] = React.useState(null);
+  const authUser = React.useContext(userContext);
 
   const handleUserRedirect = () => {
     alert("Bring user to another page");
@@ -22,12 +25,29 @@ const BorrowingRequestList = ({brList, item}) => {
                 console.log("Approve!");
                 //await ReservationService.approveRequest(item.itemId, borrowerId).then(() => alert("Successfully approved!")); 
                 // handle email notification or live notification here
-                const socket = io('http://localhost:8888');
-                socket.on('connect', () => console.log(`Connected! Your socket id: ${socket.id}`));
-                socket.emit('emitBruh', {name: 'Kay'});
-                socket.on('emitBack', (response) => {console.log(`${response}`)})
-                socket.on('disconnect', () => console.log(`Disconnected!`));
-                //emailjs.send('service_id', 'template_id', values, 'public_key');
+                SocketService.emit('emitBruh', {name: 'Kay', recipient: 'kay2@kay2'});
+                socket.on('emitBack', (response) => {
+                  if (response === 'success') {
+                    console.log("Live notification success!")
+                  } else {
+                    console.log('Sending email now...')
+                    const service_id = 'service_44uw7yq';
+                    const template_id = 'template_88gvtrr';
+                    const public_key = 'GOFeOE5aTFGzBv1A2';
+                    const body = {
+                      to_name: 'Kay2',
+                      from_name: authUser.user.user.name,
+                      reply_to: authUser.user.user.email,
+                      message: "Kay has approved your borrowing request!",
+                      to_email: 'tmy55770@gmail.com',
+                    }
+                    emailjs.send(service_id, template_id, body, public_key).then((result) => {
+                      console.log(result.text);
+                    }, (error) => {
+                        console.log(error.text);
+                    });
+                  }
+                })
               }
 
           },
@@ -56,7 +76,7 @@ const BorrowingRequestList = ({brList, item}) => {
       <div className='font-bold text-4xl m-3'>Borrowing Request List</div>
       <div className="h-48 overflow-auto grid grid-rows-auto">
       {brList.map((e, i) => (
-        <div key={i+1} onMouseEnter={() => highlightUser(i+1)} onMouseLeave={removeHighlightUser} className={selectedUser && (i+1) == selectedUser ? 'bg-lime-300 m-3 p-3' : 'bg-red-300 m-3 p-3'}>
+        <div key={i+1} onMouseEnter={() => highlightUser(i+1)} onMouseLeave={removeHighlightUser} className={selectedUser && (i+1) === selectedUser ? 'bg-lime-300 m-3 p-3' : 'bg-red-300 m-3 p-3'}>
           <div onClick={() => handleRequestClick(e.borrower.id)} style={{cursor: "pointer"}} className='font-semibold text-lg'>Request {i+1}</div>
           <div className="flex">
             <div className='h-auto w-5/6 object-center'>

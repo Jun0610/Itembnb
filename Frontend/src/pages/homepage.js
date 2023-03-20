@@ -2,9 +2,9 @@ import React, { useEffect, useContext } from "react";
 import Post from "../components/post";
 import Loading from "../components/Loading";
 import userContext from "../contexts/userContext";
-import {io} from 'socket.io-client';
 
 import "../styles/homepage.css";
+import {socket} from "../tools/socketService";
 
 const Homepage = () => {
 
@@ -40,18 +40,13 @@ const Homepage = () => {
     }, []);
 
     useEffect(() => {
-        if (selectedUser && selectedUser.user != null) {  
-            const socket = io('http://localhost:8888');
-            socket.on('connect', () => {
-                console.log(`Connected! Your socket id: ${socket.id}`);
-            });
-            socket.on('emitAnotherUser', (response) => alert(`Hi! ${response}`));
+        if (socket.connected) {
+            console.log('user: ', selectedUser);
+            socket.on(`emitAnotherUser`, (response) => alert(`Hi! ${response}`));
         }
-    }, [selectedUser, selectedUser.user]);
-
+    }, [selectedUser])
 
     if (isLoading || isLoadingItem) return (<Loading />);
-
 
     else
         return (
