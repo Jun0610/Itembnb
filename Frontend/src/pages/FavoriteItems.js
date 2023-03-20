@@ -68,7 +68,7 @@ const FavoriteItems = () => {
                     <button className='btn-mode' onClick={handleViewMode}>{viewMode}</button>
                 </div>
 
-                <div className='container'>
+                <div className='fav-item-page-container'>
                     {favItems.map((item) => (
                         <FavPost key={item._id} post={item} isRequest={false} favItems={favItems} setFavItems={setFavItems} viewMode={viewMode} />
                     ))}

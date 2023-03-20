@@ -18,6 +18,22 @@ class ReservationService {
         }
     }
 
+    static async getActiveReservations(userId) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-active-reservation/user/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            console.log(response);
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 }
 
 export default ReservationService
