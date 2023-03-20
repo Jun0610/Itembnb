@@ -81,7 +81,8 @@ const DisplayItemPost = () => {
             });
         }
 
-        fetchCategories().then(fetchItem()).then(fetchPendingReservations());
+        //fetchCategories().then(fetchItem()).then(fetchPendingReservations());
+        fetchCategories().then(fetchItem());
     }, []);
 
     const onItemChange = (e) => {
@@ -312,8 +313,8 @@ const DisplayItemPost = () => {
                     <button className="btn btn-primary btn-lg m-3" onClick={handleRemoveAllImage} style={{ backgroundColor: "#F0D061", border: "none" }}>Remove all images</button>
                     <div className="grid grid-flow-col auto-cols-max h-60" style={imagesBar.length > 0 ? undefined : { display: "none" }}>
                         {imagesBar.map((imagesrc, i) => (
-                            <div className="ml-3 bg-cyan-700 h-16 w-56" style={{ display: "flex", flexFlow: "row wrap" }}>
-                                <img key={i} src={imagesrc} className="auto" style={{ width: '100%', height: '12rem', objectFit: "cover" }} onDragStart={() => setCurrentImgIdx(i)} draggable="true" />
+                            <div key={i} className="ml-3 bg-cyan-700 h-16 w-56" style={{ display: "flex", flexFlow: "row wrap" }}>
+                                <img src={imagesrc} className="auto" style={{ width: '100%', height: '12rem', objectFit: "cover" }} onDragStart={() => setCurrentImgIdx(i)} draggable="true" />
                                 <i className="fa-solid fa-trash mt-1 icon-3x" style={{ cursor: "pointer" }} onClick={() => handleRemoveImageBar(i)}></i>
                             </div>
                         ))}
@@ -322,7 +323,7 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
-            <BorrowingRequestList brList={pendingReservations} item={item}/>
+            <BorrowingRequestList brList={brList} item={item}/>
         </div>
     )
 }

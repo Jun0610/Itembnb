@@ -23,7 +23,7 @@ class ReservationService {
             fetch(`${url}/approve-reservation/item/${itemId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(item),
+                body: JSON.stringify(itemId, borrowerId),
             }).then(res => res.json()).then((res) => {
                 const data = res.data;
                 resolve(data);
@@ -38,7 +38,7 @@ class ReservationService {
             fetch(`${url}/deny-reservation/item/${itemId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(item),
+                body: JSON.stringify(itemId, borrowerId),
             }).then(res => res.json()).then((res) => {
                 const data = res.data;
                 resolve(data);
