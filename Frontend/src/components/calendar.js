@@ -1,14 +1,17 @@
 import Calendar from 'react-calendar';
 import React from 'react';
 
+import '../styles/calendar.css';
+
 const ItemCalendar = () => {
-    const [value, onChange] = React.useState(new Date());
+    const [date, setDate] = React.useState(new Date());
     
     return (
         <div>
         <Calendar
-            onChange={onChange}
-            value={value}
+            onChange={setDate}
+            value={date}
+            selectRange={true}
         />
         </div>
     );
