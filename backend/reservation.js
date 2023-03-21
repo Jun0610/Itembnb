@@ -126,9 +126,12 @@ router.get("/get-active-reservation/user/:userId", async (req, res) => {
                 activeReservations.push({ item, reservation })
             }
         }
+        if (activeReservations.length === 0) {
+            res.status(201).json({ success: true, data: null });
+        } else {
+            res.status(201).json({ success: true, data: activeReservations });
+        }
 
-
-        res.status(201).json({ success: true, data: activeReservations });
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
     }
@@ -195,7 +198,7 @@ router.get("/get-user-reservation/user/:userId/item/:itemId", async (req, res) =
 
 
             //we should only return one reservation per user per item
-            if (reservation.status && (endDate >= curDate && startDate <= curDate) && (reservation.status === 'active' || reservation.status === 'approved' || reservation.status === 'pending')) {
+            if (reservation.status && (endDate >= curDate) && (reservation.status === 'active' || reservation.status === 'approved' || reservation.status === 'pending')) {
                 activeReservation = reservation;
                 count++;
             }

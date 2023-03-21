@@ -21,7 +21,13 @@ const StatusPage = () => {
                 curUser.login(JSON.parse(sessionStorage.getItem('curUser')));
                 const userId = JSON.parse(sessionStorage.getItem('curUser'))._id;
                 const res = await ReservationService.getActiveReservations(userId);
-                setActiveReservations(res.data)
+                if (res.data === null) {
+                    setActiveReservations(null)
+                } else {
+                    setActiveReservations(res.data)
+                }
+
+
             } catch (err) {
                 console.log(err.message);
             }
@@ -32,7 +38,18 @@ const StatusPage = () => {
     }, [])
 
     console.log(activeReservations);
-    if (activeReservations.length !== 0) {
+
+    if (activeReservations === null) {
+        return (
+            <>
+                <h1>
+                    You have no active reservations yet!
+                </h1>
+            </>
+        )
+    }
+
+    else if (activeReservations.length !== 0) {
         return (
 
             <>
@@ -45,7 +62,8 @@ const StatusPage = () => {
             </>
 
         )
-    } else {
+    }
+    else {
         return <Loading />
     }
 

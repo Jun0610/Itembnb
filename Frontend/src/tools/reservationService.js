@@ -27,7 +27,41 @@ class ReservationService {
             const res = await fetch(`${url}/get-active-reservation/user/${userId}`, request);
             const response = await res.json();
             response.status = res.status
-            console.log(response);
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async getReservation(reservId) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-reservation-by-id/${reservId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+
+    }
+
+    static async itemReceived(reservId) {
+        const request = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: reservId })
+        }
+        try {
+            const res = await fetch(`${url}/item-received`, request);
+            const response = await res.json();
+            response.status = res.status
+            if (response.status !== 201) {
+                throw new Error(response.data)
+            }
             return response
         } catch (err) {
             console.log(err);
