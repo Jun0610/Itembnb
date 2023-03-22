@@ -7,6 +7,7 @@ import CreateItemPost from "./pages/createItemPost";
 import CreateRequest from "./pages/createRequest";
 import DisplayItemPost from "./pages/displayItemPost";
 import DisplayRequestPost from "./pages/displayRequest";
+import Unavailable404 from "./pages/Unavailable404";
 import SignUp from "./pages/signup";
 import Login from "./pages/login";
 import SelectedItemPost from "./pages/selectedItemPost";
@@ -23,6 +24,7 @@ function App() {
                     <Router>
                         <Navbar />
                         <Routes>
+                            <Route path="*" element={<Unavailable404 />} />_
                             <Route exact path="/" element={<Home />} />
                             <Route exact path="/create-item-post" element={<CreateItemPost />} />
                             <Route exact path='/create-item-request' element={<CreateRequest />} />
@@ -31,7 +33,7 @@ function App() {
                             <Route exact path="/signup" element={<SignUp />} />
                             <Route exact path="/login" element={<Login />} />
                             <Route path='/user/:id' element={<UserProfile />} />
-                            <Route exact path="/selected-item-post/:itemId/user/:userId" element={<SelectedItemPost />} />
+                            <Route exact path="/selected-item-post/:itemId" element={<SelectedItemPost />} />
                             <Route exact path="/favorite-items" element={<FavoriteItems />} />
                             <Route exact path='/item-status' element={<StatusPage />}></Route>
                         </Routes>
