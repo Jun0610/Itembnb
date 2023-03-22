@@ -16,10 +16,9 @@ const SelectedItemPost = () => {
 
     //make sure user is logged in and get item details
     useEffect(() => {
-        /*
         if (sessionStorage.getItem('curUser') !== null) {
             authUser.login(JSON.parse(sessionStorage.getItem('curUser')))
-        } */
+        }
         const itemPageSetUp = async () => {
 
             //get item data
