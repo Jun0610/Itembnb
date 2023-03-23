@@ -6,10 +6,7 @@ import SocketService from '../tools/socketService';
 import emailjs from '@emailjs/browser';
 import userContext from '../contexts/userContext';
 import { useNavigate } from 'react-router-dom';
-
-const service_id = 'service_44uw7yq';
-const template_id = 'template_88gvtrr';
-const public_key = 'GOFeOE5aTFGzBv1A2';
+import EmailService from '../tools/emailService';
 
 const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
 
@@ -51,7 +48,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
                 const current_start = resv.startDate.substring(0, 10);
                 const current_end = resv.endDate.substring(0, 10);
                 var result = "";
-                const conflictIds = [];
+                const conflictResvs = [];
                 console.log("brList: ", brList);
                 for (const e of brList) {
                   console.log(`e: ${e._id}, resv: ${resv._id}`)
@@ -63,47 +60,48 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
                       // conflict
                       console.log("conflict")
                       result += `${e.borrower.name} | `;
-                      conflictIds.push(e._id);
+                      conflictResvs.push(e);
                     }
                   }
                 }
 
+                // must make sure there's no conflict in scheduling
                 if (result.length === 0) {
-                  alert("Okay!")
-                } else {
-                  if (window.confirm(`There are conflicts with these other requests:- ${result}. Accepting this request means the other reservations will be deleted. Do you want to proceed?`)) {
-                    onChangeResvList(brList.filter(e => !conflictIds.includes(e._id)))
-                    alert("Okay!")
-                  }
-                }
-
-
-                /*
-                // call backend api here
-                await ReservationService.approveRequest(resv._id, resv.startDate, resv.endDate, item._id).then(() => {
+                  // no conflicts
+                  await ReservationService.approveRequest(resv._id, resv.startDate, resv.endDate, item._id).then(() => {
+                  
                   // handle email notification or live notification here
                   SocketService.emit('emitBruh', {name: authUser.user.user.name, recipient: borrower.email, msg: "approved"});
                   socket.on('emitBack', (response) => {
                     if (response !== 'success') {
-                      const body = {
-                        to_name: borrower.name,
-                        from_name: authUser.user.user.name,
-                        reply_to: authUser.user.user.email,
-                        message: `${authUser.user.user.name} has approved your borrowing request!`,
-                        to_email: borrower.email,
-                      }
-                      emailjs.send(service_id, template_id, body, public_key).then((result) => {
-                        console.log(result.text);
-                      }, (error) => {
-                          console.log(error.text);
-                      });
+                      EmailService.sendEmail(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`);
                     }
                   });
                 }).then(() => {
                   onChangeResvList(brList.filter(e => e._id != resv._id));
                   alert("Successfully approved!");
                 });
-                */
+                } else {
+                  // there are conflicts; must ask for second confirmation
+                  if (window.confirm(`There are conflicts with these other requests:- ${result}. Accepting this request means the other reservations will be deleted. Do you want to proceed?`)) {
+                    // accepting current confirmation; must deny all others on the conflictId array
+                    for (const conflictResv of conflictResvs) {
+
+                      await ReservationService.denyRequest(conflictResv._id, conflictResv.startDate, conflictResv.endDate, item._id).then(() => {
+                        // handle email notification or live notification here
+                        SocketService.emit('emitBruh', {name: authUser.user.user.name, recipient: conflictResv.borrower.email, msg: "denied"});
+                        socket.on('emitBack', (response) => {
+                          if (response === 'success') {
+                            EmailService.sendEmail(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`);
+                          }
+                        });
+                      })
+                    }
+
+                    onChangeResvList(brList.filter(e => !conflictIds.includes(e._id) || e._id === resv._id))
+                    alert("Okay!")
+                  }
+                }
               }
 
           },
@@ -116,20 +114,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
                   SocketService.emit('emitBruh', {name: authUser.user.user.name, recipient: borrower.email, msg: "denied"});
                   socket.on('emitBack', (response) => {
                     if (response === 'success') {
-                      console.log("Live notification success!")
-                    } else {
-                      const body = {
-                        to_name: borrower.name,
-                        from_name: authUser.user.user.name,
-                        reply_to: authUser.user.user.email,
-                        message: `${authUser.user.user.name} has denied your borrowing request!`,
-                        to_email: borrower.email,
-                      }
-                      emailjs.send(service_id, template_id, body, public_key).then((result) => {
-                        console.log(result.text);
-                      }, (error) => {
-                          console.log(error.text);
-                      });
+                      EmailService.sendEmail(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`);
                     }
                   });
                 }).then(() => {
