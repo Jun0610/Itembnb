@@ -33,9 +33,20 @@
     '. img'
     '. img';
     max-width: 600px;
-    margin: 10px
+    margin: 10px;
+
+    border: 1px solid #777777;
+    border-radius: 10px;
+    padding: 15px;
 }
 
+.owner a {
+    text-decoration: none;
+    color: inherit;
+}
+.owner a:hover {
+    text-decoration: underline;
+}
 
 .about-owner {
     padding-top: 10px;

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/post.css';
-import itemContext from '../contexts/itemContext';
 import userContext from '../contexts/userContext';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,8 +14,6 @@ const Post = ({ post, isRequest }) => {
 
     const rating = 4;
 
-    const selectedItem = useContext(itemContext);
-    console.log(selectedItem);
     const selectedUser = useContext(userContext);
     console.log(selectedUser);
 
@@ -45,11 +42,7 @@ const Post = ({ post, isRequest }) => {
 
     const handleClick = () => {
         if (!isRequest) {
-            console.log('clicked');
-            console.log(post);
-            console.log(selectedItem);
-            selectedItem.setSelectedItem(post);
-            nav(`/selected-item-post/${post._id}/user/${selectedUser.user.user._id}`);
+            nav(`/selected-item-post/${post._id}`)
         }
         else {
             nav(`/display-request-post/${post._id}`)
@@ -58,7 +51,6 @@ const Post = ({ post, isRequest }) => {
 
     const handleOwnerClick = () => {
         if (!isRequest) {
-            selectedItem.setSelectedItem(post);
             nav(`/display-item-post/${post._id}`);
         }
         else {
