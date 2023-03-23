@@ -42,24 +42,20 @@ const io = socketIo(server, {
 })
 
 io.on('connection', (socket) => {
-    console.log("client connected: ", socket.id);
-
+    
     socket.on('sendId', (response) => {
-        console.log(`Got this response: ${response}`);
         socket.join(`${response}`);
         connectedUsers.push(response);
     })
 
     socket.on('emitBruh', (response) => {
-        console.log(`${response['name']} wants to send a message to ${response['recipient']}`);
-
         if (connectedUsers && connectedUsers.find((e) => e === response['recipient'])) {
             // user is online; give live notification
-            io.to(`${response['recipient']}`).emit('emitAnotherUser', 'Someone pinged u!');
+            io.to(`${response['recipient']}`).emit('emitAnotherUser', `${response['name']} has ${response['msg']} your request!`);
             socket.emit('emitBack', 'success');
         } else {
             // user is not online; give email notification instead
-            socket.emit('emitBack', 'kay2@kay2');
+            socket.emit('emitBack', response['recipient']);
         }
     })
     

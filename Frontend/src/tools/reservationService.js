@@ -62,48 +62,56 @@ class ReservationService {
             if (response.status !== 201) {
                 throw new Error(response.data)
             }
+        } catch (err) {
+            console.log(err);
+        }
     }
 
-    static async approveRequest(itemId, borrowerId) {
-        return new Promise((resolve, reject) => {
-            fetch(`${url}/approve-reservation/item/${itemId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(itemId, borrowerId),
-            }).then(res => res.json()).then((res) => {
-                const data = res.data;
-                resolve(data);
-            }).catch((err) => {
-                reject(err);
-            })
-        })
+    static async approveRequest(reservId, startDate, endDate, itemId) {
+        const request = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: reservId, startDate: startDate, endDate: endDate, itemId: itemId})
+        }
+        try {
+            const res = await fetch(`${url}/approve-reservation`, request);
+            const response = await res.json();
+            response.status = res.status
+            if (response.status !== 201) {
+                throw new Error(response.data)
+            }
+        } catch (err) {
+            console.log(err);
+        }
     }
 
-    static async denyRequest(itemId, borrowerId) {
-        return new Promise((resolve, reject) => {
-            fetch(`${url}/deny-reservation/item/${itemId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(itemId, borrowerId),
-            }).then(res => res.json()).then((res) => {
-                const data = res.data;
-                resolve(data);
-            }).catch((err) => {
-                reject(err);
-            })
-        })
+    static async denyRequest(reservId, startDate, endDate, itemId) {
+        const request = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: reservId, startDate: startDate, endDate: endDate, itemId: itemId})
+        }
+        try {
+            const res = await fetch(`${url}/deny-reservation`, request);
+            const response = await res.json();
+            response.status = res.status
+            if (response.status !== 201) {
+                throw new Error(response.data)
+            }
+        } catch (err) {
+            console.log(err);
+        }
     }
 
-    static async getAllReservationRequest(itemId) {
+    static async getPendingReservations(itemId) {
         const request = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         }
         try {
-            const res = await fetch(`${url}/get-all-reservations/${itemId}`, request);
+            const res = await fetch(`${url}/get-pending-reservations/${itemId}`, request);
             const response = await res.json();
-            response.status = res.status
-            console.log(response);
+            response.status = res.status;
             return response;
         } catch (err) {
             console.log(err);

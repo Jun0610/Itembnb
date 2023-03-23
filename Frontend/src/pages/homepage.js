@@ -41,8 +41,7 @@ const Homepage = () => {
 
     useEffect(() => {
         if (socket.connected) {
-            console.log('user: ', selectedUser);
-            socket.on(`emitAnotherUser`, (response) => alert(`Hi! ${response}`));
+            socket.on(`emitAnotherUser`, (response) => alert(`${response}`));
         }
     }, [selectedUser])
 

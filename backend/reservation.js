@@ -273,8 +273,8 @@ router.get("/get-pending-reservations/:itemId", async (req, res) => {
         const result = [];
 
         for (const itemPL of itemPendingList) {
-            const reserv = await db.collection("reservation").findOne({_id: new mongo.ObjectId(itemPL.reservId)});
-            const borrower = await db.collection("users").findOne({_id: reserv.borrowerId});
+            const reserv = await db.collection("reservations").findOne({_id: new mongo.ObjectId(itemPL.reservId)});
+            const borrower = await db.collection("users").findOne({_id: new mongo.ObjectId(reserv.borrowerId)});
             result.push({
                 ...reserv,
                 borrower: borrower
@@ -282,6 +282,7 @@ router.get("/get-pending-reservations/:itemId", async (req, res) => {
         }
         res.status(200).json({ success: true, data: result });
     } catch (err) {
+        console.log(err);
         res.status(404).json({ success: false, data: err.message })
     }
 })

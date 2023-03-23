@@ -8,39 +8,6 @@ import userContext from '../contexts/userContext';
 import BorrowingRequestList from '../components/borrowingRequestList';
 import ReservationService from '../tools/reservationService';
 
-const brList = [
-    {
-        start_date: "04-13-2023", 
-        end_date: "04-14-2023",
-        borrower: {
-            id: 1, 
-            name: 'Borrower 1',
-            email: 'Borrower1@gmail.com',
-        }
-    },
-    {
-        
-        start_date: "04-15-2023", 
-        end_date: "04-16-2023",
-        borrower: {
-            id: 1, 
-            name: 'Borrower 2',
-            email: 'Borrower2@gmail.com',
-        }
-    },
-    {
-        
-        start_date: "04-17-2023", 
-        end_date: "04-18-2023",
-        borrower: {
-            id: 1, 
-            name: 'Borrower 3',
-            email: 'Borrower3@gmail.com',
-        }
-    },
-  ];
-
-
 const DisplayItemPost = () => {
     const { id } = useParams();
     const [item, setItem] = React.useState({});
@@ -76,13 +43,14 @@ const DisplayItemPost = () => {
         }
 
         async function fetchPendingReservations() {
-            await ReservationService.getAllReservationRequest(id).then((data) => {
+            await ReservationService.getPendingReservations(id).then((data) => {
+                console.log(data.data);
                 setPendingReservations(data.data);
             });
         }
 
-        //fetchCategories().then(fetchItem()).then(fetchPendingReservations());
-        fetchCategories().then(fetchItem());
+        fetchCategories().then(fetchItem()).then(fetchPendingReservations());
+        //fetchCategories().then(fetchItem());
     }, []);
 
     const onItemChange = (e) => {
@@ -255,7 +223,10 @@ const DisplayItemPost = () => {
             alert("Please make sure to select at most 3 categories!");
         }
         editItem();
+    }
 
+    const onChangeResvList = (newPendingList) => {
+        setPendingReservations(newPendingList);
     }
 
     return (
@@ -323,7 +294,7 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
-            <BorrowingRequestList brList={brList} item={item}/>
+            <BorrowingRequestList brList={pendingReservations} item={item} onChangeResvList={onChangeResvList}/>
         </div>
     )
 }
