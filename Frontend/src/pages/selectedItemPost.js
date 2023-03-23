@@ -125,18 +125,6 @@ const SelectedItemPost = () => {
                                 <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
                             </div>
                         </div>
-<<<<<<< HEAD
-                        <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
-                            <h1>Placeholder for future components</h1>
-                            <h1>Placeholder for future components</h1>
-                            <h1>Placeholder for future components</h1>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-=======
->>>>>>> 558534d056a7b8ddd4602fed0d6ce3e4eb59c03f
 
                         {reservationInfo()}
                     </div>
