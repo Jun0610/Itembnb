@@ -5,12 +5,58 @@ import { confirmAlert } from 'react-confirm-alert';
 import { useParams, useNavigate } from "react-router-dom";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
+import BorrowingRequestList from '../components/borrowingRequestList';
+import ReservationService from '../tools/reservationService';
+
+const brList = [
+    {
+        _id: 1,
+        startDate: "2023-04-13", 
+        endDate: "2023-04-14",
+        borrower: {
+            _id: 1, 
+            name: 'Borrower 1',
+            email: 'Borrower1@gmail.com',
+        }
+    },
+    {
+        _id: 2,
+        startDate: "2023-04-10", 
+        endDate: "2023-04-16",
+        borrower: {
+            _id: 2, 
+            name: 'Borrower 2',
+            email: 'Borrower2@gmail.com',
+        }
+    },
+    {
+        _id: 3,
+        startDate: "2023-04-13", 
+        endDate: "2023-04-18",
+        borrower: {
+            _id: 3, 
+            name: 'Borrower 3',
+            email: 'Borrower3@gmail.com',
+        }
+    },
+    {
+        _id: 4,
+        startDate: "2023-05-13", 
+        endDate: "2023-05-18",
+        borrower: {
+            _id: 4, 
+            name: 'Borrower 4',
+            email: 'Borrower4@gmail.com',
+        }
+    },
+  ];
 
 const DisplayItemPost = () => {
     const { id } = useParams();
     const [item, setItem] = React.useState({});
     const [isEditing, setIsEditing] = React.useState(false);
     const [categories, setCategories] = React.useState([]);
+    const [pendingReservations, setPendingReservations] = React.useState([]);
 
     const [imagesBar, setImagesBar] = React.useState([]);
     const [imagesBarFile, setImagesBarFile] = React.useState([]);
@@ -39,7 +85,16 @@ const DisplayItemPost = () => {
             });
         }
 
-        fetchCategories().then(fetchItem());
+        async function fetchPendingReservations() {
+            /*await ReservationService.getPendingReservations(id).then((data) => {
+                console.log(data.data);
+                setPendingReservations(data.data);
+            });*/
+            setPendingReservations(brList);
+        }
+
+        fetchCategories().then(fetchItem()).then(fetchPendingReservations());
+        //fetchCategories().then(fetchItem());
     }, []);
 
     const onItemChange = (e) => {
@@ -212,7 +267,10 @@ const DisplayItemPost = () => {
             alert("Please make sure to select at most 3 categories!");
         }
         editItem();
+    }
 
+    const onChangeResvList = (newPendingList) => {
+        setPendingReservations(newPendingList);
     }
 
     return (
@@ -270,8 +328,8 @@ const DisplayItemPost = () => {
                     <button className="btn btn-primary btn-lg m-3" onClick={handleRemoveAllImage} style={{ backgroundColor: "#F0D061", border: "none" }}>Remove all images</button>
                     <div className="grid grid-flow-col auto-cols-max h-60" style={imagesBar.length > 0 ? undefined : { display: "none" }}>
                         {imagesBar.map((imagesrc, i) => (
-                            <div className="ml-3 bg-cyan-700 h-16 w-56" style={{ display: "flex", flexFlow: "row wrap" }}>
-                                <img key={i} src={imagesrc} className="auto" style={{ width: '100%', height: '12rem', objectFit: "cover" }} onDragStart={() => setCurrentImgIdx(i)} draggable="true" />
+                            <div key={i} className="ml-3 bg-cyan-700 h-16 w-56" style={{ display: "flex", flexFlow: "row wrap" }}>
+                                <img src={imagesrc} className="auto" style={{ width: '100%', height: '12rem', objectFit: "cover" }} onDragStart={() => setCurrentImgIdx(i)} draggable="true" />
                                 <i className="fa-solid fa-trash mt-1 icon-3x" style={{ cursor: "pointer" }} onClick={() => handleRemoveImageBar(i)}></i>
                             </div>
                         ))}
@@ -280,6 +338,7 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
+            <BorrowingRequestList brList={pendingReservations} item={item} onChangeResvList={onChangeResvList}/>
         </div>
     )
 }

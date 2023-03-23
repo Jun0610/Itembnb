@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/login.css";
 import userContext from "../contexts/userContext";
 import { useNavigate } from "react-router-dom";
+import SocketService, {socket} from "../tools/socketService";
 
 const Login = () => {
     const [email, setEmail] = useState(null);
@@ -40,6 +41,10 @@ const Login = () => {
 
                     authUser.login(data.data);
                     sessionStorage.setItem('curUser', JSON.stringify(data.data));
+
+                    // set socket connection with server
+                    SocketService.connect();
+                    socket.emit('sendId', email);
                 });
             } else {
                 console.log("failure");

@@ -7,7 +7,8 @@
 .progress-bar{
     /* needed for float to work */
     display: block;
-    
+    padding-bottom: 1rem;
+    font-weight: 600;
 }
 
 .progress-bar li {
@@ -17,7 +18,24 @@
     position: relative;
     text-align: center;
     margin-top: 10px;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
+}
+
+.progress-bar .stat-btn {
+    /* box-shadow: 0 2px 10px rgb(0 0 0 / 0.2); */
+    border: 1.5px solid #ddd;
+    border-radius: 1rem;
+    width: 30%;
+    padding: 10px;
+    justify-self: center;
+    
+}
+
+.none .stat-btn:hover {
+    border-color: #ffe600;
+    background-color: #ffe600;
+    transform: scale(1.03);
+    transition: transform 0.5s;
 }
 
 .progress-bar li::before {
@@ -48,7 +66,7 @@
 }
 
 .approved {
-    color: #ffe600;
+    color: black;
     font-weight: 800;
 
 }
@@ -64,19 +82,31 @@
 }
 
 .received {
-    color: #ffe600;
+    color: black;
     font-weight: 800;
 
 }
 
+.received .stat-btn{
+    border-color: #ffe600;
+    font-weight: 800;
+
+}
+
+.received .stat-btn::hover{
+    cursor: pointer;
+}
+
+
 .progress-bar li.received::before {
     background-color: #ffe600;
     border-color: #ffe600;
+    transition: background-color 1s ease;
 }
 
 .progress-bar li.received + li:after {
     background-color: #ffe600;
-
+    transition: background-color 1s ease;
 }
 
 

@@ -210,9 +210,9 @@ const Userpage = () => {
                     <h1>Editing Your Profile</h1>
 
                     <div className="add_padding">
-                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2" onClick={() => handleEditProfile()}>Save Changes</button>
-                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2" onClick={() => handleEditCancel()}>Cancel</button>
-                        <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" onClick={() => handleDeleteUser()}>Delete Account</button>
+                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditProfile()}>Save Changes</button>
+                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditCancel()}>Cancel</button>
+                        <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleDeleteUser()}>Delete Account</button>
                     </div>
 
                     <label className="font-bold" style={{ color: "#F0D061" }}>Avatar (click to upload)</label>
@@ -246,7 +246,7 @@ const Userpage = () => {
                                 <p><Link to="/favorite-items">Welcome, {userInfo.name}! See your favorite items!</Link></p>
 
                                 <div className="add_padding">
-                                    <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2" onClick={() => handleEditProfile()}>Edit Profile</button>
+                                    <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditProfile()}>Edit Profile</button>
                                 </div>
                             </span>
                         )}
