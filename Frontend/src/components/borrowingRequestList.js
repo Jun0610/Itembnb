@@ -37,8 +37,8 @@ const BorrowingRequestList = ({brList, item}) => {
                     const public_key = 'GOFeOE5aTFGzBv1A2';
                     const body = {
                       to_name: 'Kay2',
-                      from_name: authUser.user.user.name,
-                      reply_to: authUser.user.user.email,
+                      from_name: 'Kay',
+                      reply_to: 'jenteiny333@gmail.com',
                       message: "Kay has approved your borrowing request!",
                       to_email: 'tmy55770@gmail.com',
                     }
