@@ -4,16 +4,19 @@ import Loading from '../components/Loading';
 import userContext from '../contexts/userContext';
 import ReservationService from '../tools/reservationService'
 import StatusTracker from '../components/StatusTracker'
+import { useNavigate } from 'react-router-dom';
 
 
 
 const StatusPage = () => {
     const [activeReservations, setActiveReservations] = useState([]);
+    const nav = useNavigate();
 
     const curUser = useContext(userContext);
     useEffect(() => {
         async function onLoad() {
             if (sessionStorage.getItem('curUser') === null) {
+                nav('/')
                 return
             }
 
