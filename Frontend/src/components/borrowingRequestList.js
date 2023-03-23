@@ -21,6 +21,23 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
     nav(`/user/${borrowerId}`);
   }
 
+  const greaterAndEqualThan = (dateA, dateB) => {
+    const a_yr = dateA.substring(0, 4);
+    const a_mth = dateA.substring(5, 7);
+    const a_day = dateA.substring(8, 10);
+    const b_yr = dateB.substring(0, 4);
+    const b_mth = dateB.substring(5, 7);
+    const b_day = dateB.substring(8, 10);
+    console.log(`(A) ${a_yr}, ${a_mth}, ${a_day}`);
+    console.log(`(B) ${b_yr}, ${b_mth}, ${b_day}`);
+    if (a_yr === b_yr) {
+      if (a_mth === b_mth) {
+        if (a_day === b_mth) return true
+        else return a_day.localeCompare(b_day) === 1
+      } else return a_mth.localeCompare(b_mth) === 1
+    } else return a_yr.localeCompare(b_yr) === 1
+  }
+
   const handleRequestClick = (resv, borrower) => {
     confirmAlert({
       title: 'Approve/Deny Borrowing Request',
@@ -29,7 +46,39 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
           {
               label: 'Approve',
               onClick: async () => { 
-                console.log("Approve!");
+                
+                // check dates
+                const current_start = resv.startDate.substring(0, 10);
+                const current_end = resv.endDate.substring(0, 10);
+                var result = "";
+                const conflictIds = [];
+                console.log("brList: ", brList);
+                for (const e of brList) {
+                  console.log(`e: ${e._id}, resv: ${resv._id}`)
+                  if (e._id !== resv._id) {
+                    const e_start = e.startDate.substring(0, 10);
+                    const e_end = e.endDate.substring(0, 10);
+                    // conflict if this reserv's end date is between, or this reserv's start date is between
+                    if ((greaterAndEqualThan(e_end, current_end) && greaterAndEqualThan(current_end, e_start)) || (greaterAndEqualThan(current_start, e_start) && greaterAndEqualThan(e_end, current_start)) || (greaterAndEqualThan(current_end, e_end) && greaterAndEqualThan(e_end, current_start)) || (greaterAndEqualThan(e_start, current_start) && greaterAndEqualThan(current_end, e_start))) {
+                      // conflict
+                      console.log("conflict")
+                      result += `${e.borrower.name} | `;
+                      conflictIds.push(e._id);
+                    }
+                  }
+                }
+
+                if (result.length === 0) {
+                  alert("Okay!")
+                } else {
+                  if (window.confirm(`There are conflicts with these other requests:- ${result}. Accepting this request means the other reservations will be deleted. Do you want to proceed?`)) {
+                    onChangeResvList(brList.filter(e => !conflictIds.includes(e._id)))
+                    alert("Okay!")
+                  }
+                }
+
+
+                /*
                 // call backend api here
                 await ReservationService.approveRequest(resv._id, resv.startDate, resv.endDate, item._id).then(() => {
                   // handle email notification or live notification here
@@ -54,6 +103,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
                   onChangeResvList(brList.filter(e => e._id != resv._id));
                   alert("Successfully approved!");
                 });
+                */
               }
 
           },
