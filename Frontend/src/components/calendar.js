@@ -49,7 +49,10 @@ const ItemCalendar = () => {
     }   
 
     const makeReq = () => {
-        console.log(date);
+        if (!date) {
+            alert("Please select a date range");
+            return;
+        }
         if (selectedItem.item.unavailList) {
             for (let i = 0; i < selectedItem.item.unavailList.length; i++) {
                 let date1 = new Date(selectedItem.item.unavailList[i].startDate);
@@ -57,9 +60,20 @@ const ItemCalendar = () => {
                 
                 if (inDateRange(date1, date[0], date[1]) || inDateRange(date2, date[0], date[1])) 
                     alert("Item is unavailable on this date");
+                    return;
             }
         }
-                    
+        fetch('http://localhost:8888/api/reservation/make-reservation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(
+                {userId: authUser.user._id, 
+                itemId: selectedItem.item._id, 
+                startDate: date[0], 
+                endDate: date[1]})
+        }) 
     }
 
     return (
