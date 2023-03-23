@@ -17,7 +17,7 @@ class ReservationService {
             console.log(err);
         }
     }
-
+    
     static async getActiveReservations(userId) {
         const request = {
             method: 'GET',
@@ -62,7 +62,49 @@ class ReservationService {
             if (response.status !== 201) {
                 throw new Error(response.data)
             }
-            return response
+    }
+
+    static async approveRequest(itemId, borrowerId) {
+        return new Promise((resolve, reject) => {
+            fetch(`${url}/approve-reservation/item/${itemId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(itemId, borrowerId),
+            }).then(res => res.json()).then((res) => {
+                const data = res.data;
+                resolve(data);
+            }).catch((err) => {
+                reject(err);
+            })
+        })
+    }
+
+    static async denyRequest(itemId, borrowerId) {
+        return new Promise((resolve, reject) => {
+            fetch(`${url}/deny-reservation/item/${itemId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(itemId, borrowerId),
+            }).then(res => res.json()).then((res) => {
+                const data = res.data;
+                resolve(data);
+            }).catch((err) => {
+                reject(err);
+            })
+        })
+    }
+
+    static async getAllReservationRequest(itemId) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-all-reservations/${itemId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            console.log(response);
+            return response;
         } catch (err) {
             console.log(err);
         }
@@ -70,4 +112,4 @@ class ReservationService {
 
 }
 
-export default ReservationService
+export default ReservationService;

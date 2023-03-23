@@ -184,7 +184,7 @@ router.get("/get-user-reservation/user/:userId/item/:itemId", async (req, res) =
         const reservations = await db.collection("reservations").find({ userId: req.params.userId, itemId: req.params.itemId }).toArray();
         let activeReservation = null;
         let count = 0;
-        for (reservation of reservations) {
+        for (const reservation of reservations) {
             //creates a deep copy of the endDate 
             //we set hours to 0, 0, 0, 0 to strictly compare dates
             const endDate = new Date(reservation.endDate);
@@ -258,6 +258,29 @@ router.delete("/delete-reservation/:reservId", async (req, res) => {
         await db.collection("reservations").deleteOne({ _id: new mongo.ObjectId(req.params.reservId) });
 
         res.status(200).json({ success: true, data: "reservation successfully deleted." })
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+// get the pending list of an item + borrowers
+router.get("/get-pending-reservations/:itemId", async (req, res) => {
+    try {
+        // get the item's pending list
+        const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(req.params.itemId) });
+
+        const itemPendingList = item.pendingList;
+        const result = [];
+
+        for (const itemPL of itemPendingList) {
+            const reserv = await db.collection("reservation").findOne({_id: new mongo.ObjectId(itemPL.reservId)});
+            const borrower = await db.collection("users").findOne({_id: reserv.borrowerId});
+            result.push({
+                ...reserv,
+                borrower: borrower
+            });
+        }
+        res.status(200).json({ success: true, data: result });
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
     }

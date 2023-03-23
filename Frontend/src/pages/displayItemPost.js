@@ -5,12 +5,48 @@ import { confirmAlert } from 'react-confirm-alert';
 import { useParams, useNavigate } from "react-router-dom";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
+import BorrowingRequestList from '../components/borrowingRequestList';
+import ReservationService from '../tools/reservationService';
+
+const brList = [
+    {
+        start_date: "04-13-2023", 
+        end_date: "04-14-2023",
+        borrower: {
+            id: 1, 
+            name: 'Borrower 1',
+            email: 'Borrower1@gmail.com',
+        }
+    },
+    {
+        
+        start_date: "04-15-2023", 
+        end_date: "04-16-2023",
+        borrower: {
+            id: 1, 
+            name: 'Borrower 2',
+            email: 'Borrower2@gmail.com',
+        }
+    },
+    {
+        
+        start_date: "04-17-2023", 
+        end_date: "04-18-2023",
+        borrower: {
+            id: 1, 
+            name: 'Borrower 3',
+            email: 'Borrower3@gmail.com',
+        }
+    },
+  ];
+
 
 const DisplayItemPost = () => {
     const { id } = useParams();
     const [item, setItem] = React.useState({});
     const [isEditing, setIsEditing] = React.useState(false);
     const [categories, setCategories] = React.useState([]);
+    const [pendingReservations, setPendingReservations] = React.useState([]);
 
     const [imagesBar, setImagesBar] = React.useState([]);
     const [imagesBarFile, setImagesBarFile] = React.useState([]);
@@ -39,6 +75,13 @@ const DisplayItemPost = () => {
             });
         }
 
+        async function fetchPendingReservations() {
+            await ReservationService.getAllReservationRequest(id).then((data) => {
+                setPendingReservations(data.data);
+            });
+        }
+
+        //fetchCategories().then(fetchItem()).then(fetchPendingReservations());
         fetchCategories().then(fetchItem());
     }, []);
 
@@ -270,8 +313,8 @@ const DisplayItemPost = () => {
                     <button className="btn btn-primary btn-lg m-3" onClick={handleRemoveAllImage} style={{ backgroundColor: "#F0D061", border: "none" }}>Remove all images</button>
                     <div className="grid grid-flow-col auto-cols-max h-60" style={imagesBar.length > 0 ? undefined : { display: "none" }}>
                         {imagesBar.map((imagesrc, i) => (
-                            <div className="ml-3 bg-cyan-700 h-16 w-56" style={{ display: "flex", flexFlow: "row wrap" }}>
-                                <img key={i} src={imagesrc} className="auto" style={{ width: '100%', height: '12rem', objectFit: "cover" }} onDragStart={() => setCurrentImgIdx(i)} draggable="true" />
+                            <div key={i} className="ml-3 bg-cyan-700 h-16 w-56" style={{ display: "flex", flexFlow: "row wrap" }}>
+                                <img src={imagesrc} className="auto" style={{ width: '100%', height: '12rem', objectFit: "cover" }} onDragStart={() => setCurrentImgIdx(i)} draggable="true" />
                                 <i className="fa-solid fa-trash mt-1 icon-3x" style={{ cursor: "pointer" }} onClick={() => handleRemoveImageBar(i)}></i>
                             </div>
                         ))}
@@ -280,6 +323,7 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
+            <BorrowingRequestList brList={brList} item={item}/>
         </div>
     )
 }

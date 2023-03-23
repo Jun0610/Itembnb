@@ -4,6 +4,7 @@ import Loading from "../components/Loading";
 import userContext from "../contexts/userContext";
 
 import "../styles/homepage.css";
+import {socket} from "../tools/socketService";
 
 const Homepage = () => {
 
@@ -38,9 +39,14 @@ const Homepage = () => {
         getRequestPosts();
     }, []);
 
+    useEffect(() => {
+        if (socket.connected) {
+            console.log('user: ', selectedUser);
+            socket.on(`emitAnotherUser`, (response) => alert(`Hi! ${response}`));
+        }
+    }, [selectedUser])
 
     if (isLoading || isLoadingItem) return (<Loading />);
-
 
     else
         return (

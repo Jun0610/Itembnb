@@ -7,13 +7,13 @@ import ReservationService from "../tools/reservationService";
 import Loading from "../components/Loading";
 import "../styles/itempost.css";
 
-
 const SelectedItemPost = () => {
 
     const selectedItem = useContext(itemContext);
     const authUser = useContext(userContext);
     const [owner, setOwner] = useState({});
     const [userReserv, setUserReserv] = useState({});
+
 
     //make sure user is logged in and get item details
     useEffect(() => {
@@ -181,7 +181,6 @@ const SelectedItemPost = () => {
                             </div>
                         </div>
                         <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
-                            <h1>Placeholder for future components</h1>
                             <h1>Placeholder for future components</h1>
                             <h1>Placeholder for future components</h1>
                             <h1>Placeholder for future components</h1>
