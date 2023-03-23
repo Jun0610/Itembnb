@@ -12,6 +12,15 @@ complete (when the item has been returned to the lender)
 */
 
 //makes user reservation
+//req expected:
+/*
+{
+    userId: the user's id
+    itemId: the item's id
+    startDate: the reservation's start date
+    endDate: the reservation's end date
+}
+*/
 router.post("/make-reservation", async (req, res) => {
     try {
         //add reservation to reservations collection
@@ -41,17 +50,30 @@ router.post("/make-reservation", async (req, res) => {
 })
 
 //approve reservation
-router.put("/approve-reservation/item/:itemId", async (req, res) => {
+//req expected:
+/*
+{
+    id: the reservation id
+    itemId: the item's id
+    startDate: the reservation's start date
+    endDate: the reservation's end date
+}
+*/
+router.put("/approve-reservation", async (req, res) => {
     try {
 
+        req.body.startDate = new Date(req.body.startDate);
+        req.body.endDate = new Date(req.body.endDate);
+
+
         //update reservation status to approved
-        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { status: "approved" })
+        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "approved" } })
 
         //remove reservation from item's pendingList
-        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.params.itemId) }, { $pull: { pendingList: { reservId: req.body.id } } })
+        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $pull: { pendingList: { reservId: req.body.id } } })
 
         //then add reservation to item's unavailList
-        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.params.itemId) }, { $push: { unavailList: { startDate: req.body.startDate, endDate: req.body.endDate, reservId: req.body.id } } })
+        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $push: { unavailList: { startDate: req.body.startDate, endDate: req.body.endDate, reservId: req.body.id } } })
 
         res.status(201).json({ success: true, data: "successfully approved reservation" });
     } catch (err) {
@@ -60,12 +82,101 @@ router.put("/approve-reservation/item/:itemId", async (req, res) => {
 })
 
 //deny reservation
+//req expected:
+/*
+{
+    id: the reservation id
+    itemId: the item's id
+    startDate: the reservation's start date
+    endDate: the reservation's end date
+}
+*/
+router.put("/deny-reservation", async (req, res) => {
+    try {
+
+        //update reservation status to denied
+        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "denied" } })
+
+        //remove reservation from item's pendingList
+        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $pull: { pendingList: { reservId: req.body.id } } })
 
 
-//activate reservation
+        res.status(201).json({ success: true, data: "successfully denied reservation" });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+//gets active reservation and item associated with that reservation
+//returns:
+/*
+[{
+    item: item
+    reservation: reservation
+}]
+*/
+router.get("/get-active-reservation/user/:userId", async (req, res) => {
+    try {
+        const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) });
+        const activeReservations = [];
+        for (const reservId of user.reservHist) {
+            const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(reservId) })
+            if (reservation.status === "approved" || reservation.status === "active") {
+                const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
+                activeReservations.push({ item, reservation })
+            }
+        }
+        if (activeReservations.length === 0) {
+            res.status(201).json({ success: true, data: null });
+        } else {
+            res.status(201).json({ success: true, data: activeReservations });
+        }
+
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
 
 
-//get user's reservation for that item
+
+})
+
+//get reservation based on reservId
+
+router.get("/get-reservation-by-id/:reservId", async (req, res) => {
+    try {
+        const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(req.params.reservId) })
+        if (reservation === null) {
+            throw new Error("reservation not found")
+        }
+        res.status(201).json({ success: true, data: reservation })
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+//confirm that item was received
+//req expected:
+/*
+{
+    id: the reservation id
+}
+*/
+router.put('/item-received', async (req, res) => {
+    try {
+
+        //update reservation status to active
+        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "active" } })
+
+
+        res.status(201).json({ success: true, data: "successfully confirmed that item was received" });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+
+//get user's reservation for that item 
+//important to display for select item post page
 //if no reservation exists, data = null
 //a user should only have one active reservation for an item at any given moment
 router.get("/get-user-reservation/user/:userId/item/:itemId", async (req, res) => {
@@ -79,12 +190,15 @@ router.get("/get-user-reservation/user/:userId/item/:itemId", async (req, res) =
             const endDate = new Date(reservation.endDate);
             endDate.setHours(0, 0, 0, 0)
 
+            const startDate = new Date(reservation.startDate);
+            startDate.setHours(0, 0, 0, 0)
+
             const curDate = new Date(Date.now());
             curDate.setHours(0, 0, 0, 0)
 
 
             //we should only return one reservation per user per item
-            if (reservation.status && endDate >= curDate && reservation.status === 'active' || reservation.status === 'approved' || reservation.status === 'pending') {
+            if (reservation.status && (endDate >= curDate) && (reservation.status === 'active' || reservation.status === 'approved' || reservation.status === 'pending')) {
                 activeReservation = reservation;
                 count++;
             }

@@ -1,71 +1,21 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
+import UserService from '../tools/userService';
 import ItemService from '../tools/itemsService';
 import RequestService from '../tools/requestService';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Loading from "../components/Loading";
-import Post from "../components/post";
+import { Loading, LoadingSmall } from "../components/Loading";
 import userContext from '../contexts/userContext';
+import Post from "../components/post";
 
 import "../styles/homepage.css";
 import "../styles/userpage.css";
 
-const url = "http://localhost:8888/api/user";
-
-async function getUser(id) {
-    console.log(url + "/profile-data/" + id);
-    return new Promise((resolve, reject) => {
-        fetch(`${url}/profile-data/${id}`)
-            .then(res => res.json())
-            .then((res) => {
-                const data = res.data;
-                console.log(res.data);
-                resolve(data);
-            }).catch((err) => {
-                reject(err);
-            })
-    })
-}
-
-async function editProfile(newUserInfo, id) {
-    console.log("edit a profile " + id);
-    return new Promise((resolve, reject) => {
-        fetch(`${url}/edit-profile/${id}`, {
-            method: 'put',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify(newUserInfo),
-        }).then(res => res.json()).then(
-            (result) => {
-                console.log("edit res", result);
-                resolve(result);
-            }
-        ).catch((err) => {
-            reject(err);
-        })
-    })
-}
-
-async function deleteUser(id) {
-    return new Promise((resolve, reject) => {
-        fetch(`${url}/delete-user/${id}`, {
-            method: 'delete',
-            headers: { 'content-type': 'application/json' },
-        }).then(res => res.json()).then(
-            (result) => {
-                resolve(result);
-            }
-        ).catch((err) => {
-            reject(err);
-        })
-    })
-}
-
 const Userpage = () => {
     const authUser = useContext(userContext);
     const { id } = useParams(); // id of user on webpage
-
 
     /* --- Fetching info from server --- */
 
@@ -73,57 +23,32 @@ const Userpage = () => {
     const [userInfo, setUserInfo] = useState({});
     const [userLoaded, setUserLoaded] = useState(false);
 
-    // Get user's posted items from the server
-    // Get user's posted items from the server
+    // Get list of data jsons for user's posted items from the server
     const [userItems, setUserItems] = useState([]);
     const [itemsLoaded, setItemsLoaded] = useState(false);
 
-    // Get user's requested items from the server
+    // Get list of data jsons for user's requests from the server
     const [userRequests, setUserRequests] = useState([]);
     const [requestsLoaded, setRequestsLoaded] = useState(false);
 
-    // optimal way to fetch with arrays: combine Promise.all + map w/ async function
-    async function loadUserItems(userInfo) {
-        if (userInfo.postedItems.length === 0) {
-            return <p>{userInfo.name} has no items!</p>
-        }
-        return Promise.all(userInfo.postedItems.map(async (id, index) => {
-            const itemData = await ItemService.getItem(id);
-            if (itemData !== undefined && itemData.success) {
-                // if this doesn't work check if object is in itemData or itemData.data
-                console.log("item data: ", itemData.data);
-                if (itemData && itemData.data) return <Post post={itemData.data} isRequest={false} key={itemData.data._id} />;
-            }
-            //return "Error!"; // should NOT HAPPEN - happens if return new Promise is not used in ItemService.getItem ?
-        }));
-    }
-
-    async function loadUserRequests(userInfo) {
-        if (userInfo.requestPosts.length === 0) {
-            return <p>{userInfo.name} has no item requests!</p>
-        }
-        return Promise.all(userInfo.requestPosts.map(async id => {
-            const request = await RequestService.getRequest(id);
-            return <Post post={request} isRequest={true} key={request._id} />;
-        }));
-    }
 
     useEffect(() => {
-
         async function fetchData() {
             // load user info (minus items/requests)
-            const userInfo = await getUser(id);
-            setUserInfo(userInfo);
+            let userInfoData = await UserService.getUserData(id);
+            userInfoData = userInfoData.data;
+            setUserInfo(userInfoData);
             setUserLoaded(true);
 
             // load user items
-            const userItems = await loadUserItems(userInfo);
-            setUserItems(userItems);
+            // must use userInfoData instead of userInfo or it doesn't load because of how await works
+            const userItemData = await ItemService.getItemsFromList(userInfoData.postedItems);
+            setUserItems(userItemData);
             setItemsLoaded(true);
 
             // load user requests
-            const userRequests = await loadUserRequests(userInfo);
-            setUserRequests(userRequests);
+            const userRequestData = await RequestService.getRequestsFromList(userInfoData.requestPosts);
+            setUserRequests(userRequestData);
             setRequestsLoaded(true);
         }
 
@@ -151,7 +76,7 @@ const Userpage = () => {
                         label: 'Yes',
                         onClick: () => {
                             async function fetchDeleteUser() {
-                                const deleteResult = await deleteUser(id);
+                                const deleteResult = await UserService.deleteUser(id);
                                 console.log("deleteresult", deleteResult);
                                 if (deleteResult.success) {
                                     alert("Deletion successful.");
@@ -181,7 +106,7 @@ const Userpage = () => {
 
         const handleEditProfile = () => {
             async function sendData() {
-                const result = await editProfile(localUserInfo, id);
+                const result = await UserService.editProfile(localUserInfo, id);
                 console.log("result", result);
 
                 if (result.success) {
@@ -285,9 +210,9 @@ const Userpage = () => {
                     <h1>Editing Your Profile</h1>
 
                     <div className="add_padding">
-                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2" onClick={() => handleEditProfile()}>Save Changes</button>
-                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2" onClick={() => handleEditCancel()}>Cancel</button>
-                        <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" onClick={() => handleDeleteUser()}>Delete Account</button>
+                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditProfile()}>Save Changes</button>
+                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditCancel()}>Cancel</button>
+                        <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleDeleteUser()}>Delete Account</button>
                     </div>
 
                     <label className="font-bold" style={{ color: "#F0D061" }}>Avatar (click to upload)</label>
@@ -321,7 +246,7 @@ const Userpage = () => {
                                 <p><Link to="/favorite-items">Welcome, {userInfo.name}! See your favorite items!</Link></p>
 
                                 <div className="add_padding">
-                                    <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2" onClick={() => handleEditProfile()}>Edit Profile</button>
+                                    <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditProfile()}>Edit Profile</button>
                                 </div>
                             </span>
                         )}
@@ -332,6 +257,32 @@ const Userpage = () => {
     }
 
     /* --- What to return/render --- */
+
+    // Render list of user's items from userItems (a list of item data jsons)
+    const displayUserItems = () => {
+        if (!itemsLoaded) {
+            return <LoadingSmall />
+        }
+        if (userItems.length === 0) {
+            return <p>{userInfo.name} has no items!</p>
+        }
+        return userItems.map(itemData =>
+            <Post post={itemData} isRequest={false} key={itemData._id} />
+        );
+    }
+
+    // Render list of user's requests from userRequests (a list of request data jsons)
+    const displayUserRequests = () => {
+        if (!requestsLoaded) {
+            return <LoadingSmall />
+        }
+        if (userRequests.length === 0) {
+            return <p>{userInfo.name} has no requests!</p>
+        }
+        return userRequests.map(request =>
+            <Post post={request} isRequest={true} key={request._id} />
+        );
+    }
 
     if (!userLoaded) {
         return (
@@ -347,22 +298,24 @@ const Userpage = () => {
                     <h6 className="user_stat">Borrower Rating: {userInfo.borrowerRating}/5</h6>
                     <h6 className="user_stat">Lender Rating: {userInfo.lenderRating}/5</h6>
                     <hr />
-                    <h6 className="user_stat">{userInfo.name} has {userInfo.postedItems.length} items</h6>
-                    <h6 className="user_stat">{userInfo.name} has {userInfo.requestPosts.length} requests</h6>
+                    <h6 className="user_stat">{userInfo.name} has {userInfo.postedItems.length} {userInfo.postedItems.length === 1 ? "item" : "items"}</h6>
+                    <h6 className="user_stat">{userInfo.name} has {userInfo.requestPosts.length} {userInfo.requestPosts.length === 1 ? "request" : "requests"}</h6>
                 </div>
             </div>
 
             <div id="profile_main" className="add_padding">
                 <ProfileHeader />
 
+                <hr />
+
                 <h3 className="item-post-header">{userInfo.name}'s Posted Items</h3>
                 <div className="cardcontainer">
-                    {itemsLoaded ? userItems : "Loading..."}
+                    {displayUserItems()}
                 </div>
 
                 <h3 className="item-post-header">{userInfo.name}'s Item Requests</h3>
                 <div className="cardcontainer">
-                    {requestsLoaded ? userRequests : "Loading..."}
+                    {displayUserRequests()}
                 </div>
             </div>
         </div>

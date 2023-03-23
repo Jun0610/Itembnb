@@ -2,7 +2,7 @@ import '../styles/navbar.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getUserData } from '../tools/userServices';
+import UserService from '../tools/userService';
 
 import userContext from '../contexts/userContext';
 
@@ -21,7 +21,7 @@ const Navbar = () => {
 
         const fetchUserData = async () => {
             try {
-                const res = await getUserData(JSON.parse(sessionStorage.getItem('curUser'))._id);
+                const res = await UserService.getUserData(JSON.parse(sessionStorage.getItem('curUser'))._id);
                 setUserData(res.data);
             } catch (err) {
                 return err
