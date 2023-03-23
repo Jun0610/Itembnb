@@ -88,7 +88,7 @@ const SelectedItemPost = () => {
             }
         return (
             <div className="col-6">
-                        <ItemCalendar />
+                        <ItemCalendar selectedItem={selectedItem}/>
             </div>
         );
     }

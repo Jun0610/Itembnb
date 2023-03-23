@@ -137,3 +137,49 @@ abbr[title] {
   display: flex;
   flex-wrap: wrap;
 }
+.price-calc {
+  border-radius: 10px;
+  box-shadow: 0 0 10px #c0c0c0;
+  margin-top: 10px;
+  width: 100%;
+  height: 48%;
+  text-align: center;
+  padding: 10px;
+  font-size: large;
+  font-weight: bold;
+}
+.price-span {
+  display: block;
+  margin: 0 auto;
+}
+.price-larger {
+  font-size: 2em;
+}
+.calendar-row-2 {
+  display: flex;
+  flex-wrap: wrap;
+  height: 50%;
+  align-items: center;
+  justify-content: space-between;
+}
+.calendar-column {
+  width: 45%;
+  display: block;
+  padding-left: 8px;
+}
+.calendar-column-btn {
+  display: block;
+  margin: 5px 0;
+  padding: 5px;
+  font-size: large;
+  font-weight: bold;
+  color: #fff;
+  width: 100%;
+  border-radius: 10px;
+}
+.calendar-column-label {
+  font-size: larger;
+  display: block;
+  margin: 0 auto;
+  text-align: left;
+}
