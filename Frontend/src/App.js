@@ -13,6 +13,7 @@ import SelectedItemPost from "./pages/selectedItemPost";
 import { UserContextProvider } from "./contexts/userContext";
 import { ItemContextProvider } from "./contexts/itemContext";
 import FavoriteItems from "./pages/FavoriteItems";
+import StatusPage from "./pages/StatusPage";
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
                             <Route path='/user/:id' element={<UserProfile />} />
                             <Route exact path="/selected-item-post/:itemId/user/:userId" element={<SelectedItemPost />} />
                             <Route exact path="/favorite-items" element={<FavoriteItems />} />
+                            <Route exact path='/item-status' element={<StatusPage />}></Route>
                         </Routes>
                     </Router>
                 </ItemContextProvider>

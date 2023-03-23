@@ -2,7 +2,6 @@
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
-    height: 400px;
     margin: 0 10px;
 }
 
@@ -11,7 +10,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 10px;
+    margin: 20px 10px;
 }
 
 .input-error {

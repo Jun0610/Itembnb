@@ -42,7 +42,7 @@ li .custom-nav-link{
     text-align: center;
 }
 
-.active {
+.nav-bar-active {
     background: #d8bb57;
     border-radius: 5px;
 }
