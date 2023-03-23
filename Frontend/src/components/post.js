@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/post.css';
+import itemContext from '../contexts/itemContext';
 import userContext from '../contexts/userContext';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,8 +15,8 @@ const Post = ({ post, isRequest }) => {
 
     const rating = 4;
 
+    const selectedItem = useContext(itemContext);
     const selectedUser = useContext(userContext);
-    console.log(selectedUser);
 
     //need to set the favorite status based on whether the item is favorited or not
     const [favStatus, setFavStatus] = useState('unfavorite')
@@ -42,6 +43,7 @@ const Post = ({ post, isRequest }) => {
 
     const handleClick = () => {
         if (!isRequest) {
+            selectedItem.setSelectedItem(post);
             nav(`/selected-item-post/${post._id}`)
         }
         else {
@@ -51,6 +53,7 @@ const Post = ({ post, isRequest }) => {
 
     const handleOwnerClick = () => {
         if (!isRequest) {
+            selectedItem.setSelectedItem(post);
             nav(`/display-item-post/${post._id}`);
         }
         else {

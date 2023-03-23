@@ -87,8 +87,8 @@ const SelectedItemPost = () => {
                 </div>
             }
         return (
-            <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
-                <p>You have no reservation!</p>
+            <div className="col-6">
+                        <ItemCalendar />
             </div>
         );
     }

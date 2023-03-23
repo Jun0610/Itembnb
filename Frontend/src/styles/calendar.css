@@ -133,3 +133,7 @@ abbr[title] {
   background: #d8bb57;
   border-radius: 4px 0 0 4px;
 }
+.calendar-row {
+  display: flex;
+  flex-wrap: wrap;
+}

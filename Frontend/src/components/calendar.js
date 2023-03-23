@@ -25,7 +25,8 @@ const ItemCalendar = () => {
     const authUser = useContext(userContext);
 
     useEffect(() => {
-        console.log(selectedItem.item);
+        console.log(selectedItem);
+        console.log(authUser);
     }, []);
 
     const reset = () => {
@@ -58,11 +59,13 @@ const ItemCalendar = () => {
                 let date1 = new Date(selectedItem.item.unavailList[i].startDate);
                 let date2 = new Date(selectedItem.item.unavailList[i].endDate);
                 
-                if (inDateRange(date1, date[0], date[1]) || inDateRange(date2, date[0], date[1])) 
+                if (inDateRange(date1, date[0], date[1]) || inDateRange(date2, date[0], date[1])) {
                     alert("Item is unavailable on this date");
                     return;
+                }
             }
-        }
+            
+        } 
         fetch('http://localhost:8888/api/reservation/make-reservation', {
             method: 'POST',
             headers: {
@@ -73,21 +76,31 @@ const ItemCalendar = () => {
                 itemId: selectedItem.item._id, 
                 startDate: date[0], 
                 endDate: date[1]})
-        }) 
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+        });
+        setDate(null);
+        alert("Request sent!");
     }
 
     return (
-        <div>
-        <Calendar
-            onChange={setDate}
-            value={date}
-            selectRange={true}
-            tileDisabled={itemUnavail}
-        />
-        <button onClick={reset}>Clear</button>
-        <label>From: {date ? date[0].toLocaleDateString() : "None"}</label>
-        <label>To: {date ? date[1].toLocaleDateString() : "None"}</label>
-        <button onClick={makeReq}>Make Request</button>
+        <div className='calendar-row'>
+            <div>
+            <Calendar
+                onChange={setDate}
+                value={date}
+                selectRange={true}
+                tileDisabled={itemUnavail}
+            />
+            </div>
+            <div>
+                <button onClick={reset}>Clear</button>
+                <label>From: {date ? date[0].toLocaleDateString() : "None"}</label>
+                <label>To: {date ? date[1].toLocaleDateString() : "None"}</label>
+                <button onClick={makeReq}>Make Request</button>
+            </div>
         </div>
     );
 }
