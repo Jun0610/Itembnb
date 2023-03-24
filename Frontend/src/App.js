@@ -15,6 +15,7 @@ import { UserContextProvider } from "./contexts/userContext";
 import { ItemContextProvider } from "./contexts/itemContext";
 import FavoriteItems from "./pages/FavoriteItems";
 import StatusPage from "./pages/StatusPage";
+import { NotificationProvider } from "./contexts/notificationContext";
 
 function App() {
     return (
@@ -23,20 +24,22 @@ function App() {
                 <ItemContextProvider>
                     <Router>
                         <Navbar />
-                        <Routes>
-                            <Route path="*" element={<Unavailable404 />} />_
-                            <Route exact path="/" element={<Home />} />
-                            <Route exact path="/create-item-post" element={<CreateItemPost />} />
-                            <Route exact path='/create-item-request' element={<CreateRequest />} />
-                            <Route path="/display-item-post/:id" element={<DisplayItemPost />} />
-                            <Route path="/display-request-post/:id" element={<DisplayRequestPost />} />
-                            <Route exact path="/signup" element={<SignUp />} />
-                            <Route exact path="/login" element={<Login />} />
-                            <Route path='/user/:id' element={<UserProfile />} />
-                            <Route exact path="/selected-item-post/:itemId" element={<SelectedItemPost />} />
-                            <Route exact path="/favorite-items" element={<FavoriteItems />} />
-                            <Route exact path='/item-status' element={<StatusPage />}></Route>
-                        </Routes>
+                        <NotificationProvider>
+                            <Routes>
+                                <Route path="*" element={<Unavailable404 />} />_
+                                <Route exact path="/" element={<Home />} />
+                                <Route exact path="/create-item-post" element={<CreateItemPost />} />
+                                <Route exact path='/create-item-request' element={<CreateRequest />} />
+                                <Route path="/display-item-post/:id" element={<DisplayItemPost />} />
+                                <Route path="/display-request-post/:id" element={<DisplayRequestPost />} />
+                                <Route exact path="/signup" element={<SignUp />} />
+                                <Route exact path="/login" element={<Login />} />
+                                <Route path='/user/:id' element={<UserProfile />} />
+                                <Route exact path="/selected-item-post/:itemId" element={<SelectedItemPost />} />
+                                <Route exact path="/favorite-items" element={<FavoriteItems />} />
+                                <Route exact path='/item-status' element={<StatusPage />}></Route>
+                            </Routes>
+                        </NotificationProvider>
                     </Router>
                 </ItemContextProvider>
             </UserContextProvider>
