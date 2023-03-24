@@ -1,6 +1,7 @@
 import React from "react";
 import {socket} from "../tools/socketService";
 import { useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const intialState = {
     user: null,
@@ -27,9 +28,19 @@ export const UserContextProvider = (props) => {
         })
     }
 
+    const nav = useNavigate();
+
     useEffect(() => {
         if (socket.connected) {
-            socket.on(`emitAnotherUser`, (response) => alert(`${response}`));
+            socket.on(`emitAnotherUser`, (response) => {
+                if (response['isApproved']) {  
+                    if (confirm(`${response['msg']}`)) {
+                        nav(`/selected-item-post/${response['itemId']}`)
+                    } 
+                } else {
+                    alert(`${response['msg']}`);
+                }
+            });
         }
     }, [user])
 

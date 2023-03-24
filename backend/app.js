@@ -52,7 +52,11 @@ io.on('connection', (socket) => {
     socket.on('emitBruh', (response) => {
         if (connectedUsers && connectedUsers.find((e) => e === response['recipient'])) {
             // user is online; give live notification
-            io.to(`${response['recipient']}`).emit('emitAnotherUser', `${response['name']} has ${response['msg']} your request!`);
+            if (response['msg'] === 'approved') {
+                io.to(`${response['recipient']}`).emit('emitAnotherUser', {isApproved: true,  msg: `${response['name']} has ${response['msg']} your request!`, itemId: response['itemId']});
+            } else {
+                io.to(`${response['recipient']}`).emit('emitAnotherUser', {isApproved: false,  msg: `${response['name']} has ${response['msg']} your request!`});
+            }
             socket.emit('emitBack', 'success');
         } else {
             // user is not online; give email notification instead
