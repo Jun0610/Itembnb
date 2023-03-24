@@ -60,7 +60,7 @@ const ItemCalendar = ({selectedItem}) => {
                 let date2 = new Date(selectedItem.unavailList[i].endDate);
                 
                 if (inDateRange(date1, date[0], date[1]) || inDateRange(date2, date[0], date[1])) {
-                    alert("Item is unavailable on this date");
+                    alert("Item is unavailable on some dates in the selected range");
                     return;
                 }
             }
