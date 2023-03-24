@@ -13,39 +13,58 @@ const SelectedItemPost = () => {
     const authUser = useContext(userContext);
     const [owner, setOwner] = useState({});
     const [userReserv, setUserReserv] = useState({});
+    const [reservSuccess, setReservSuccess] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
 
 
     //make sure user is logged in and get item details
     useEffect(() => {
         if (sessionStorage.getItem('curUser') !== null) {
-            authUser.login(JSON.parse(sessionStorage.getItem('curUser')))
-        }
-        const itemPageSetUp = async () => {
+            authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
 
-            //get item data
-            const itemData = await ItemService.getItem(itemId);
-            setSelectedItem(itemData.data);
 
-            //get reservation data for user
-            if (authUser.user.isAuth) { // if logged in
-                setUserReserv(await ReservationService.getUserReservation(itemId, authUser.user.user._id));
-            }
+            const itemPageSetUp = async () => {
 
-            if (itemData.data.ownerId) {
-                const getOwnerData = async () => {
-                    const res = await UserService.getUserData(itemData.data.ownerId);
-                    setOwner(res.data);
+                //get item data
+                const itemData = await ItemService.getItem(itemId);
+                setSelectedItem(itemData.data);
+
+                //get reservation data for user
+                setUserReserv(await ReservationService.getUserReservation(itemId, JSON.parse(sessionStorage.getItem('curUser'))._id));
+
+
+
+                if (itemData.data.ownerId) {
+                    const getOwnerData = async () => {
+                        const res = await UserService.getUserData(itemData.data.ownerId);
+                        setOwner(res.data);
+                    }
+
+                    getOwnerData();
                 }
-
-                getOwnerData();
             }
-        }
 
-        itemPageSetUp();
+
+            itemPageSetUp();
+        }
     }, [])
 
+    //re-render reservation info part after item is reserved
+    useEffect(() => {
+
+        const reRender = async () => {
+            //get reservation data for user
+            setUserReserv(await ReservationService.getUserReservation(itemId, JSON.parse(sessionStorage.getItem('curUser'))._id));
+        }
+
+        reRender();
+
+    }, [reservSuccess])
+
+    console.log(authUser);
+
     const reservationInfo = () => {
+        console.log("userReserv", userReserv);
         if (!authUser.user.isAuth) {
             return (
                 <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
@@ -53,7 +72,8 @@ const SelectedItemPost = () => {
                 </div>
             );
         }
-        if (userReserv.data != null)
+        if (JSON.stringify(userReserv) !== "{}" && userReserv.data !== null) {
+            console.log("userReserv", userReserv);
             if (userReserv.data.status === "pending") {
                 return (
                     <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
@@ -72,29 +92,35 @@ const SelectedItemPost = () => {
                 );
             }
             else if (userReserv.data.status === "approved" || userReserv.data.status === "active") {
-                <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
-                    <div className="item-post-row">
-                        <h4 > {selectedItem.item.ownerId ? owner.name : "owner not shown"} has approved your reservation!</h4>
+                return (
+                    <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
+                        <div className="item-post-row">
+                            <h4 > {selectedItem.ownerId ? owner.name : "owner not shown"} has approved your reservation!</h4>
 
-                    </div>
-                    <div className="item-post-row">
-                        <p>Enjoy using {selectedItem.item.ownerId ? owner.name : "owner not shown"}'s {selectedItem.item.name} and make sure to return it on time!</p>
-                    </div>
+                        </div>
+                        <div className="item-post-row">
+                            <p>Enjoy using {selectedItem.ownerId ? owner.name : "owner not shown"}'s {selectedItem.name} and make sure to return it on time!</p>
+                        </div>
 
 
-                    {/* <div className='pendingContainter'>
+                        {/* <div className='pendingContainter'>
                             </div> */}
 
-                </div>
+                    </div>);
             }
-        return (
-            <div className="col-6">
-                        <ItemCalendar selectedItem={selectedItem}/>
-            </div>
-        );
+
+        } else {
+            return (
+                <div className="col-6">
+                    <ItemCalendar selectedItem={selectedItem} setReservSuccess={setReservSuccess} />
+                </div>
+            );
+        }
+
     }
 
     if (selectedItem !== null && JSON.stringify(owner) !== '{}') {
+
         return (
             <div>
                 <div className="itempost-outer">
