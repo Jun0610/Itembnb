@@ -5,6 +5,7 @@ import ItemService from "../tools/itemsService";
 import UserService from "../tools/userService.js";
 import ReservationService from "../tools/reservationService";
 import Loading from "../components/Loading";
+import ItemCalendar from "../components/calendar";
 import "../styles/itempost.css";
 
 const SelectedItemPost = () => {
@@ -87,8 +88,8 @@ const SelectedItemPost = () => {
                 </div>
             }
         return (
-            <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
-                <p>You have no reservation!</p>
+            <div className="col-6">
+                        <ItemCalendar selectedItem={selectedItem}/>
             </div>
         );
     }
