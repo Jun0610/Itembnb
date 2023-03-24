@@ -17,14 +17,29 @@ class ReservationService {
             console.log(err);
         }
     }
-    
-    static async getActiveReservations(userId) {
+
+    static async getActiveBorrowerReservations(userId) {
         const request = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         }
         try {
-            const res = await fetch(`${url}/get-active-reservation/user/${userId}`, request);
+            const res = await fetch(`${url}/get-active-reservation/borrower/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async getActiveLenderReservations(userId) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-active-reservation/lender/${userId}`, request);
             const response = await res.json();
             response.status = res.status
             return response
@@ -67,11 +82,29 @@ class ReservationService {
         }
     }
 
+    static async itemReturned(reservId) {
+        const request = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: reservId })
+        }
+        try {
+            const res = await fetch(`${url}/item-returned`, request);
+            const response = await res.json();
+            response.status = res.status
+            if (response.status !== 201) {
+                throw new Error(response.data)
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     static async approveRequest(reservId, startDate, endDate, itemId) {
         const request = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: reservId, startDate: startDate, endDate: endDate, itemId: itemId})
+            body: JSON.stringify({ id: reservId, startDate: startDate, endDate: endDate, itemId: itemId })
         }
         try {
             const res = await fetch(`${url}/approve-reservation`, request);
@@ -89,7 +122,7 @@ class ReservationService {
         const request = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: reservId, startDate: startDate, endDate: endDate, itemId: itemId})
+            body: JSON.stringify({ id: reservId, startDate: startDate, endDate: endDate, itemId: itemId })
         }
         try {
             const res = await fetch(`${url}/deny-reservation`, request);
