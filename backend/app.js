@@ -42,8 +42,9 @@ const io = socketIo(server, {
 })
 
 io.on('connection', (socket) => {
-    
+    console.log("client connected: ", socket.id)
     socket.on('sendId', (response) => {
+        console.log("making join for :", response)
         socket.join(`${response}`);
         connectedUsers.push(response);
     })

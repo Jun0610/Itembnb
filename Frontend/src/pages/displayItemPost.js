@@ -8,49 +8,6 @@ import userContext from '../contexts/userContext';
 import BorrowingRequestList from '../components/borrowingRequestList';
 import ReservationService from '../tools/reservationService';
 
-const brList = [
-    {
-        _id: 1,
-        startDate: "2023-04-13", 
-        endDate: "2023-04-14",
-        borrower: {
-            _id: 1, 
-            name: 'Borrower 1',
-            email: 'Borrower1@gmail.com',
-        }
-    },
-    {
-        _id: 2,
-        startDate: "2023-04-10", 
-        endDate: "2023-04-16",
-        borrower: {
-            _id: 2, 
-            name: 'Borrower 2',
-            email: 'Borrower2@gmail.com',
-        }
-    },
-    {
-        _id: 3,
-        startDate: "2023-04-13", 
-        endDate: "2023-04-18",
-        borrower: {
-            _id: 3, 
-            name: 'Borrower 3',
-            email: 'Borrower3@gmail.com',
-        }
-    },
-    {
-        _id: 4,
-        startDate: "2023-05-13", 
-        endDate: "2023-05-18",
-        borrower: {
-            _id: 4, 
-            name: 'Borrower 4',
-            email: 'Borrower4@gmail.com',
-        }
-    },
-  ];
-
 const DisplayItemPost = () => {
     const { id } = useParams();
     const [item, setItem] = React.useState({});
@@ -86,15 +43,13 @@ const DisplayItemPost = () => {
         }
 
         async function fetchPendingReservations() {
-            /*await ReservationService.getPendingReservations(id).then((data) => {
+            await ReservationService.getPendingReservations(id).then((data) => {
                 console.log(data.data);
                 setPendingReservations(data.data);
-            });*/
-            setPendingReservations(brList);
+            });
         }
 
         fetchCategories().then(fetchItem()).then(fetchPendingReservations());
-        //fetchCategories().then(fetchItem());
     }, []);
 
     const onItemChange = (e) => {

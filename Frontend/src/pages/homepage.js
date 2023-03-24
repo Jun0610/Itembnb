@@ -2,9 +2,7 @@ import React, { useEffect, useContext } from "react";
 import Post from "../components/post";
 import Loading from "../components/Loading";
 import userContext from "../contexts/userContext";
-
 import "../styles/homepage.css";
-import {socket} from "../tools/socketService";
 
 const Homepage = () => {
 
@@ -39,11 +37,12 @@ const Homepage = () => {
         getRequestPosts();
     }, []);
 
+    /*
     useEffect(() => {
         if (socket.connected) {
             socket.on(`emitAnotherUser`, (response) => alert(`${response}`));
         }
-    }, [selectedUser])
+    }, [selectedUser])*/
 
     if (isLoading || isLoadingItem) return (<Loading />);
 

@@ -1,4 +1,6 @@
 import React from "react";
+import {socket} from "../tools/socketService";
+import { useEffect } from "react";
 
 const intialState = {
     user: null,
@@ -24,6 +26,12 @@ export const UserContextProvider = (props) => {
             isAuth: false
         })
     }
+
+    useEffect(() => {
+        if (socket.connected) {
+            socket.on(`emitAnotherUser`, (response) => alert(`${response}`));
+        }
+    }, [user])
 
     return (
         <userContext.Provider value={{ user, isAuth: user.isAuth, login, logout }}>
