@@ -13,6 +13,7 @@ const CreateItemPost = () => {
         price: 0,
         reservHist: [],
         unavailList: [],
+        pendingList: [],
         review: [],
         category: [],
         images: [],

@@ -4,16 +4,19 @@ import Loading from '../components/Loading';
 import userContext from '../contexts/userContext';
 import ReservationService from '../tools/reservationService'
 import StatusTracker from '../components/StatusTracker'
+import { useNavigate } from 'react-router-dom';
 
 
 
 const StatusPage = () => {
     const [activeReservations, setActiveReservations] = useState([]);
+    const nav = useNavigate();
 
     const curUser = useContext(userContext);
     useEffect(() => {
         async function onLoad() {
             if (sessionStorage.getItem('curUser') === null) {
+                nav('/')
                 return
             }
 
@@ -21,7 +24,13 @@ const StatusPage = () => {
                 curUser.login(JSON.parse(sessionStorage.getItem('curUser')));
                 const userId = JSON.parse(sessionStorage.getItem('curUser'))._id;
                 const res = await ReservationService.getActiveReservations(userId);
-                setActiveReservations(res.data)
+                if (res.data === null) {
+                    setActiveReservations(null)
+                } else {
+                    setActiveReservations(res.data)
+                }
+
+
             } catch (err) {
                 console.log(err.message);
             }
@@ -32,7 +41,18 @@ const StatusPage = () => {
     }, [])
 
     console.log(activeReservations);
-    if (activeReservations.length !== 0) {
+
+    if (activeReservations === null) {
+        return (
+            <>
+                <h1>
+                    You have no active reservations yet!
+                </h1>
+            </>
+        )
+    }
+
+    else if (activeReservations.length !== 0) {
         return (
 
             <>
@@ -45,7 +65,8 @@ const StatusPage = () => {
             </>
 
         )
-    } else {
+    }
+    else {
         return <Loading />
     }
 

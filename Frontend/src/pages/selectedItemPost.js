@@ -15,6 +15,7 @@ const SelectedItemPost = () => {
     const [userReserv, setUserReserv] = useState({});
     const [selectedItem, setSelectedItem] = useState({});
 
+
     //make sure user is logged in and get item details
     useEffect(() => {
         if (sessionStorage.getItem('curUser') !== null) {

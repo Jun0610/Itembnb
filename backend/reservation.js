@@ -126,9 +126,12 @@ router.get("/get-active-reservation/user/:userId", async (req, res) => {
                 activeReservations.push({ item, reservation })
             }
         }
+        if (activeReservations.length === 0) {
+            res.status(201).json({ success: true, data: null });
+        } else {
+            res.status(201).json({ success: true, data: activeReservations });
+        }
 
-
-        res.status(201).json({ success: true, data: activeReservations });
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
     }
@@ -181,7 +184,7 @@ router.get("/get-user-reservation/user/:userId/item/:itemId", async (req, res) =
         const reservations = await db.collection("reservations").find({ userId: req.params.userId, itemId: req.params.itemId }).toArray();
         let activeReservation = null;
         let count = 0;
-        for (reservation of reservations) {
+        for (const reservation of reservations) {
             //creates a deep copy of the endDate 
             //we set hours to 0, 0, 0, 0 to strictly compare dates
             const endDate = new Date(reservation.endDate);
@@ -195,7 +198,7 @@ router.get("/get-user-reservation/user/:userId/item/:itemId", async (req, res) =
 
 
             //we should only return one reservation per user per item
-            if (reservation.status && (endDate >= curDate && startDate <= curDate) && (reservation.status === 'active' || reservation.status === 'approved' || reservation.status === 'pending')) {
+            if (reservation.status && (endDate >= curDate) && (reservation.status === 'active' || reservation.status === 'approved' || reservation.status === 'pending')) {
                 activeReservation = reservation;
                 count++;
             }
@@ -256,6 +259,30 @@ router.delete("/delete-reservation/:reservId", async (req, res) => {
 
         res.status(200).json({ success: true, data: "reservation successfully deleted." })
     } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+// get the pending list of an item + borrowers
+router.get("/get-pending-reservations/:itemId", async (req, res) => {
+    try {
+        // get the item's pending list
+        const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(req.params.itemId) });
+
+        const itemPendingList = item.pendingList;
+        const result = [];
+
+        for (const itemPL of itemPendingList) {
+            const reserv = await db.collection("reservations").findOne({_id: new mongo.ObjectId(itemPL.reservId)});
+            const borrower = await db.collection("users").findOne({_id: new mongo.ObjectId(reserv.borrowerId)});
+            result.push({
+                ...reserv,
+                borrower: borrower
+            });
+        }
+        res.status(200).json({ success: true, data: result });
+    } catch (err) {
+        console.log(err);
         res.status(404).json({ success: false, data: err.message })
     }
 })
