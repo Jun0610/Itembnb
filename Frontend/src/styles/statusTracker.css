@@ -1,3 +1,11 @@
+.lender {
+    --lender-color: #808CFF;
+}
+
+.borrower {
+    --borrower-color: #ffe600;
+}
+
 .progress-bar-container {
     width: 100%;
     display: block !important;
@@ -25,7 +33,7 @@
     /* box-shadow: 0 2px 10px rgb(0 0 0 / 0.2); */
     border: 1.5px solid #ddd;
     border-radius: 1rem;
-    width: 30%;
+    width: 8rem;
     padding: 10px;
     justify-self: center;
     
@@ -72,13 +80,14 @@
 }
 
 .progress-bar li.approved::before {
-    background-color: #ffe600;
-    border-color: #ffe600;
+    background-color: var(--borrower-color);
+    border-color: var(--borrower-color);
+    transition: background-color 2s ease;
 }
 
 .progress-bar li.approved + li:after {
-    background-color: #ffe600;
-
+    background-color: var(--borrower-color);
+    transition: background-color 2s ease;
 }
 
 .received {
@@ -87,8 +96,8 @@
 
 }
 
-.received .stat-btn{
-    border-color: #ffe600;
+.borrower .received .stat-btn{
+    border-color: var(--borrower-color);
     font-weight: 800;
 
 }
@@ -99,29 +108,78 @@
 
 
 .progress-bar li.received::before {
-    background-color: #ffe600;
-    border-color: #ffe600;
-    transition: background-color 1s ease;
+    background-color: var(--borrower-color);
+    border-color: var(--borrower-color);
+    transition: background-color 2s ease;
 }
 
 .progress-bar li.received + li:after {
-    background-color: #ffe600;
-    transition: background-color 1s ease;
+    background-color: var(--borrower-color);
+    transition: background-color 2s ease;
 }
 
 
 .returned {
-    color: #ffe600;
+    color: var(--borrower-color);
     font-weight: 800;
 
 }
 
 .progress-bar li.returned::before {
-    background-color: #ffe600;
-    border-color: #ffe600;
+    background-color: var(--borrower-color);
+    border-color: var(--borrower-color);
 }
 
 .progress-bar li.returned + li:after {
-    background-color: #ffe600;
+    background-color: var(--borrower-color);
 
 }
+
+.lender .none .stat-btn:hover {
+    border-color: var(--lender-color);
+    background-color: var(--lender-color);
+    transform: scale(1.03);
+    transition: transform 0.5s;
+}
+
+.lender li.approved::before {
+    background-color: var(--lender-color);
+    border-color: var(--lender-color);
+    transition: background-color 2s ease;
+}
+
+.lender li.approved + li:after {
+    background-color: var(--lender-color);
+    transition: background-color 2s ease;
+}
+
+.lender li.received::before {
+    background-color: var(--lender-color);
+    border-color: var(--lender-color);
+    transition: background-color 2s ease;
+}
+
+.lender li.received + li:after {
+    background-color: var(--lender-color);
+    transition: background-color 2s ease;
+}
+
+.lender li.returned::before {
+    background-color: var(--lender-color);
+    border-color: var(--lender-color);
+    transition: background-color 1s ease;
+}
+
+.lender li.returned + li:after {
+    background-color: var(--lender-color);
+    transition: background-color 1s ease;
+}
+
+.lender .returned .stat-btn{
+    border-color: var(--lender-color);
+    font-weight: 800;
+
+}
+
+
+

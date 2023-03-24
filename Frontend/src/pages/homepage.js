@@ -4,7 +4,7 @@ import Loading from "../components/Loading";
 import userContext from "../contexts/userContext";
 
 import "../styles/homepage.css";
-import {socket} from "../tools/socketService";
+import { socket } from "../tools/socketService";
 
 const Homepage = () => {
 

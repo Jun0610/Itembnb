@@ -15,7 +15,7 @@ complete (when the item has been returned to the lender)
 //req expected:
 /*
 {
-    userId: the user's id
+    borrowerId: the user's id
     itemId: the item's id
     startDate: the reservation's start date
     endDate: the reservation's end date
@@ -29,6 +29,7 @@ router.post("/make-reservation", async (req, res) => {
         req.body.startDate = new Date(req.body.startDate);
         req.body.endDate = new Date(req.body.endDate);
 
+
         //a reservation status is always pending initially
         req.body.status = 'pending';
         const results = await db.collection("reservations").insertOne(req.body);
@@ -38,7 +39,7 @@ router.post("/make-reservation", async (req, res) => {
         await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $push: { reservHist: reservId, pendingList: { startDate: req.body.startDate, endDate: req.body.endDate, reservId: reservId } } });
 
         //add reservation id to user's reservHist
-        await db.collection("users").updateOne({ _id: new mongo.ObjectId(req.body.userId) }, { $push: { reservHist: reservId } });
+        await db.collection("users").updateOne({ _id: new mongo.ObjectId(req.body.borrowerId) }, { $push: { reservHist: reservId } });
 
         //send back the data if successful
         res.status(201).json({ success: true, data: "successfully added reservation" });
@@ -107,7 +108,7 @@ router.put("/deny-reservation", async (req, res) => {
     }
 })
 
-//gets active reservation and item associated with that reservation
+//FOR THE BORROWER: ets active reservation and item associated with that reservation
 //returns:
 /*
 [{
@@ -115,7 +116,7 @@ router.put("/deny-reservation", async (req, res) => {
     reservation: reservation
 }]
 */
-router.get("/get-active-reservation/user/:userId", async (req, res) => {
+router.get("/get-active-reservation/borrower/:userId", async (req, res) => {
     try {
         const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) });
         const activeReservations = [];
@@ -140,8 +141,45 @@ router.get("/get-active-reservation/user/:userId", async (req, res) => {
 
 })
 
-//get reservation based on reservId
+//FOR THE LENDER: ets active reservation and item associated with that reservation
+//returns:
+/*
+[{
+    item: item
+    reservation: reservation
+}]
+*/
+router.get("/get-active-reservation/lender/:userId", async (req, res) => {
+    try {
+        const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) });
+        const activeReservations = [];
+        for (const itemId of user.postedItems) {
+            const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(itemId) })
 
+            for (const unavail of item.unavailList) {
+                const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(unavail.reservId) })
+                if (reservation.status === "approved" || reservation.status === "active") {
+                    const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
+                    activeReservations.push({ item, reservation })
+                }
+            }
+        }
+        if (activeReservations.length === 0) {
+            res.status(201).json({ success: true, data: null });
+        } else {
+            res.status(201).json({ success: true, data: activeReservations });
+        }
+
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+
+
+})
+
+
+
+//get reservation based on reservId
 router.get("/get-reservation-by-id/:reservId", async (req, res) => {
     try {
         const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(req.params.reservId) })
@@ -174,6 +212,29 @@ router.put('/item-received', async (req, res) => {
     }
 })
 
+//confirm that item was returned
+//req expected:
+/*
+{
+    id: the reservation id
+}
+*/
+router.put('/item-returned', async (req, res) => {
+    try {
+
+        //update reservation status to active
+        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "completed" } })
+        const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(req.body.id) });
+        //remove from unavailList
+        await db.collection("items").updateOne({ _id: new mongo.ObjectId(reservation.itemId) }, { $pull: { unavailList: { reservId: req.body.id } } })
+
+
+        res.status(201).json({ success: true, data: "successfully confirmed that item was returned" });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
 
 //get user's reservation for that item 
 //important to display for select item post page
@@ -181,7 +242,7 @@ router.put('/item-received', async (req, res) => {
 //a user should only have one active reservation for an item at any given moment
 router.get("/get-user-reservation/user/:userId/item/:itemId", async (req, res) => {
     try {
-        const reservations = await db.collection("reservations").find({ userId: req.params.userId, itemId: req.params.itemId }).toArray();
+        const reservations = await db.collection("reservations").find({ borrowerId: req.params.userId, itemId: req.params.itemId }).toArray();
         let activeReservation = null;
         let count = 0;
         for (const reservation of reservations) {
@@ -253,7 +314,7 @@ router.delete("/delete-reservation/:reservId", async (req, res) => {
         await db.collection("items").updateOne({ _id: new mongo.ObjectId(reservation.itemId) }, { $pull: { reservHist: req.params.reservId, unavailList: { reservId: req.params.reservId }, pendingList: { reservId: req.params.reservId } } });
 
         //remove reservation from user reservHist list
-        await db.collection("users").updateOne({ _id: new mongo.ObjectId(reservation.userId) }, { $pull: { reservHist: req.params.reservId } });
+        await db.collection("users").updateOne({ _id: new mongo.ObjectId(reservation.borrowerId) }, { $pull: { reservHist: req.params.reservId } });
 
         await db.collection("reservations").deleteOne({ _id: new mongo.ObjectId(req.params.reservId) });
 
@@ -273,8 +334,8 @@ router.get("/get-pending-reservations/:itemId", async (req, res) => {
         const result = [];
 
         for (const itemPL of itemPendingList) {
-            const reserv = await db.collection("reservations").findOne({_id: new mongo.ObjectId(itemPL.reservId)});
-            const borrower = await db.collection("users").findOne({_id: new mongo.ObjectId(reserv.borrowerId)});
+            const reserv = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(itemPL.reservId) });
+            const borrower = await db.collection("users").findOne({ _id: new mongo.ObjectId(reserv.borrowerId) });
             result.push({
                 ...reserv,
                 borrower: borrower
