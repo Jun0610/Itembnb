@@ -8,6 +8,7 @@ export const NotificationProvider = (props) => {
     const nav = useNavigate();
 
     useEffect(() => {
+        console.log("is socket connected? ", socket.connected);
         if (socket.connected) {
             socket.on(`emitBack`, (response) => {
                 console.log("response: ", response)
