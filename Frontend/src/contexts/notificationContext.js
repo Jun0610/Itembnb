@@ -11,17 +11,39 @@ export const NotificationProvider = (props) => {
 
     useEffect(() => {
         if (socket.connected) {
-            socket.on(`emitB`, (response) => {
+            socket.on(`emitBack`, (response) => {
                 console.log("response: ", response)
-                if (response['isApproved']) {  
+                if (response['toBorrower']) {
+                    // borrower side
+                    if (response['isApproved']) {
+                        alert(`You have a notification!`)
+                        confirmAlert({
+                            title: 'Update about your reservation request',
+                            message: `${response['msg']} Bring you there?`,
+                            buttons: [
+                                {
+                                    label: 'Take me there',
+                                    onClick: () => nav(response['url'])
+                                },
+                                {
+                                    label: 'Thanks! Maybe later',
+                                    onClick: () => {}
+                                }
+                            ]
+                        })
+                    } else {
+                        alert(`${response['msg']}`);
+                    }
+                } else {
+                    // lender side
                     alert(`You have a notification!`)
                     confirmAlert({
-                        title: 'Update about your reservation request',
+                        title: 'Update about your item',
                         message: `${response['msg']}.Bring you there?`,
                         buttons: [
                             {
                                 label: 'Take me there',
-                                onClick: () => nav(`/selected-item-post/${response['itemId']}`)
+                                onClick: () => nav(response['url'])
                             },
                             {
                                 label: 'Thanks! Maybe later',
@@ -29,28 +51,7 @@ export const NotificationProvider = (props) => {
                             }
                         ]
                     })
-                } else {
-                    alert(`${response['msg']}`);
                 }
-            });
-
-            socket.on(`emitL`, (response) => {
-                console.log("response: ", response)
-                alert(`You have a notification!`);
-                confirmAlert({
-                    title: 'Update about your item',
-                    message: `${response['msg']} Bring you there?`,
-                    buttons: [
-                        {
-                            label: 'Take me there',
-                            onClick: () => nav(`/display-item-post/${response['itemId']}`)
-                        },
-                        {
-                            label: 'Thanks! Maybe later',
-                            onClick: () => {}
-                        }
-                    ]
-                })   
             });
         }
     }, [authUser])

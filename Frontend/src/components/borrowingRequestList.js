@@ -18,7 +18,8 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
   }
 
   const onTest = () => {
-    SocketService.emit('emitBruh', {name: authUser.user.user.name, recipient: "tmy55770@gmail.com", msg: "approved", itemId: 111});
+    console.log("im here")
+    SocketService.emit('emitToBorrower', {name: authUser.user.user.name, recipient: "jenteiny333@gmail.com", msg: "approved", itemId: 111});
       socket.on('emitBack', (response) => {
         console.log(response);
     });
@@ -154,6 +155,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
 
   return (
     <div>
+      <button onClick={onTest}>Testing</button>
       <div className='font-bold text-4xl m-3'>Borrowing Request List</div>
       {brList.length === 0 ? 
         <div className='m-3 text-xl font-semibold'>
