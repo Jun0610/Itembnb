@@ -15,7 +15,7 @@ import "../styles/requestPage.css";
 
 const DisplayRequestPost = () => {
     const navigate = useNavigate();
-    const userAuth = useContext(userContext);
+    const authUser = useContext(userContext);
     const { id: requestId } = useParams(); // id of request post
 
     /* --- Fetching info from the server --- */
@@ -37,45 +37,48 @@ const DisplayRequestPost = () => {
     const [linkedItemsLoaded, setLinkedItemsLoaded] = useState(false);
 
     useEffect(() => {
-
-        async function fetchRequest() {
+        async function fetchData() {
             const requestData = await RequestService.getRequest(requestId);
             setRequest(requestData);
 
             const requestUserData = await UserService.getUserData(requestData.ownerID);
             setRequestUser(requestUserData.data);
 
-            const linkedItemData = await RequestService.getRequestsFromList(requestData.recommendedItems);
+            const linkedItemData = await ItemService.getItemsFromList(requestData.recommendedItems);
             setLinkedItems(linkedItemData);
             setLinkedItemsLoaded(true);
-        }
-        fetchRequest();
 
-        async function fetchUserData() {
-            if (userAuth.user.isAuth) { // if logged in
+            // check if user is logged in with sessionStorage, because checking authUser.user.isAuth doesn't work in useEffect
+            const loggedInUser = JSON.parse(sessionStorage.getItem('curUser'));
+
+            if (loggedInUser !== null) {
+                // log in user automatically if session storage indicates they've already logged in, in another tab
+                authUser.login(loggedInUser);
+
+                // if user is logged in, fetch their info
+
                 // load user info (minus items)
-                const userInfoData = await UserService.getUserData(userAuth.user.user._id);
+                const userInfoData = await UserService.getUserData(loggedInUser._id);
 
                 // load user items
-                // must use userInfoData instead of userInfo or it doesn't load for some reason
+                // must use userInfoData instead of userInfo or it doesn't load
                 const userItemData = await ItemService.getItemsFromList(userInfoData.data.postedItems);
                 setUserItems(userItemData);
 
                 // Set checkboxes for selecting items to recommend
                 let checkBoxes = {};
                 userItemData.forEach(
-                    item => checkBoxes[item._id] = false
+                    item => checkBoxes[item._id] = requestData.recommendedItems.includes(item._id)
                 );
                 setCheckBoxes(checkBoxes);
                 setItemsLoaded(true);
             }
         }
-        fetchUserData();
+        fetchData();
 
-    }, [userAuth.user.user]); // set user stuff as dependency b/c it takes a while to update to correct values after refreshing page (?)
+    }, []);
 
     /* --- For editing request --- */
-
     const [isEditing, setIsEditing] = useState(false);
 
     // object that stores error messages for invalid inputs
@@ -91,7 +94,6 @@ const DisplayRequestPost = () => {
 
     const handleDeleteRequest = () => {
 
-        console.log("deletion message");
         confirmAlert({
             name: 'Confirm to delete',
             message: "Are you sure you want to delete this request?",
@@ -101,7 +103,7 @@ const DisplayRequestPost = () => {
                     onClick: () => {
 
                         async function deleteRequest() {
-                            const deleteResult = await RequestService.deleteRequest(request, userAuth.user.user._id);
+                            const deleteResult = await RequestService.deleteRequest(request, authUser.user.user._id);
                             console.log("deleteresult", deleteResult);
                             if (deleteResult.success) {
                                 alert("Deletion successful.");
@@ -125,13 +127,19 @@ const DisplayRequestPost = () => {
     const handleEditRequest = () => {
         if (isEditing) {
             if (noInputErrors()) {
-                RequestService.editRequest(request, userAuth.user.user._id);
+                RequestService.editRequest(request, authUser.user.user._id);
                 setIsEditing(false);
             }
         }
         else {
             setIsEditing(true);
         }
+    }
+
+    const cancelEdit = () => {
+        setIsEditing(false);
+        console.log("TODO");
+        // TODO - snap back to old request when cancel button is pressed
     }
 
     const validateField = (fieldId, fieldValue) => {
@@ -161,10 +169,12 @@ const DisplayRequestPost = () => {
     }
 
     const EditButtonHeader = () => {
-        if ((userAuth.user.isAuth) && (userAuth.user.user._id === request.ownerID)) {
+        if ((authUser.user.isAuth) && (authUser.user.user._id === request.ownerID)) {
             return (
                 <div>
                     <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={handleEditRequest}>{isEditing ? 'Save' : 'Edit'}</button>
+                    {!isEditing ||
+                        <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={cancelEdit}>Cancel</button>}
                     <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={handleDeleteRequest}>Delete</button>
                 </div>
             )
@@ -205,17 +215,33 @@ const DisplayRequestPost = () => {
     }
 
     const submitRecommendation = () => {
-        const selectedItems = [];
-
+        // Get item ids of all items to add
+        const checkedItems = [];
+        const nonCheckedItems = [];
         for (let key in checkBoxes) {
             if (checkBoxes[key]) {
-                selectedItems.push(key);
+                checkedItems.push(key);
+            }
+            else {
+                nonCheckedItems.push(key);
             }
         }
 
-        console.log("edit selecteditems", selectedItems);
-        // request.recommendedItems = selectedItems;
-        // RequestService.editRequest(request, userAuth.user.user._id);
+        async function updateRecommendedItems() {
+            const result = await RequestService.addRecommendedItems(request, checkedItems);
+            const result2 = await RequestService.deleteRecommendedItems(request, nonCheckedItems);
+            const final_result = result.concat(result2);
+            if (final_result.every((item) => item.success)) {
+                alert("Recommended items updated successfully.");
+
+                // to refresh recommended items list
+                window.location.reload();
+            }
+            else {
+                alert("Recommended items failed to update. Sorry.");
+            }
+        }
+        updateRecommendedItems();
     }
 
     const ItemSmall = (itemData) => {
@@ -230,7 +256,9 @@ const DisplayRequestPost = () => {
 
                 <p className="item-descr">{itemDescription}</p>
 
-                <input type="checkbox" onChange={toggleCheckbox} key={itemData._id} id={itemData._id} name={itemData.name} checked={checkBoxes[itemData._id]}></input>
+                <label>Recommend this item&nbsp;
+                    <input type="checkbox" onChange={toggleCheckbox} key={itemData._id} id={itemData._id} name={itemData.name} checked={checkBoxes[itemData._id]}></input>
+                </label>
             </div>
         );
     }
@@ -248,21 +276,32 @@ const DisplayRequestPost = () => {
     }
 
     const YourItemList = () => {
-        if (userAuth.user.isAuth) { // if logged in
+        if (authUser.user.isAuth) { // if logged in
+
+            // if request creator and currently logged in user are different people
+            if (authUser.user.user._id != request.ownerID) {
+                return (
+                    <div className="requestDiv m-3">
+                        <p className="yellowText">Which items would you like to recommend for this request?</p>
+
+                        {displayUserItems()}
+
+                        <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={submitRecommendation}>Submit</button>
+                    </div>
+                )
+            }
+
+            // if request belongs to currently logged in user
             return (
                 <div className="requestDiv m-3">
-                    <p className="yellowText">Does one of your items fulfill this request?</p>
-
-                    {displayUserItems()}
-
-                    <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={submitRecommendation}>Submit</button>
+                    <p>This is your request, so you can't recommend any items for it.</p>
                 </div>
             )
         }
+
+        // if user is not logged in
         return (
             <div className="requestDiv m-3">
-                <p className="yellowText">Does one of your items fulfill this request?</p>
-
                 <p>You are not logged in, so you can't try to fulfill this request!</p>
             </div>
         )

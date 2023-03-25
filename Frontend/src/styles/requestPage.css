@@ -8,6 +8,10 @@
     border-top: 1px solid #999999;
     border-bottom: 1px solid #999999;
     padding: 10px;
+    display: flex;
+}
+.item-small label {
+    margin-left: auto;
 }
 .item-descr {
     display: inline-block;

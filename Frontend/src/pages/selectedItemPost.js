@@ -20,10 +20,9 @@ const SelectedItemPost = () => {
     //make sure user is logged in and get item details
     useEffect(() => {
 
-
-
         const itemPageSetUp = async () => {
 
+            // log in user automatically if session storage indicates they've already logged in, in another tab
             if (sessionStorage.getItem('curUser') !== null) {
                 authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
                 //get reservation data for user
