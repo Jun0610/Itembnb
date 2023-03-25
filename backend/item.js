@@ -98,5 +98,31 @@ router.post('/add-item/user-id/:userId', async (req, res) => {
     }
 })
 
+//allows lender to mark unavailabilities for itmes
+//req.body =
+/*
+{
+    id: the item's id
+    startDate: start of unavailability
+    endDate: end of unavailability
+    day: day of unavailability (recurrence)
+    exepction: date of unavailability
+}   
+*/
+
+router.put("/mark-unavail", async (req, res) => {
+    try {
+        const exceptionDate = new Date(req.body.exception);
+        const startDate = new Date(req.body.startDate);
+        const endDate = new Date(req.body.endDate)
+        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $push: { unavailList: { startDate: startDate, endDate: endDate, reservId: null, day: req.body.day, exception: exceptionDate } } })
+
+        res.status(200).json({ success: true, data: "unavailability successfully added!" });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+
 
 module.exports = { router, deleteItem };
