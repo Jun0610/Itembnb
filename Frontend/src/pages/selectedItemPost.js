@@ -16,7 +16,6 @@ const SelectedItemPost = () => {
     const [reservSuccess, setReservSuccess] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
 
-
     //make sure user is logged in and get item details
     useEffect(() => {
 
@@ -161,7 +160,8 @@ const SelectedItemPost = () => {
 
                             </div>
                         </div>
-
+                        
+                        <button onClick={onTest}>Testing</button>
                         {reservationInfo()}
                     </div>
                 </div >

@@ -93,7 +93,7 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
         setDate(null);
 
         // send live or email notification to the lender
-        SocketService.emit('emitToLender', {owner: itemOwner.email, itemId: selectedItem._id, borrower: authUser.user.user.name});
+        SocketService.emit('emitMsg', {type: 'toLender', owner: itemOwner.email, itemId: selectedItem._id, borrower: authUser.user.user.name});
         socket.on('emitBackB', (response) => {
             if (response !== 'success') {
                 EmailService.sendEmail(authUser, itemOwner, `${authUser.user.user.name} has requested a reservation for your item!`);
@@ -105,7 +105,6 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
     }
 
     return (
-
         <div className='calendar-row'>
             <div>
                 <Calendar

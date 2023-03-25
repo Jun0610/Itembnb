@@ -47,9 +47,39 @@ io.on('connection', (socket) => {
         connectedUsers.push(response);
     })
 
+    socket.on('emitMsg', (response) => {
+        console.log("response: ", response);
+        if (response['type'] === 'toBorrower') {
+            // send notification to borrower
+            if (connectedUsers && connectedUsers.find((e) => e === response['recipient'])) {
+                // user is online; give live notification
+                if (response['msg'] === 'approved') {
+                    io.to(`${response['recipient']}`).emit('emitBack', {toBorrower: true, isApproved: true,  msg: `${response['name']} has ${response['msg']} your request!`, url: `/selected-item-post/${response['itemId']}`});
+                    console.log(connectedUsers);
+                    console.log("sent notification!")
+                } else {
+                    io.to(`${response['recipient']}`).emit('emitBack', {toBorrower: true, isApproved: false,  msg: `${response['name']} has ${response['msg']} your request!`});
+                }
+                socket.emit('emitBackL', 'success');
+            } else {
+                // user is not online; give email notification instead
+                socket.emit('emitBackL', response['recipient']);
+            }
+        } else {
+            // send notification to lender
+            if (connectedUsers && connectedUsers.find((e) => e === response['owner'])) {
+                // user is online; give live notification
+                io.to(`${response['owner']}`).emit('emitBack', {toBorrower: false, msg: `${response['borrower']} has requested a reservation for your item!`, url: `/display-item-post/${response['itemId']}`});
+                console.log(connectedUsers);
+                socket.emit('emitBackB', 'success');
+            } else {
+                // user is not online; give email notification instead
+                socket.emit('emitBackB', response['owner']);
+            }
+        }
+    })
+
     socket.on('emitToBorrower', (response) => {
-        console.log(`${response['name']} want to send a message to ${response['recipient']}`);
-        console.log("response: ", response)
         if (connectedUsers && connectedUsers.find((e) => e === response['recipient'])) {
             // user is online; give live notification
             if (response['msg'] === 'approved') {
@@ -67,8 +97,6 @@ io.on('connection', (socket) => {
     })
 
     socket.on('emitToLender', (response) => {
-        console.log("borrower trying to reach lender");
-        console.log("response: ", response);
         if (connectedUsers && connectedUsers.find((e) => e === response['owner'])) {
             // user is online; give live notification
             io.to(`${response['owner']}`).emit('emitBack', {toBorrower: false, msg: `${response['borrower']} has requested a reservation for your item!`, url: `/display-item-post/${response['itemId']}`});

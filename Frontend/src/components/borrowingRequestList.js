@@ -17,14 +17,6 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
     nav(`/user/${borrowerId}`);
   }
 
-  const onTest = () => {
-    console.log("im here")
-    SocketService.emit('emitToBorrower', {name: authUser.user.user.name, recipient: "jenteiny333@gmail.com", msg: "approved", itemId: 111});
-      socket.on('emitBack', (response) => {
-        console.log(response);
-    });
-  }
-
   const greaterAndEqualThan = (dateA, dateB) => {
     const a_yr = dateA.substring(0, 4);
     const a_mth = dateA.substring(5, 7);
@@ -78,7 +70,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
                   await ReservationService.approveRequest(resv._id, resv.startDate, resv.endDate, item._id).then(() => {
                   
                   // handle email notification or live notification here
-                  SocketService.emit('emitToBorrower', {name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: item._id});
+                  SocketService.emit('emitMsg', {type: 'toBorrower', name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: item._id});
                   socket.on('emitBackL', (response) => {
                     if (response !== 'success') {
                       EmailService.sendEmail(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`);
@@ -96,7 +88,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
 
                       await ReservationService.denyRequest(conflictResv._id, conflictResv.startDate, conflictResv.endDate, item._id).then(() => {
                         // handle email notification or live notification here
-                        SocketService.emit('emitToBorrower', {name: authUser.user.user.name, recipient: conflictResv.borrower.email, msg: "denied"});
+                        SocketService.emit('emitMsg', {type: 'toBorrower', name: authUser.user.user.name, recipient: conflictResv.borrower.email, msg: "denied"});
                         socket.on('emitBackL', (response) => {
                           if (response === 'success') {
                             EmailService.sendEmail(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`);
@@ -108,7 +100,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
                     await ReservationService.approveRequest(resv._id, resv.startDate, resv.endDate, item._id).then(() => {
                   
                       // handle email notification or live notification here
-                      SocketService.emit('emitToBorrower', {name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: item._id});
+                      SocketService.emit('emitMsg', {type: 'toBorrower', name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: item._id});
                       socket.on('emitBackL', (response) => {
                         if (response !== 'success') {
                           EmailService.sendEmail(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`);
@@ -129,7 +121,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
                  // call backend api here
                  await ReservationService.denyRequest(resv._id, resv.startDate, resv.endDate, item._id).then(() => {
                   // handle email notification or live notification here
-                  SocketService.emit('emitToBorrower', {name: authUser.user.user.name, recipient: borrower.email, msg: "denied"});
+                  SocketService.emit('emitMsg', {type: 'toBorrower', name: authUser.user.user.name, recipient: borrower.email, msg: "denied"});
                   socket.on('emitBackL', (response) => {
                     if (response === 'success') {
                       EmailService.sendEmail(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`);

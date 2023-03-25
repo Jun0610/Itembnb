@@ -1,5 +1,4 @@
-import { useEffect, useContext } from "react";
-import userContext from "../contexts/userContext";
+import { useEffect } from "react";
 import {socket} from "../tools/socketService";
 import { useNavigate } from 'react-router-dom';
 import {confirmAlert} from "react-confirm-alert";
@@ -7,7 +6,6 @@ import {confirmAlert} from "react-confirm-alert";
 
 export const NotificationProvider = (props) => {
     const nav = useNavigate();
-    const authUser = useContext(userContext);
 
     useEffect(() => {
         if (socket.connected) {
@@ -54,7 +52,7 @@ export const NotificationProvider = (props) => {
                 }
             });
         }
-    }, [authUser])
+    })
 
     return (
         <div>
