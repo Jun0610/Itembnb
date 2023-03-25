@@ -114,7 +114,7 @@ const SelectedItemPost = () => {
         } else {
             return (
                 <div className="col-6">
-                    <ItemCalendar selectedItem={selectedItem} setReservSuccess={setReservSuccess} />
+                    <ItemCalendar itemOwner={owner} selectedItem={selectedItem} setReservSuccess={setReservSuccess} />
                 </div>
             );
         }

@@ -11,7 +11,7 @@ export const NotificationProvider = (props) => {
 
     useEffect(() => {
         if (socket.connected) {
-            socket.on(`emitAnotherUser`, (response) => {
+            socket.on(`emitB`, (response) => {
                 console.log("response: ", response)
                 if (response['isApproved']) {  
                     alert(`You have a notification!`)
@@ -32,6 +32,25 @@ export const NotificationProvider = (props) => {
                 } else {
                     alert(`${response['msg']}`);
                 }
+            });
+
+            socket.on(`emitL`, (response) => {
+                console.log("response: ", response)
+                alert(`You have a notification!`);
+                confirmAlert({
+                    title: 'Update about your item',
+                    message: `${response['msg']} Bring you there?`,
+                    buttons: [
+                        {
+                            label: 'Take me there',
+                            onClick: () => nav(`/display-item-post/${response['itemId']}`)
+                        },
+                        {
+                            label: 'Thanks! Maybe later',
+                            onClick: () => {}
+                        }
+                    ]
+                })   
             });
         }
     }, [authUser])
