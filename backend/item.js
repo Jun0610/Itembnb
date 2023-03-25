@@ -64,6 +64,11 @@ router.delete('/delete-item/item-id/:itemId/user-id/:userId', async (req, res) =
 })
 async function deleteItem(db, itemId, userId) {
     try {
+        const res = await db.collection("items").findOne({ _id: new mongo.ObjectId(itemId) })
+        const linkedToReq = res.linkedToReq;
+        for (const reqId of linkedToReq) {
+            await db.collection('requests').updateOne({ _id: new mongo.ObjectId(reqId) }, { $pull: { recommendedItems: itemId } })
+        }
         await db.collection('users').updateOne({ _id: new mongo.ObjectId(userId) }, { $pull: { postedItems: itemId } })
         await db.collection('items').deleteOne({ _id: new mongo.ObjectId(itemId) })
         await db.collection("users").updateMany({ favoritedItems: itemId }, { $pull: { favoritedItems: itemId } })
@@ -97,6 +102,32 @@ router.post('/add-item/user-id/:userId', async (req, res) => {
         res.status(404).json({ success: false, data: err })
     }
 })
+
+//allows lender to mark unavailabilities for itmes
+//req.body =
+/*
+{
+    id: the item's id
+    startDate: start of unavailability
+    endDate: end of unavailability
+    day: day of unavailability (recurrence)
+    exepction: date of unavailability
+}   
+*/
+
+router.put("/mark-unavail", async (req, res) => {
+    try {
+        const exceptionDate = new Date(req.body.exception);
+        const startDate = new Date(req.body.startDate);
+        const endDate = new Date(req.body.endDate)
+        await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $push: { unavailList: { startDate: startDate, endDate: endDate, reservId: null, day: req.body.day, exception: exceptionDate } } })
+
+        res.status(200).json({ success: true, data: "unavailability successfully added!" });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
 
 
 module.exports = { router, deleteItem };
