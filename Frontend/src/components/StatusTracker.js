@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { confirmAlert } from 'react-confirm-alert';
 import "../styles/statusTracker.css"
 import ReservationService from '../tools/reservationService';
+import StatusItem from './StatusItem';
 
-const StatusTracker = ({ statusObject, user, activeLenderReservations, setActiveLenderReservations }) => {
+const StatusTracker = ({ statusObject, curUser, user, activeLenderReservations, setActiveLenderReservations }) => {
 
     const [status, setStatus] = useState(statusObject.reservation.status);
     const [approved, setApporved] = useState('')
@@ -76,12 +77,18 @@ const StatusTracker = ({ statusObject, user, activeLenderReservations, setActive
     if (user === 'borrower') {
         return (
             <>
-                <div className='progress-bar-container'>
-                    <ul className='progress-bar borrower'>
-                        <li className={approved}>Reservation Approved</li>
-                        <li className={received}><button className='stat-btn' onClick={handleItemReceived}>Item Received</button></li>
-                        <li className={returned}>Item Returned</li>
-                    </ul>
+                <div className='status-tracker-container'>
+                    <div className='status-item'>
+                        <StatusItem statusObject={statusObject} curUser={curUser} />
+                    </div>
+
+                    <div className='progress-bar-container'>
+                        <ul className='progress-bar borrower'>
+                            <li className={approved}>Reservation Approved</li>
+                            <li className={received}><button className='stat-btn' onClick={handleItemReceived}>Item Received</button></li>
+                            <li className={returned}>Item Returned</li>
+                        </ul>
+                    </div>
                 </div>
 
             </>
@@ -89,13 +96,20 @@ const StatusTracker = ({ statusObject, user, activeLenderReservations, setActive
     } else if (user === "lender") {
         return (
             <>
-                <div className='progress-bar-container'>
-                    <ul className='progress-bar lender'>
-                        <li className={approved}>Reservation Approved</li>
-                        <li className={received}>Item Given</li>
-                        <li className={returned}><button className='stat-btn' onClick={handleItemReturned}>Item Returned</button></li>
-                    </ul>
+                <div className='status-tracker-container'>
+                    <div className='status-item'>
+                        <StatusItem statusObject={statusObject} curUser={curUser} />
+                    </div>
+                    <div className='progress-bar-container'>
+                        <ul className='progress-bar lender'>
+                            <li className={approved}>Reservation Approved</li>
+                            <li className={received}>Item Given</li>
+                            <li className={returned}><button className='stat-btn' onClick={handleItemReturned}>Item Returned</button></li>
+                        </ul>
+                    </div>
+
                 </div>
+
 
             </>
         )
