@@ -77,7 +77,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
                   await ReservationService.approveRequest(resv._id, resv.startDate, resv.endDate, item._id).then(() => {
                   
                   // handle email notification or live notification here
-                  SocketService.emit('emitBruh', {name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: resv._id});
+                  SocketService.emit('emitBruh', {name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: item._id});
                   socket.on('emitBack', (response) => {
                     if (response !== 'success') {
                       EmailService.sendEmail(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`);
@@ -107,7 +107,7 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
                     await ReservationService.approveRequest(resv._id, resv.startDate, resv.endDate, item._id).then(() => {
                   
                       // handle email notification or live notification here
-                      SocketService.emit('emitBruh', {name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: resv._id});
+                      SocketService.emit('emitBruh', {name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: item._id});
                       socket.on('emitBack', (response) => {
                         if (response !== 'success') {
                           EmailService.sendEmail(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`);

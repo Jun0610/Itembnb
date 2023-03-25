@@ -22,6 +22,10 @@ export const NotificationProvider = (props) => {
                             {
                                 label: 'Take me there',
                                 onClick: () => nav(`/selected-item-post/${response['itemId']}`)
+                            },
+                            {
+                                label: 'Thanks! Maybe later',
+                                onClick: () => {}
                             }
                         ]
                     })

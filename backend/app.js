@@ -61,7 +61,6 @@ io.on('connection', (socket) => {
             socket.emit('emitBack', 'success');
         } else {
             // user is not online; give email notification instead
-            console.log("sending email instead...");
             socket.emit('emitBack', response['recipient']);
         }
     })
