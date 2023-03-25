@@ -207,6 +207,17 @@ const DisplayRequestPost = () => {
     }
 
     /* --- List of items that can be linked to the request --- */
+    const [itemView, setItemView] = useState("big");
+
+    const switchView = () => {
+        if (itemView === "small") {
+            setItemView("big");
+        }
+        else if (itemView === "big") {
+            setItemView("small");
+        }
+    }
+
     const toggleCheckbox = (e) => {
         setCheckBoxes({
             ...checkBoxes,
@@ -244,10 +255,27 @@ const DisplayRequestPost = () => {
         updateRecommendedItems();
     }
 
+    const ItemBig = (itemData) => {
+        const BottomComponent = () => {
+            return (<div>lol</div>);
+        }
+
+        return (
+            <div className='item-big'>
+                <Post post={itemData} isRequest={false} key={itemData._id} BottomComponent={BottomComponent}></Post>
+                <div className='recommend-div'>
+                    <label>Recommend this item&nbsp;
+                        <input type="checkbox" onChange={toggleCheckbox} key={itemData._id} id={itemData._id} name={itemData.name} checked={checkBoxes[itemData._id]}></input>
+                    </label>
+                </div>
+            </div>
+        );
+    }
+
     const ItemSmall = (itemData) => {
         let itemDescription = itemData.description;
-        if (itemDescription.length > 15) {
-            itemDescription = itemDescription.substring(0, 12) + "...";
+        if (itemDescription.length > 20) {
+            itemDescription = itemDescription.substring(0, 17) + "...";
         }
 
         return (
@@ -272,7 +300,14 @@ const DisplayRequestPost = () => {
         if (userItems.length === 0) {
             return <p>You have no items!</p>
         }
-        return userItems.map(itemData => ItemSmall(itemData));
+
+        // Actually display items, according to view
+        if (itemView === "small") {
+            return userItems.map(itemData => ItemSmall(itemData));
+        }
+        if (itemView === "big") {
+            return userItems.map(itemData => ItemBig(itemData));
+        }
     }
 
     const YourItemList = () => {
@@ -282,11 +317,14 @@ const DisplayRequestPost = () => {
             if (authUser.user.user._id != request.ownerID) {
                 return (
                     <div className="requestDiv m-3">
-                        <p className="yellowText">Which items would you like to recommend for this request?</p>
+                        <div>
+                            <p className="yellowText">Which items would you like to recommend for this request?</p>
+                            <button class="defaultButton" onClick={switchView}>Switch View</button>
+                        </div>
 
                         {displayUserItems()}
 
-                        <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={submitRecommendation}>Submit</button>
+                        <button className="defaultButton" onClick={submitRecommendation}>Submit</button>
                     </div>
                 )
             }
