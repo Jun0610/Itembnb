@@ -96,7 +96,7 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
         SocketService.emit('emitMsg', {type: 'toLender', owner: itemOwner.email, itemId: selectedItem._id, borrower: authUser.user.user.name});
         socket.on('emitBackB', (response) => {
             if (response !== 'success') {
-                EmailService.sendEmail(authUser, itemOwner, `${authUser.user.user.name} has requested a reservation for your item!`);
+                EmailService.sendEmailRedirection(authUser, itemOwner, `${authUser.user.user.name} has requested a reservation for your item!`, `http://localhost:3000/display-item-post/itemId/${selectedItem._id}/ownerId/${itemOwner._id}`);
             }
         });
 
