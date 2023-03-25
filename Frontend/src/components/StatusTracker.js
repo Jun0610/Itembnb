@@ -26,26 +26,28 @@ const StatusTracker = ({ statusObject, user, activeLenderReservations, setActive
 
     const handleItemReceived = async () => {
         console.log(statusObject.reservation._id);
-        await ReservationService.itemReceived(statusObject.reservation._id)
-        setTimeout(async () => {
-            const res = await ReservationService.getReservation(statusObject.reservation._id);
-            const reservation = res.data;
-            console.log(reservation);
-            setStatus(reservation.status)
-        }, 500)
+        const result = await ReservationService.itemReceived(statusObject.reservation._id);
+        if (result.data === "received" || result.status === 201) {
+            setStatus("active")
+        } else {
+            alert(result.data)
+        }
 
     }
 
     const handleItemReturned = async () => {
-        await ReservationService.itemReturned(statusObject.reservation._id)
-        let reservation = null;
+        if (status !== "active") {
+            return;
+        }
+        const result = await ReservationService.itemReturned(statusObject.reservation._id)
+        if (result.data === "returned" || result.status === 201) {
+            setStatus("completed")
+        } else {
+            alert(result.data)
+        }
         setTimeout(async () => {
-            const res = await ReservationService.getReservation(statusObject.reservation._id);
-            reservation = res.data;
-            console.log(reservation);
-            setStatus(reservation.status)
-        }, 500)
-        setTimeout(() => {
+            const response = await ReservationService.getReservation(statusObject.reservation._id);
+            const reservation = response.data
             confirmAlert({
                 title: 'Status Update',
                 message: "You have completed this item transaction!",
@@ -66,7 +68,7 @@ const StatusTracker = ({ statusObject, user, activeLenderReservations, setActive
             })
 
 
-        }, 1500)
+        }, 1200)
 
 
     }
