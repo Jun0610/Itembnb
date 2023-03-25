@@ -86,6 +86,8 @@ router.put('/edit-request/request-id/:requestId/user-id/:userId', async (req, re
 router.put('/add-recommended-item/request/:reqId', async (req, res) => {
     try {
         await db.collection("requests").updateOne({ _id: new mongo.ObjectId(req.params.reqId) }, { $push: { recommendedItems: req.body.itemId } });
+        console.log(req.body.itemId);
+        await db.collection('items').updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $push: { linkedToReq: req.params.reqId } })
         res.status(200).json({ success: true, data: "successfully added item to recommended list" })
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
@@ -102,6 +104,7 @@ router.put('/add-recommended-item/request/:reqId', async (req, res) => {
 router.put('/remove-recommended-item/request/:reqId', async (req, res) => {
     try {
         await db.collection("requests").updateOne({ _id: new mongo.ObjectId(req.params.reqId) }, { $pull: { recommendedItems: req.body.itemId } });
+        await db.collection('items').updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $pull: { linkedToReq: req.params.reqId } })
         res.status(200).json({ success: true, data: "successfully removed item from recommended list" })
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
