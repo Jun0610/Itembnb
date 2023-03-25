@@ -1,21 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/post.css';
-import itemContext from '../contexts/itemContext';
 import userContext from '../contexts/userContext';
-import { useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import UserService from '../tools/userService.js';
 
-const Post = ({ post, isRequest }) => {
+const Post = ({ post, isRequest, BottomComponent = () => { } }) => {
     const title = post.name;
     const description = post.description;
     const price = post.price;
 
     const rating = 4;
 
-    const selectedItem = useContext(itemContext);
     const selectedUser = useContext(userContext);
 
     //need to set the favorite status based on whether the item is favorited or not
@@ -38,28 +36,6 @@ const Post = ({ post, isRequest }) => {
         }
         getFavStatus();
     })
-
-    const nav = useNavigate();
-
-    const handleClick = () => {
-        if (!isRequest) {
-            selectedItem.setSelectedItem(post);
-            nav(`/selected-item-post/${post._id}`)
-        }
-        else {
-            nav(`/display-request-post/${post._id}`)
-        }
-    };
-
-    const handleOwnerClick = () => {
-        if (!isRequest) {
-            selectedItem.setSelectedItem(post);
-            nav(`/display-item-post/${post._id}`);
-        }
-        else {
-            nav(`/display-request-post/${post._id}`)
-        }
-    }
 
     //onClick function to handle favoriting items
     const favoriteItem = async () => {
@@ -86,6 +62,18 @@ const Post = ({ post, isRequest }) => {
         }
     };
 
+    // What the 'Read more' button links to
+    const readMoreLink = () => {
+        if (isRequest) {
+            return `/display-request-post/${post._id}`;
+        }
+
+        if (selectedUser.user.user && selectedUser.user.user._id === post.ownerId) {
+            return `/display-item-post/${post._id}`
+        }
+        return `/selected-item-post/${post._id}`
+    }
+
     return (
         <div className='card'>
             {post.images && post.images[0] ?
@@ -101,11 +89,15 @@ const Post = ({ post, isRequest }) => {
 
             <div className='row'>
                 <div className='card-body custom-card-body-left'>
-                    <h4 className='card-title'> {title} </h4>
+
+                    <NavLink to={readMoreLink()} className="userProfileLink">
+                        <h4 className='card-title'> {title} </h4>
+                    </NavLink>
                     <p className='card-text item-desc'> {description} </p>
-                    <button className='btn custom-card-button' onClick={selectedUser.user.user && selectedUser.user.user._id === post.ownerId ? handleOwnerClick : handleClick}>
-                        Read more
-                    </button>
+
+                    <NavLink to={readMoreLink()} className="userProfileLink">
+                        <button className='btn custom-card-button' >Read more</button>
+                    </NavLink>
                 </div>
 
                 {!isRequest &&

@@ -3,16 +3,46 @@
     border-radius: 10px;
     padding: 15px;
 }
+.requestDiv .defaultButton {
+    font-weight: bold;
+    color: white;
+    background-color: rgb(247, 214, 90);
+    border-radius: 9999px;
+    padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+    margin: 10px;
+
+    display: block;
+}
+.requestDiv .defaultButton:hover {
+    background-color: rgb(255, 198, 41);
+    transform: scale(1.05);
+    transition: transform 0.3s;
+}
 
 .item-small {
     border-top: 1px solid #999999;
     border-bottom: 1px solid #999999;
     padding: 10px;
+    display: flex;
+}
+.item-small label {
+    margin-left: auto;
 }
 .item-descr {
     display: inline-block;
     margin: 0 15px 0 15px;
     color: #777777;
+}
+
+.item-big {
+    display: inline-block;
+    padding: 10px;
+}
+.recommend-div {
+    box-shadow: 0 2px 3px #ccc;
+    margin: 0 15px;
+    width: 300px;
+    padding: 15px;
 }
 
 .inputNoOutline:focus {

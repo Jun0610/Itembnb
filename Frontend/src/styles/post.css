@@ -90,3 +90,10 @@
   padding: 5px 5.4rem;
   border-bottom: 4px solid #ffec18;
 }
+
+.card a {
+   text-decoration: inherit; 
+}
+.card a:hover {
+    text-decoration: underline;
+}
