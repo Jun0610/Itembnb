@@ -1,6 +1,5 @@
 import Calendar from 'react-calendar';
 import React, { useContext, useEffect } from 'react';
-import itemContext from '../contexts/itemContext';
 import userContext from '../contexts/userContext';
 import '../styles/calendar.css';
 
@@ -39,14 +38,22 @@ const ItemCalendar = ({ selectedItem, setReservSuccess }) => {
                 return true;
             if (selectedItem.unavailList) {
                 for (let i = 0; i < selectedItem.unavailList.length; i++) {
-                    let date1 = new Date(selectedItem.unavailList[i].startDate);
-                    let date2 = new Date(selectedItem.unavailList[i].endDate);
-                    if (inDateRange(date, date1, date2))
-                        return true; // calculated this way because getTime() precision is in milliseconds, and we want to compare by day only
+                    if (selectedItem.unavailList[i].startDate && selectedItem.unavailList[i].endDate) {
+                        let date1 = new Date(selectedItem.unavailList[i].startDate);
+                        let date2 = new Date(selectedItem.unavailList[i].endDate);
+                        if (inDateRange(date, date1, date2))
+                            return true; // calculated this way because getTime() precision is in milliseconds, and we want to compare by day only
+                    } else if (selectedItem.unavailList[i].day) {
+                        if (date.getDay() === selectedItem.unavailList[i].day)
+                            return true;
+                    } else {
+                        let except = new Date(selectedItem.unavailList[i].exception);
+                        if (date.getFullYear() === except.getFullYear() && date.getMonth() === except.getMonth() && date.getDate() === except.getDate())
+                            return false;
+                    }
                 }
             }
         }
-
     }
 
     const makeReq = () => {
