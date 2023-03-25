@@ -1,13 +1,14 @@
 .fullscreen {
     position: fixed;
-    top: 60px;
+    top:0;
     left: 0;
     bottom: 0;
     right: 0;
     overflow: auto;
-    background-color: #F0D061; 
+    background-color: #ffdd00d2; 
     align-items: center;
     display: flex;
+    z-index: -1;
 }
 
 #inner-login-container {
@@ -16,7 +17,7 @@
     flex-direction: column;
     border-radius: 10px;
     margin: auto;
-    margin-top: 10%;
+    margin-top: 15%;
     width: 30%;
     height: 350px;
     padding: 20px;
