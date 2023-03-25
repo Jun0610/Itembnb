@@ -160,8 +160,6 @@ const SelectedItemPost = () => {
 
                             </div>
                         </div>
-                        
-                        <button onClick={onTest}>Testing</button>
                         {reservationInfo()}
                     </div>
                 </div >

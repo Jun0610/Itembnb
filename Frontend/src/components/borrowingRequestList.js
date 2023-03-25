@@ -147,7 +147,6 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
 
   return (
     <div>
-      <button onClick={onTest}>Testing</button>
       <div className='font-bold text-4xl m-3'>Borrowing Request List</div>
       {brList.length === 0 ? 
         <div className='m-3 text-xl font-semibold'>
