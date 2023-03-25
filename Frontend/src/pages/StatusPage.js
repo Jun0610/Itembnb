@@ -60,9 +60,12 @@ const StatusPage = () => {
         if (activeBorrowerReservations === null) {
             return (
                 <>
-                    <h1>
-                        You have no active borrower reservations yet!
-                    </h1>
+                    <div className='borrower-status-container'>
+                        <h3 className='status-page-title'>Items Lended</h3>
+                        <h4 className='status-page-empty-reservation'>
+                            You have no active borrower reservations yet!
+                        </h4>
+                    </div>
                 </>
             )
         }
@@ -72,8 +75,9 @@ const StatusPage = () => {
 
                 <>
                     <div className='borrower-status-container'>
+                        <h3 className='status-page-title'>Items Borrowed</h3>
                         {activeBorrowerReservations.map((status) => (
-                            <StatusTracker key={status.reservation._id} statusObject={status} user={"borrower"} />
+                            <StatusTracker key={status.reservation._id} curUser={JSON.parse(sessionStorage.getItem('curUser'))} statusObject={status} user={"borrower"} />
                         ))}
                     </div>
 
@@ -88,9 +92,13 @@ const StatusPage = () => {
         if (activeLenderReservations === null) {
             return (
                 <>
-                    <h1>
-                        You have no active lender reservations yet!
-                    </h1>
+                    <div className='lender-status-container'>
+                        <h3 className='status-page-title'>Items Lended</h3>
+                        <h4 className='status-page-empty-reservation'>
+                            You have no active lender reservations yet!
+                        </h4>
+                    </div>
+
                 </>
             )
         }
@@ -100,8 +108,9 @@ const StatusPage = () => {
 
                 <>
                     <div className='lender-status-container'>
+                        <h3 className='status-page-title'>Items Lended</h3>
                         {activeLenderReservations.map((status) => (
-                            <StatusTracker key={status.reservation._id} statusObject={status} user={"lender"} activeLenderReservations={activeLenderReservations} setActiveLenderReservations={setActiveLenderReservations} />
+                            <StatusTracker key={status.reservation._id} statusObject={status} curUser={JSON.parse(sessionStorage.getItem('curUser'))} user={"lender"} activeLenderReservations={activeLenderReservations} setActiveLenderReservations={setActiveLenderReservations} />
                         ))}
                     </div>
 

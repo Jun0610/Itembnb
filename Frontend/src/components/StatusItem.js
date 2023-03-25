@@ -1,0 +1,71 @@
+import React, { useEffect, useState } from 'react'
+import '../styles/statusItem.css'
+import Loading from './Loading';
+import UserService from '../tools/userService';
+import { useNavigate } from 'react-router-dom';
+
+const StatusItem = ({ statusObject, curUser }) => {
+    const [owner, setOwner] = useState(null)
+    const [borrower, setBorrower] = useState(null)
+    const nav = useNavigate();
+
+    let startDate = '';
+    let endDate = '';
+    for (const unavail of statusObject.item.unavailList) {
+        if (statusObject.reservation._id === unavail.reservId) {
+            startDate = new Date(unavail.startDate).toDateString().split(" ")
+            endDate = new Date(unavail.endDate).toDateString().split(" ")
+        }
+    }
+
+
+    //to get owner data
+    useEffect(() => {
+        UserService.getUserData(statusObject.reservation.borrowerId).then((success) => {
+            setBorrower(success.data)
+        })
+        UserService.getUserData(statusObject.item.ownerId).then((success) => {
+            setOwner(success.data)
+        })
+    }, [])
+
+    const handleClickItem = () => {
+        nav(`/selected-item-post/${statusObject.item._id}`)
+    }
+
+    const handleClickOwner = () => {
+        nav(`/user/${owner._id}`)
+    }
+
+
+
+    if (owner === null || borrower === null) {
+        return <Loading />
+    } else {
+        console.log(borrower);
+        return (
+            <div className='status-item-container'>
+                <div className='status-item-img-container'>
+                    <img src={statusObject.item.images[0] ? statusObject.item.images[0] : "../resources/logo-no-background.png"} alt="" className='status-item-img' onClick={handleClickItem} />
+                </div>
+
+                <div className='status-item-details-container'>
+                    <h3 className='status-item-name' onClick={handleClickItem}>{statusObject.item.name}</h3>
+                    <div className='status-item-more-info'>
+                        <div className='status-item-date' onClick={handleClickItem}>
+                            <span>{startDate[0]} {startDate[1]} {startDate[2]} &ndash; <br />{endDate[0]} {endDate[1]} {endDate[2]} <br /></span>
+                            <span style={{ fontWeight: "600" }}>{endDate[3]}</span>
+                        </div>
+                        <div className='status-item-owner-container' onClick={handleClickOwner}>
+                            <span className='status-item-owner-name'>{curUser._id === statusObject.item.ownerId ? `Borrower: ${borrower.name}` : `Owner: ${owner.name}`}</span>
+                            <img src={curUser._id === statusObject.item.ownerId ? borrower.profilePic : owner.profilePic} alt="" className='status-item-owner-img' />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        )
+    }
+}
+
+export default StatusItem

@@ -2,3 +2,29 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
+
+.borrower-status-container {
+    margin: 5% 0;
+    border-right: 1.25px solid #ffec18;
+    text-align: center;
+    
+}
+
+.lender-status-container {
+    margin: 5% 0;
+    border-left: 1.25px solid #ffec18;
+    text-align: center;
+}
+
+.status-page-title {
+    border-bottom: 2px solid #ffec18;
+    padding-bottom: 0.5rem;
+    margin: 2rem 30%;
+    margin-top: 0;
+    font-weight: 600;
+}
+
+.status-page-empty-reservation {
+    color: #a19f9f;
+    margin-top: 2rem;
+}

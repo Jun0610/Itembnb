@@ -19,34 +19,34 @@ const SelectedItemPost = () => {
 
     //make sure user is logged in and get item details
     useEffect(() => {
-        if (sessionStorage.getItem('curUser') !== null) {
-            authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
 
 
-            const itemPageSetUp = async () => {
 
-                //get item data
-                const itemData = await ItemService.getItem(itemId);
-                setSelectedItem(itemData.data);
+        const itemPageSetUp = async () => {
 
+            if (sessionStorage.getItem('curUser') !== null) {
+                authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
                 //get reservation data for user
                 setUserReserv(await ReservationService.getUserReservation(itemId, JSON.parse(sessionStorage.getItem('curUser'))._id));
-
-
-
-                if (itemData.data.ownerId) {
-                    const getOwnerData = async () => {
-                        const res = await UserService.getUserData(itemData.data.ownerId);
-                        setOwner(res.data);
-                    }
-
-                    getOwnerData();
-                }
             }
 
+            //get item data
+            const itemData = await ItemService.getItem(itemId);
+            setSelectedItem(itemData.data);
 
-            itemPageSetUp();
+            if (itemData.data.ownerId) {
+                const getOwnerData = async () => {
+                    const res = await UserService.getUserData(itemData.data.ownerId);
+                    setOwner(res.data);
+                }
+
+                getOwnerData();
+            }
         }
+
+
+        itemPageSetUp();
+
     }, [])
 
     //re-render reservation info part after item is reserved
@@ -54,7 +54,9 @@ const SelectedItemPost = () => {
 
         const reRender = async () => {
             //get reservation data for user
-            setUserReserv(await ReservationService.getUserReservation(itemId, JSON.parse(sessionStorage.getItem('curUser'))._id));
+            if (sessionStorage.getItem('curUser') !== null) {
+                setUserReserv(await ReservationService.getUserReservation(itemId, JSON.parse(sessionStorage.getItem('curUser'))._id));
+            }
         }
 
         reRender();
@@ -147,9 +149,16 @@ const SelectedItemPost = () => {
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
                             <div className="owner">
-                                <NavLink to={"/user/" + owner._id}><h3>About the owner: {selectedItem.ownerId ? owner.name : "owner not shown"}</h3></NavLink>
+                                <div className="owner-details">
+                                    <NavLink to={"/user/" + owner._id}>
+                                        <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}>{selectedItem.ownerId ? owner.name : "owner not shown"}</span> </h4>
+
+                                    </NavLink>
+                                    <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
+                                </div>
+
                                 <img src={owner.profilePic} alt="" className="owner-img" />
-                                <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
+
                             </div>
                         </div>
 

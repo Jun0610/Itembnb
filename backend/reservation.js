@@ -203,10 +203,17 @@ router.put('/item-received', async (req, res) => {
     try {
 
         //update reservation status to active
-        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "active" } })
+        const update = await db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "active" } })
+
+        if (update.modifiedCount === 1) {
+            res.status(201).json({ success: true, data: "received" });
+        } else if (update.matchedCount === 0) {
+            throw new Error("no reservation matched that id")
+        } else {
+            res.status(201).json({ success: true, data: "received already, no update was needed" });
+        }
 
 
-        res.status(201).json({ success: true, data: "successfully confirmed that item was received" });
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
     }
@@ -223,13 +230,19 @@ router.put('/item-returned', async (req, res) => {
     try {
 
         //update reservation status to active
-        db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "completed" } })
+        const update = await db.collection("reservations").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $set: { status: "completed" } })
         const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(req.body.id) });
         //remove from unavailList
         await db.collection("items").updateOne({ _id: new mongo.ObjectId(reservation.itemId) }, { $pull: { unavailList: { reservId: req.body.id } } })
 
 
-        res.status(201).json({ success: true, data: "successfully confirmed that item was returned" });
+        if (update.modifiedCount === 1) {
+            res.status(201).json({ success: true, data: "returned" });
+        } else if (update.matchedCount === 0) {
+            throw new Error("no reservation matched that id")
+        } else {
+            res.status(201).json({ success: true, data: "returned already, no update was needed" });
+        }
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
     }

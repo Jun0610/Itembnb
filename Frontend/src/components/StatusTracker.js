@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { confirmAlert } from 'react-confirm-alert';
 import "../styles/statusTracker.css"
 import ReservationService from '../tools/reservationService';
+import StatusItem from './StatusItem';
 
-const StatusTracker = ({ statusObject, user, activeLenderReservations, setActiveLenderReservations }) => {
+const StatusTracker = ({ statusObject, curUser, user, activeLenderReservations, setActiveLenderReservations }) => {
 
     const [status, setStatus] = useState(statusObject.reservation.status);
     const [approved, setApporved] = useState('')
@@ -26,26 +27,28 @@ const StatusTracker = ({ statusObject, user, activeLenderReservations, setActive
 
     const handleItemReceived = async () => {
         console.log(statusObject.reservation._id);
-        await ReservationService.itemReceived(statusObject.reservation._id)
-        setTimeout(async () => {
-            const res = await ReservationService.getReservation(statusObject.reservation._id);
-            const reservation = res.data;
-            console.log(reservation);
-            setStatus(reservation.status)
-        }, 500)
+        const result = await ReservationService.itemReceived(statusObject.reservation._id);
+        if (result.data === "received" || result.status === 201) {
+            setStatus("active")
+        } else {
+            alert(result.data)
+        }
 
     }
 
     const handleItemReturned = async () => {
-        await ReservationService.itemReturned(statusObject.reservation._id)
-        let reservation = null;
+        if (status !== "active") {
+            return;
+        }
+        const result = await ReservationService.itemReturned(statusObject.reservation._id)
+        if (result.data === "returned" || result.status === 201) {
+            setStatus("completed")
+        } else {
+            alert(result.data)
+        }
         setTimeout(async () => {
-            const res = await ReservationService.getReservation(statusObject.reservation._id);
-            reservation = res.data;
-            console.log(reservation);
-            setStatus(reservation.status)
-        }, 500)
-        setTimeout(() => {
+            const response = await ReservationService.getReservation(statusObject.reservation._id);
+            const reservation = response.data
             confirmAlert({
                 title: 'Status Update',
                 message: "You have completed this item transaction!",
@@ -66,7 +69,7 @@ const StatusTracker = ({ statusObject, user, activeLenderReservations, setActive
             })
 
 
-        }, 1500)
+        }, 1200)
 
 
     }
@@ -74,12 +77,18 @@ const StatusTracker = ({ statusObject, user, activeLenderReservations, setActive
     if (user === 'borrower') {
         return (
             <>
-                <div className='progress-bar-container'>
-                    <ul className='progress-bar borrower'>
-                        <li className={approved}>Reservation Approved</li>
-                        <li className={received}><button className='stat-btn' onClick={handleItemReceived}>Item Received</button></li>
-                        <li className={returned}>Item Returned</li>
-                    </ul>
+                <div className='status-tracker-container'>
+                    <div className='status-item'>
+                        <StatusItem statusObject={statusObject} curUser={curUser} />
+                    </div>
+
+                    <div className='progress-bar-container'>
+                        <ul className='progress-bar borrower'>
+                            <li className={approved}>Reservation Approved</li>
+                            <li className={received}><button className='stat-btn' onClick={handleItemReceived}>Item Received</button></li>
+                            <li className={returned}>Item Returned</li>
+                        </ul>
+                    </div>
                 </div>
 
             </>
@@ -87,13 +96,20 @@ const StatusTracker = ({ statusObject, user, activeLenderReservations, setActive
     } else if (user === "lender") {
         return (
             <>
-                <div className='progress-bar-container'>
-                    <ul className='progress-bar lender'>
-                        <li className={approved}>Reservation Approved</li>
-                        <li className={received}>Item Given</li>
-                        <li className={returned}><button className='stat-btn' onClick={handleItemReturned}>Item Returned</button></li>
-                    </ul>
+                <div className='status-tracker-container'>
+                    <div className='status-item'>
+                        <StatusItem statusObject={statusObject} curUser={curUser} />
+                    </div>
+                    <div className='progress-bar-container'>
+                        <ul className='progress-bar lender'>
+                            <li className={approved}>Reservation Approved</li>
+                            <li className={received}>Item Given</li>
+                            <li className={returned}><button className='stat-btn' onClick={handleItemReturned}>Item Returned</button></li>
+                        </ul>
+                    </div>
+
                 </div>
+
 
             </>
         )
