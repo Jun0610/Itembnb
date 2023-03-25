@@ -77,6 +77,7 @@ class ReservationService {
             if (response.status !== 201) {
                 throw new Error(response.data)
             }
+            return response
         } catch (err) {
             console.log(err);
         }
@@ -95,6 +96,7 @@ class ReservationService {
             if (response.status !== 201) {
                 throw new Error(response.data)
             }
+            return response
         } catch (err) {
             console.log(err);
         }

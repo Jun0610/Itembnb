@@ -1,0 +1,83 @@
+.status-item-container {
+    display: grid;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    text-align: left;
+}
+
+
+.status-item-img-container {
+    overflow: hidden;
+    border-top-left-radius: 0.8rem; 
+    width: 90%;
+}
+
+.status-item-img {
+    width:100%;
+    height: 250px;
+    border-top-left-radius: 0.8rem;
+    overflow: hidden;
+}
+
+.status-item-img:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: transform 0.3s;
+}
+
+
+.status-item-name {
+    margin-top: 2rem;
+    padding-bottom: 1rem;
+    margin-right: 10%;
+    border-bottom: 1px solid #ddd;
+}
+
+.status-item-name:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.status-item-date {
+    font-size: 18px;
+    border-right: 1px solid #ddd;
+}
+
+.status-item-date:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.status-item-more-info {
+    margin-right: 0%;  
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+}
+
+.status-item-owner-container {
+    text-align: center;
+}
+
+.status-item-owner-img {
+    margin: 0 auto;
+    margin-top: 2vh;
+    border-radius: 50%;
+    width:  45%;
+    aspect-ratio: 1/1;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);;
+}
+
+.status-item-owner-img:hover{
+    transform: scale(1.05);
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.status-item-owner-name:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: 600;
+}
