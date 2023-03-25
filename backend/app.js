@@ -3,7 +3,6 @@ const { db, mongo } = require('./mongo')   //gets mongodb db instance
 const cors = require('cors')
 const socketIo = require('socket.io')
 const http = require('http')
-const email = require('@emailjs/browser')
 
 const app = express();
 
@@ -29,12 +28,11 @@ app.use("/api/user", user)
 
 //reservation-related processing
 const reservation = require('./reservation');
-const {response}=require('express')
 app.use("/api/reservation", reservation);
 
 // socket initialization for live notifications
 const server = http.createServer(app);
-const connectedUsers = [];
+var connectedUsers = [];
 const io = socketIo(server, {
     cors: {
         origin: "http://localhost:3000",
@@ -50,23 +48,29 @@ io.on('connection', (socket) => {
     })
 
     socket.on('emitBruh', (response) => {
+        console.log(`${response['name']} want to send a message to ${response['recipient']}`);
         if (connectedUsers && connectedUsers.find((e) => e === response['recipient'])) {
             // user is online; give live notification
             if (response['msg'] === 'approved') {
                 io.to(`${response['recipient']}`).emit('emitAnotherUser', {isApproved: true,  msg: `${response['name']} has ${response['msg']} your request!`, itemId: response['itemId']});
+                console.log(connectedUsers);
+                console.log("sent notification!")
             } else {
                 io.to(`${response['recipient']}`).emit('emitAnotherUser', {isApproved: false,  msg: `${response['name']} has ${response['msg']} your request!`});
             }
             socket.emit('emitBack', 'success');
         } else {
             // user is not online; give email notification instead
+            console.log("sending email instead...");
             socket.emit('emitBack', response['recipient']);
         }
     })
     
-    // todo: remove the client that logs out from the connectedUsers
-    socket.on('sendRemoveId', (response) => {
+    socket.on('leaveChannel', (response) => {
         // remove the email
+        const newConnectedUsers = connectedUsers.filter((e) => e != response)
+        console.log(newConnectedUsers);
+        connectedUsers = newConnectedUsers;
     })
 
     socket.on('disconnect', () => {
