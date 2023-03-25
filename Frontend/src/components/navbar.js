@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import UserService from '../tools/userService';
 
 import userContext from '../contexts/userContext';
+import SocketService from '../tools/socketService';
 
 const Navbar = () => {
     const logo = require("../resources/logo-no-background.png");
@@ -32,6 +33,8 @@ const Navbar = () => {
 
     const logout = (e) => {
         e.preventDefault();
+        SocketService.emit("leaveChannel", authUser.user.user.email);
+        SocketService.disconnect();
         sessionStorage.removeItem('curUser')
         nav('/')
         authUser.logout();

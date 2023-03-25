@@ -14,10 +14,9 @@ class SocketService {
         socket.disconnect();
     }
 
-    static emit(eventName, msg) {
-        console.log(`event: ${eventName}, msg: ${msg}`);
-        socket.emit(`${eventName}`, msg);
-        console.log("msg sent!");
+    static emit(eventName, packet) {
+        console.log(`event: ${eventName}, msg: ${packet}`);
+        socket.emit(`${eventName}`, packet);
     }
 }
 
