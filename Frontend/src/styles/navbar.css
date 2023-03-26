@@ -1,31 +1,51 @@
 .customNavBar {
-  background-color: #F0D061;
-  align-items: flex-end;
+  color: black;
+  background-color: #ffdd00d2;
+  margin: 0 auto;
+  padding: 0.8rem 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.navbar-brand {
+    width: 350px;
+    margin-left: 1rem;
+    float: left;
 }
 
 .brand-logo {
-    position: relative;
-    background: #fff;
-    padding: 0px 10px;
-    max-width: 200px;
-    max-height: auto;
+    background-color: white;
+    padding: 0.3rem 1rem;
+    border-radius: 1rem;
+    margin: 0;
+    padding-left: 1rem;
+    width: 100%;
     object-fit: contain;
 }
 
-.custom-ul {
-    list-style-type: none;
-    display: inline-flex;
-    flex-direction: row;
-    margin: 0;
-    text-align: center;
-}
 
 .custom-nav-link {
     text-decoration: none;
-    color: #fff;
+    color: black;
     font-size: 20px;
     padding: 10px 16px;
     text-align: center;
+}
+
+.customNavBar .nav-bar-info {
+    width: 100%;
+    text-align: right;
+    justify-content: center;
+    margin: 0;
+}
+
+.nav-bar-info li {
+    display: inline-block;
+    list-style: none;
 }
 
 .custom-logout-btn {
@@ -34,11 +54,6 @@
     color: #fff;
     font-size: 20px;
     padding: 10px 16px;
-}
-
-li .custom-nav-link{
-    display: inline-block;
-    text-align: center;
 }
 
 .nav-bar-active {
@@ -50,15 +65,45 @@ li .custom-nav-link{
     border-radius: 50%;
     width: 50px;
     height: 50px;
-    margin: 0 0.5rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
 }
 
-.nav-link-img {
-    margin: 0;
+.nav-img:hover {
+    cursor: pointer;
 }
 
 .nav-img:hover {
     opacity: 0.8;
     transform: scale(1.01);
     transition: transform 0.3s;
+}
+
+.drop-down-container {
+    position: absolute;
+    top: 100%;
+    right: 1rem;
+    border-radius: 0.8;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    width: 250px;
+    margin-top: 0.5rem;
+    background-color: #fff;
+    z-index: 1;
+    max-height: 0px;
+    overflow: hidden;
+}
+
+.drop-down-container.open {
+    max-height: 400px;
+}
+
+.drop-down-info {
+    margin-top: 0.2rem;
+}
+
+.drop-down-item {
+    margin-left: 10px;
+    line-height: 2rem;
+    text-decoration: none;
+    color: black;
 }
