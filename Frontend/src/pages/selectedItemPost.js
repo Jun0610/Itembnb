@@ -20,7 +20,6 @@ const SelectedItemPost = () => {
     useEffect(() => {
 
         const itemPageSetUp = async () => {
-
             // log in user automatically if session storage indicates they've already logged in, in another tab
             if (sessionStorage.getItem('curUser') !== null) {
                 authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
@@ -177,6 +176,18 @@ const SelectedItemPost = () => {
                             </div>
                             <div className="item-post-row">
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
+                            </div>
+                            <div className="owner">
+                                <div className="owner-details">
+                                    <NavLink to={"/user/" + owner._id}>
+                                        <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}>{selectedItem.ownerId ? owner.name : "owner not shown"}</span> </h4>
+
+                                    </NavLink>
+                                    <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
+                                </div>
+
+                                <img src={owner.profilePic} alt="" className="owner-img" />
+
                             </div>
                             {ownerInfo()}
                         </div>
