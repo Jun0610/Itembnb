@@ -16,6 +16,8 @@ import { ItemContextProvider } from "./contexts/itemContext";
 import FavoriteItems from "./pages/FavoriteItems";
 import StatusPage from "./pages/StatusPage";
 import { NotificationProvider } from "./contexts/notificationContext";
+import EmailDisplayItemPost from "./pages/emailDisplayItemPost";
+import EmailStatusPage from "./pages/emailStatusPage";
 
 function App() {
     return (
@@ -30,6 +32,8 @@ function App() {
                                 <Route exact path="/" element={<Home />} />
                                 <Route exact path="/create-item-post" element={<CreateItemPost />} />
                                 <Route exact path='/create-item-request' element={<CreateRequest />} />
+                                <Route path="/display-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailDisplayItemPost/>} />
+                                <Route path="/item-status/:id" element={<EmailStatusPage/>} />
                                 <Route path="/display-item-post/:id" element={<DisplayItemPost />} />
                                 <Route path="/display-request-post/:id" element={<DisplayRequestPost />} />
                                 <Route exact path="/signup" element={<SignUp />} />
