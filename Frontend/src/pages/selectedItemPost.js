@@ -4,7 +4,7 @@ import userContext from "../contexts/userContext";
 import ItemService from "../tools/itemsService";
 import UserService from "../tools/userService.js";
 import ReservationService from "../tools/reservationService";
-import Loading from "../components/Loading";
+import { Loading, LoadingSmall } from "../components/Loading";
 import ItemCalendar from "../components/calendar";
 import "../styles/itempost.css";
 
@@ -19,10 +19,9 @@ const SelectedItemPost = () => {
     //make sure user is logged in and get item details
     useEffect(() => {
 
-
-
         const itemPageSetUp = async () => {
 
+            // log in user automatically if session storage indicates they've already logged in, in another tab
             if (sessionStorage.getItem('curUser') !== null) {
                 authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
                 //get reservation data for user
@@ -120,7 +119,39 @@ const SelectedItemPost = () => {
 
     }
 
-    if (selectedItem !== null && JSON.stringify(owner) !== '{}') {
+    const ownerInfo = () => {
+        if (Object.keys(owner).length)
+            return (
+                <div className="owner">
+                    <div className="owner-details">
+                        <NavLink to={"/user/" + owner._id}>
+                            <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}>{selectedItem.ownerId ? owner.name : "owner not shown"}</span> </h4>
+
+                        </NavLink>
+                        <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
+                    </div>
+
+                    <img src={owner.profilePic} alt="" className="owner-img" />
+
+                </div>);
+
+        return (
+            <div className="owner">
+                <div className="owner-details">
+                    <NavLink to={"/user/" + owner._id}>
+                        <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}></span> </h4>
+
+                    </NavLink>
+                    <p className='owner-desc'>Loading...</p>
+                </div>
+
+                <LoadingSmall />
+
+            </div>
+        );
+    }
+
+    if (selectedItem !== null) {
 
         return (
             <div>
@@ -147,18 +178,7 @@ const SelectedItemPost = () => {
                             <div className="item-post-row">
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
-                            <div className="owner">
-                                <div className="owner-details">
-                                    <NavLink to={"/user/" + owner._id}>
-                                        <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}>{selectedItem.ownerId ? owner.name : "owner not shown"}</span> </h4>
-
-                                    </NavLink>
-                                    <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
-                                </div>
-
-                                <img src={owner.profilePic} alt="" className="owner-img" />
-
-                            </div>
+                            {ownerInfo()}
                         </div>
                         {reservationInfo()}
                     </div>
