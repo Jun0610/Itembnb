@@ -181,6 +181,41 @@ router.get("/get-active-reservation/lender/:userId", async (req, res) => {
 
 })
 
+//get all pending reservations for a user
+//returns:
+/*
+[{
+    item: item
+    reservation: reservation
+}]
+*/
+router.get('/get-pending-reservations-of-user/:userId', async (req, res) => {
+    try {
+        const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) });
+        if (user === null) {
+            throw new Error("user not found")
+        }
+        const pendingReservations = []
+        for (const reservId of user.reservHist) {
+            const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(reservId) });
+            if (reservation === null) {
+                throw new Error("reservation not found");
+            }
+            if (reservation.status !== 'pending') {
+                continue;
+            }
+            const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
+            if (item === null) {
+                throw new Error("item not found")
+            }
+            pendingReservations.push({ reservation, item })
+        }
+        res.status(201).json({ success: true, data: pendingReservations });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
 
 
 //get reservation based on reservId

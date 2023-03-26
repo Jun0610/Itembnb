@@ -16,6 +16,7 @@ import { ItemContextProvider } from "./contexts/itemContext";
 import FavoriteItems from "./pages/FavoriteItems";
 import StatusPage from "./pages/StatusPage";
 import { NotificationProvider } from "./contexts/notificationContext";
+import PendingPage from "./pages/PendingPage";
 
 function App() {
     return (
@@ -38,6 +39,7 @@ function App() {
                                 <Route exact path="/selected-item-post/:itemId" element={<SelectedItemPost />} />
                                 <Route exact path="/favorite-items" element={<FavoriteItems />} />
                                 <Route exact path='/item-status' element={<StatusPage />}></Route>
+                                <Route exact path='/pending-reservations' element={<PendingPage />}></Route>
                             </Routes>
                         </NotificationProvider>
                     </Router>
