@@ -48,7 +48,7 @@ const Navbar = () => {
     window.onclick = (e) => {
         console.log(e);
         const dropDown = document.querySelector(".drop-down-container")
-        if (dropDown.classList.contains('open') && !e.target.matches('.nav-img')) {
+        if (dropDown && dropDown.classList.contains('open') && !e.target.matches('.nav-img')) {
             dropDown.classList.remove('open');
         }
     }

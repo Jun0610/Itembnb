@@ -184,3 +184,6 @@ abbr[title] {
   margin: 0 auto;
   text-align: left;
 }
+.background-red {
+  background-color: #ff9b9b;
+}

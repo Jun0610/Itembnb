@@ -298,7 +298,7 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
-            <OwnerCalendar item={item} />
+            <OwnerCalendar selectedItem={item} />
             <BorrowingRequestList brList={pendingReservations} item={item} onChangeResvList={onChangeResvList}/>
         </div>
     )
