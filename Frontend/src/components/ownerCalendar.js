@@ -20,6 +20,7 @@ const inDateRange = (date, startDate, endDate) => {
 
 const OwnerCalendar = ( {selectedItem} ) => {
     const [date, setDate] = React.useState(null);
+    const [availList, setAvailList] = React.useState(selectedItem.unavailList);
     const authUser = useContext(userContext);;
 
     useEffect(() => {
@@ -36,12 +37,13 @@ const OwnerCalendar = ( {selectedItem} ) => {
                 return 'background-red';
             if (selectedItem.unavailList) {
                 for (let i = 0; i < selectedItem.unavailList.length; i++) {
-                    if (selectedItem.unavailList[i].startDate && selectedItem.unavailList[i].endDate) {
+                    if (selectedItem.unavailList[i].startDate != "1970-01-01T00:00:00.000Z" && selectedItem.unavailList[i].endDate) {
                         let date1 = new Date(selectedItem.unavailList[i].startDate);
                         let date2 = new Date(selectedItem.unavailList[i].endDate);
                         if (inDateRange(date, date1, date2))
                             return "background-red";
                     } else if (selectedItem.unavailList[i].day) {
+                        console.log(selectedItem.unavailList[i].day)
                         if (date.getDay() === selectedItem.unavailList[i].day)
                             return "background-red";
                     } else {
