@@ -50,6 +50,50 @@ class RequestService {
         })
     }
 
+    static async addRecommendedItems(request, itemsToAdd) {
+        // Remove already recommended items to avoid dupes
+        itemsToAdd = itemsToAdd.filter(x => !request.recommendedItems.includes(x));
+
+        return Promise.all(itemsToAdd.map(async itemId => {
+            return new Promise((resolve, reject) => {
+                fetch(`${url}/add-recommended-item/request/${request._id}`, {
+                    method: 'put',
+                    headers: { 'content-type': 'application/json' },
+                    body: JSON.stringify({ "itemId": itemId }),
+                }).then(res => res.json()).then(
+                    (result) => {
+                        console.log("add 1 item", result);
+                        resolve(result);
+                    }
+                ).catch((err) => {
+                    reject(err);
+                });
+            });
+        }));
+    }
+
+    static async deleteRecommendedItems(request, itemsToRemove) {
+        // Remove already non-recommended items to avoid dupes
+        itemsToRemove = itemsToRemove.filter(x => request.recommendedItems.includes(x));
+
+        return Promise.all(itemsToRemove.map(async itemId => {
+            return new Promise((resolve, reject) => {
+                fetch(`${url}/remove-recommended-item/request/${request._id}`, {
+                    method: 'put',
+                    headers: { 'content-type': 'application/json' },
+                    body: JSON.stringify({ "itemId": itemId }),
+                }).then(res => res.json()).then(
+                    (result) => {
+                        console.log("remove 1 item", result);
+                        resolve(result);
+                    }
+                ).catch((err) => {
+                    reject(err);
+                });
+            });
+        }));
+    }
+
     static async deleteRequest(request, userId) {
         console.log("delete an request", request, userId);
         return new Promise((resolve, reject) => {

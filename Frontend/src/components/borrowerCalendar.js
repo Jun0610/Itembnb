@@ -2,6 +2,8 @@ import Calendar from 'react-calendar';
 import React, { useContext, useEffect } from 'react';
 import userContext from '../contexts/userContext';
 import '../styles/calendar.css';
+import SocketService, {socket} from '../tools/socketService';
+import EmailService from '../tools/emailService';
 
 const inDateRange = (date, startDate, endDate) => {
     if ((date.getFullYear() > startDate.getFullYear() && date.getFullYear() < endDate.getFullYear()) ||
@@ -18,7 +20,7 @@ const inDateRange = (date, startDate, endDate) => {
     return false;
 }
 
-const ItemCalendar = ({ selectedItem, setReservSuccess }) => {
+const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
     const [date, setDate] = React.useState(null);
     //const selectedItem = useContext(itemContext);
     const authUser = useContext(userContext);
@@ -97,12 +99,20 @@ const ItemCalendar = ({ selectedItem, setReservSuccess }) => {
                 console.log(data);
             });
         setDate(null);
+
+        // send live or email notification to the lender
+        SocketService.emit('emitMsg', {type: 'toLender', owner: itemOwner.email, itemId: selectedItem._id, borrower: authUser.user.user.name});
+        socket.on('emitBackB', (response) => {
+            if (response !== 'success') {
+                EmailService.sendEmailRedirection(authUser, itemOwner, `${authUser.user.user.name} has requested a reservation for your item!`, `http://localhost:3000/display-item-post/itemId/${selectedItem._id}/ownerId/${itemOwner._id}`);
+            }
+        });
+
         alert("Request sent!");
         setReservSuccess(true);
     }
 
     return (
-
         <div className='calendar-row'>
             <div>
                 <Calendar

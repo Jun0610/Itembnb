@@ -64,6 +64,11 @@ router.delete('/delete-item/item-id/:itemId/user-id/:userId', async (req, res) =
 })
 async function deleteItem(db, itemId, userId) {
     try {
+        const res = await db.collection("items").findOne({ _id: new mongo.ObjectId(itemId) })
+        const linkedToReq = res.linkedToReq;
+        for (const reqId of linkedToReq) {
+            await db.collection('requests').updateOne({ _id: new mongo.ObjectId(reqId) }, { $pull: { recommendedItems: itemId } })
+        }
         await db.collection('users').updateOne({ _id: new mongo.ObjectId(userId) }, { $pull: { postedItems: itemId } })
         await db.collection('items').deleteOne({ _id: new mongo.ObjectId(itemId) })
         await db.collection("users").updateMany({ favoritedItems: itemId }, { $pull: { favoritedItems: itemId } })
