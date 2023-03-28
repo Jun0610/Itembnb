@@ -21,11 +21,6 @@ const inDateRange = (date, startDate, endDate) => {
 const OwnerCalendar = ( {selectedItem} ) => {
     const [date, setDate] = React.useState(null);
     const [availList, setAvailList] = React.useState(selectedItem.unavailList);
-    const authUser = useContext(userContext);;
-
-    useEffect(() => {
-        console.log(selectedItem);
-    }, [])
 
     const reset = () => {
         setDate(null)
@@ -35,28 +30,40 @@ const OwnerCalendar = ( {selectedItem} ) => {
         if (view === 'month') {
             if (date.getTime() < Date.now())
                 return 'background-red';
+            let ret = null;
             if (selectedItem.unavailList) {
                 for (let i = 0; i < selectedItem.unavailList.length; i++) {
-                    if (selectedItem.unavailList[i].startDate != "1970-01-01T00:00:00.000Z" && selectedItem.unavailList[i].endDate) {
+                    if (selectedItem.unavailList[i].startDate !== "1970-01-01T00:00:00.000Z" && selectedItem.unavailList[i].endDate !== "1970-01-01T00:00:00.000Z") {
                         let date1 = new Date(selectedItem.unavailList[i].startDate);
                         let date2 = new Date(selectedItem.unavailList[i].endDate);
                         if (inDateRange(date, date1, date2))
-                            return "background-red";
-                    } else if (selectedItem.unavailList[i].day) {
-                        console.log(selectedItem.unavailList[i].day)
+                            ret = "background-red";
+                    } else if (selectedItem.unavailList[i].day !== null) {
                         if (date.getDay() === selectedItem.unavailList[i].day)
-                            return "background-red";
+                            ret = "background-red";
                     } else {
                         let except = new Date(selectedItem.unavailList[i].exception);
-                        if (date.getFullYear() === except.getFullYear() && date.getMonth() === except.getMonth() && date.getDate() === except.getDate())
-                            return null;
+                        console.log(except + " " + date);
+                        if (date.getFullYear() === except.getFullYear() && date.getMonth() === except.getMonth() && date.getDate() === except.getDate()) {
+                            console.log("except:" + except);
+                            ret = null;
+                        }
+                            
                     }
                 }
             }
+            return ret;
         }
     }
 
     const makeExcep = () => {
+        if (!date) {
+            alert("Please select a date range");
+            return;
+        } else if (date[0].getFullYear() !== date[1].getFullYear() || date[0].getMonth() !== date[1].getMonth() || date[0].getDate() !== date[1].getDate()) {
+            alert("Please select a single date");
+            return;
+        }
         fetch('http://localhost:8888/api/item/mark-unavail', {
             method: 'PUT',
             headers: {
@@ -73,6 +80,13 @@ const OwnerCalendar = ( {selectedItem} ) => {
     }
 
     const makeRecur = () => {
+        if (!date) {
+            alert("Please select a date range");
+            return;
+        } else if (date[0].getFullYear() !== date[1].getFullYear() || date[0].getMonth() !== date[1].getMonth() || date[0].getDate() !== date[1].getDate()) {
+            alert("Please select a single date");
+            return;
+        }
         fetch('http://localhost:8888/api/item/mark-unavail', {
             method: 'PUT',
             headers: {
@@ -89,6 +103,10 @@ const OwnerCalendar = ( {selectedItem} ) => {
     }
 
     const makeUnavail = () => {
+        if (!date) {
+            alert("Please select a date range");
+            return;
+        }
         fetch('http://localhost:8888/api/item/mark-unavail', {
             method: 'PUT',
             headers: {
@@ -107,17 +125,21 @@ const OwnerCalendar = ( {selectedItem} ) => {
     return (
         <div>
             <h1 className="font-bold">Item Calendar</h1>
-            <div className="calendar-row">
+            <div className="calendar-owner-row">
                 <Calendar
                     onChange={setDate}
                     value={date}
                     selectRange={true}
                     tileClassName={itemUnavail}
                 />
-                <button onClick={reset}>Reset</button>
-                <button onClick={makeExcep}>Add exception</button>
-                <button onClick={makeRecur}>Add recurrent unavailability</button>
-                <button onClick={makeUnavail}>Add unavailability</button>
+                <div className="calendar-owner-row">
+                    <div>
+                        <button className="calendar-column-btn" onClick={reset}>Reset</button>
+                        <button className="calendar-column-btn" onClick={makeExcep}>Add exception</button>
+                        <button className="calendar-column-btn" onClick={makeRecur}>Add recurrent unavailability</button>
+                        <button className="calendar-column-btn" onClick={makeUnavail}>Add unavailability</button>
+                    </div>
+                </div>
             </div>
         </div>
     )

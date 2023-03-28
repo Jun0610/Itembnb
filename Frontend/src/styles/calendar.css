@@ -170,6 +170,12 @@ abbr[title] {
   display: block;
   padding-left: 8px;
 }
+.calendar-owner-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
 .calendar-column-btn {
   display: block;
   margin: 5px 0;

@@ -254,6 +254,7 @@ const CreateItemPost = () => {
                     </div>))}
                 </div>
             </div>
+            
         </div>
     );
 };
