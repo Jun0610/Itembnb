@@ -24,9 +24,8 @@ const PendingPage = () => {
     }, [])
 
     console.log(pendingReservations);
-    if (pendingReservations !== null) {
+    if (pendingReservations !== null && pendingReservations.length !== 0) {
         return (
-
             <div className='pending-page-container'>
                 <h3 className='pending-page-title'>
                     Pending Reservations
@@ -36,7 +35,20 @@ const PendingPage = () => {
                 )}
             </div>
         )
-    } else {
+    } else if (pendingReservations !== null && pendingReservations.length === 0) {
+        return (
+            <div className='pending-page-container'>
+                <h3 className='pending-page-title'>
+                    Pending Reservations
+                </h3>
+                <h4 className='no-pending-reservations'>
+                    You have no pending reservations!
+                </h4>
+            </div>
+        )
+
+    }
+    else {
         return <Loading />
     }
 

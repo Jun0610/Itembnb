@@ -172,8 +172,10 @@ const SelectedItemPost = () => {
                     <div className="row">
                         <div className="col-6" style={{ borderRight: "2px solid #ffec18" }}>
                             <div className="item-post-row">
-                                <h4>{selectedItem.description}</h4>
+                                <h5>{selectedItem.description}</h5>
+                                <div style={{ paddingLeft: "4rem" }}>
 
+                                </div>
                                 <h4>${selectedItem.price}/day</h4>
                             </div>
                             <div className="item-post-row">

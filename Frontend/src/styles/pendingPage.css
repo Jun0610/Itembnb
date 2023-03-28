@@ -19,3 +19,8 @@
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     margin-top: 2rem;
 }
+
+.no-pending-reservations{
+    text-align: center;
+    color: #a19f9f;
+}
