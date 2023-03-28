@@ -100,6 +100,9 @@ abbr[title] {
 .react-calendar__tile--now {
   background: #ffff76;
 }
+.background-red {
+  background-color: #ff9b9b;
+}
 .react-calendar__tile--now:enabled:hover,
 .react-calendar__tile--now:enabled:focus {
   background: #ffffa9;
@@ -166,6 +169,12 @@ abbr[title] {
   width: 45%;
   display: block;
   padding-left: 8px;
+}
+.calendar-owner-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 .calendar-column-btn {
   display: block;

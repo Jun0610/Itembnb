@@ -8,6 +8,7 @@ import userContext from '../contexts/userContext';
 import BorrowingRequestList from '../components/borrowingRequestList';
 import ReservationService from '../tools/reservationService';
 import SocketService, {socket} from '../tools/socketService';
+import OwnerCalendar from '../components/ownerCalendar';
 
 const DisplayItemPost = () => {
     const { id } = useParams();
@@ -26,6 +27,10 @@ const DisplayItemPost = () => {
     const nav = useNavigate();
 
     useEffect(() => {
+        // logs in user across refreshes
+        if (sessionStorage.getItem('curUser') !== null) {
+            authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
+        }
         // call API to fetch the item data
         async function fetchCategories() {
             const data = await ItemService.getAllCategories();
@@ -294,6 +299,7 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
+            <OwnerCalendar selectedItem={item} />
             <BorrowingRequestList brList={pendingReservations} item={item} onChangeResvList={onChangeResvList}/>
         </div>
     )

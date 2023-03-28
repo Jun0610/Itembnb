@@ -38,16 +38,26 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
         if (view === 'month') {
             if (date.getTime() < Date.now())
                 return true;
+            let ret = false;
             if (selectedItem.unavailList) {
                 for (let i = 0; i < selectedItem.unavailList.length; i++) {
-                    let date1 = new Date(selectedItem.unavailList[i].startDate);
-                    let date2 = new Date(selectedItem.unavailList[i].endDate);
-                    if (inDateRange(date, date1, date2))
-                        return true; // calculated this way because getTime() precision is in milliseconds, and we want to compare by day only
+                    if (selectedItem.unavailList[i].startDate !== "1970-01-01T00:00:00.000Z" && selectedItem.unavailList[i].endDate !== "1970-01-01T00:00:00.000Z") {
+                        let date1 = new Date(selectedItem.unavailList[i].startDate);
+                        let date2 = new Date(selectedItem.unavailList[i].endDate);
+                        if (inDateRange(date, date1, date2))
+                            ret = true; // calculated this way because getTime() precision is in milliseconds, and we want to compare by day only
+                    } else if (selectedItem.unavailList[i].day !== null) {
+                        if (date.getDay() === selectedItem.unavailList[i].day)
+                            ret = true;
+                    } else {
+                        let except = new Date(selectedItem.unavailList[i].exception);
+                        if (date.getFullYear() === except.getFullYear() && date.getMonth() === except.getMonth() && date.getDate() === except.getDate())
+                            ret = false;
+                    }
                 }
             }
+            return ret;
         }
-
     }
 
     const makeReq = () => {
