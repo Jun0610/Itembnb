@@ -153,6 +153,21 @@ class ReservationService {
         }
     }
 
+    static async getPendingReservationsForUser(userId) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-pending-reservations-of-user/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status;
+            return response;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 }
 
 export default ReservationService;

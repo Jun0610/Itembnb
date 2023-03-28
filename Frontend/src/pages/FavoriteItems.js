@@ -29,7 +29,10 @@ const FavoriteItems = () => {
 
                 for (const item of userData.favoritedItems) {
                     const data = await ItemService.getItem(item);
-                    newFavItems.push(data.data);
+                    if (data.data != null) {
+                        newFavItems.push(data.data);
+                    }
+
                 }
                 setFavItems(newFavItems);
                 setIsLoading(false);
@@ -58,27 +61,29 @@ const FavoriteItems = () => {
         }
         if (isLoading) {
             return <Loading />
+        } else {
+            return (
+                <>
+                    <div className='heading'>
+                        <div></div>
+                        <h1 className='title'>Favorited Items</h1>
+                        <button className='btn-mode' onClick={handleViewMode}>{viewMode}</button>
+                    </div>
+
+                    <div className='fav-item-page-container'>
+                        {favItems.map((item) => (
+                            <FavPost key={item._id} post={item} isRequest={false} favItems={favItems} setFavItems={setFavItems} viewMode={viewMode} />
+                        ))}
+
+                    </div>
+                    {favItems.length === 0 && <h2 className='no-fav'>You have no favorited items yet!</h2>}
+
+
+                </>
+            )
         }
 
-        return (
-            <>
-                <div className='heading'>
-                    <div></div>
-                    <h1 className='title'>Favorited Items</h1>
-                    <button className='btn-mode' onClick={handleViewMode}>{viewMode}</button>
-                </div>
 
-                <div className='fav-item-page-container'>
-                    {favItems.map((item) => (
-                        <FavPost key={item._id} post={item} isRequest={false} favItems={favItems} setFavItems={setFavItems} viewMode={viewMode} />
-                    ))}
-
-                </div>
-                {favItems.length === 0 && <h2 className='no-fav'>You have no favorited items yet!</h2>}
-
-
-            </>
-        )
 
     } else {
         return <h1>You must be logged in to access your favorite items.</h1>

@@ -48,6 +48,8 @@
     list-style: none;
 }
 
+
+
 .custom-logout-btn {
     text-decoration: none;
     font-family: sans-serif;
@@ -97,13 +99,21 @@
     max-height: 400px;
 }
 
-.drop-down-info {
-    margin-top: 0.2rem;
-}
 
 .drop-down-item {
-    margin-left: 10px;
-    line-height: 2rem;
+    display: block;
+    margin: 0;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     text-decoration: none;
     color: black;
 }
+
+.drop-down-item:hover {
+    color: black;
+    background-color: rgba(0,0,0,0.2);
+    cursor: pointer;
+    font-weight: 500;
+}
+

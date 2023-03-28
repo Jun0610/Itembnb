@@ -152,19 +152,50 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
         <div className='m-3 text-xl font-semibold'>
         You currently have no pending borrowing request for this item to view.
         </div> : 
-        <div className="h-48 overflow-auto grid grid-rows-auto">
+        <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg" style={{backgroundColor: "#F0D061"}}>
         {brList.map((e, i) => (
-          <div key={i+1} onMouseEnter={() => highlightUser(i+1)} onMouseLeave={removeHighlightUser} className={selectedUser && (i+1) === selectedUser ? 'bg-lime-300 m-3 p-3' : 'bg-red-300 m-3 p-3'}>
-            <div onClick={() => handleRequestClick(e, e.borrower)} style={{cursor: "pointer"}} className='font-semibold text-lg'>Request {i+1}</div>
+          <div key={i+1} onMouseEnter={() => highlightUser(i+1)} onMouseLeave={removeHighlightUser} className='rounded-lg m-2 p-3' style={selectedUser && (i+1) === selectedUser ? {backgroundColor: "#f1f5f9"} : {backgroundColor: "white"}}>
+            <div onClick={() => handleRequestClick(e, e.borrower)} style={{cursor: "pointer"}} className='bg-white rounded-lg p-2 font-bold text-lg'>Request {i+1}</div>
             <div className="flex">
-              <div className='h-auto w-5/6 object-center'>
-                <div>Start date: {e.startDate.substring(0, 10)}</div>
-                <div>End date: {e.endDate.substring(0, 10)}</div>
-                <div>Borrower: {e.borrower.name}</div>
-                <div>Borrower email: {e.borrower.email}</div>
+              <div className='h-auto w-2/6 object-center'>
+                <div class="flex gap-0 m-1">
+                  <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{backgroundColor: "#F0D061"}}>
+                    Start date
+                  </div>
+                  <div class="bg-white/25 rounded-r-lg content-center p-1">
+                    {e.startDate.substring(0, 10)}
+                  </div>
+                </div>
+                <div class="flex gap-0 m-1">
+                  <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{backgroundColor: "#F0D061"}}>
+                    End date
+                  </div>
+                  <div class="bg-white/25 rounded-r-lg content-center p-1">
+                    {e.endDate.substring(0, 10)}
+                  </div>
+                </div>
               </div>
-              <div className='object-center mt-2'>
-                <img onClick={() => handleUserRedirect(e.borrower._id)}  className="flex-none object-scale-down h-20" style={{borderRadius: "50%",  width: "auto", cursor: "pointer"}} src="https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt=""/>
+              <div>
+              <div class="flex gap-0 m-1">
+                <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{backgroundColor: "#F0D061"}}>
+                  Borrower
+                </div>
+                <div class="bg-white/25 rounded-r-lg content-center p-1">
+                  {e.borrower.name}
+                </div>
+                </div>
+                <div class="flex gap-0 m-1">
+                  <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{backgroundColor: "#F0D061"}}>
+                    Borrower email
+                  </div>
+                  <div class="bg-white/25 rounded-r-lg content-center p-1">
+                  {e.borrower.email}
+                  </div>
+                </div>
+              </div>
+              <div className="flex w-64"></div>
+              <div className='justify-end mt-2'>
+                <img onClick={() => handleUserRedirect(e.borrower._id)}  className="flex-none object-scale-down h-24" style={{borderRadius: "50%",  width: "auto", cursor: "pointer"}} src={e.borrower.profilePic && e.borrower.profilePic !== "" ? e.borrower.profilePic : "https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"} alt=""/>
               </div>
             </div>
           </div>

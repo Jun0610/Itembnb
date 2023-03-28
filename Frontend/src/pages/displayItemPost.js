@@ -7,6 +7,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
 import BorrowingRequestList from '../components/borrowingRequestList';
 import ReservationService from '../tools/reservationService';
+import SocketService, {socket} from '../tools/socketService';
 import OwnerCalendar from '../components/ownerCalendar';
 
 const DisplayItemPost = () => {

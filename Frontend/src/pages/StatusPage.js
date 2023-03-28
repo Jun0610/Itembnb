@@ -61,7 +61,7 @@ const StatusPage = () => {
             return (
                 <>
                     <div className='borrower-status-container'>
-                        <h3 className='status-page-title'>Items Lended</h3>
+                        <h3 className='status-page-title'>Items Borrowed</h3>
                         <h4 className='status-page-empty-reservation'>
                             You have no active borrower reservations yet!
                         </h4>
@@ -93,7 +93,7 @@ const StatusPage = () => {
             return (
                 <>
                     <div className='lender-status-container'>
-                        <h3 className='status-page-title'>Items Lended</h3>
+                        <h3 className='status-page-title'>Items Lent</h3>
                         <h4 className='status-page-empty-reservation'>
                             You have no active lender reservations yet!
                         </h4>
@@ -108,7 +108,7 @@ const StatusPage = () => {
 
                 <>
                     <div className='lender-status-container'>
-                        <h3 className='status-page-title'>Items Lended</h3>
+                        <h3 className='status-page-title'>Items Lent</h3>
                         {activeLenderReservations.map((status) => (
                             <StatusTracker key={status.reservation._id} statusObject={status} curUser={JSON.parse(sessionStorage.getItem('curUser'))} user={"lender"} activeLenderReservations={activeLenderReservations} setActiveLenderReservations={setActiveLenderReservations} />
                         ))}
