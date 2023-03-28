@@ -53,7 +53,7 @@ export const NotificationProvider = (props) => {
                 }
             });
         }
-    })
+    }, [])
 
     return (
         <div>
