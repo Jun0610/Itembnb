@@ -7,9 +7,7 @@ import userContext from '../contexts/userContext';
 import { useNavigate } from 'react-router-dom';
 import EmailService from '../tools/emailService';
 
-const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
-
-  const [selectedUser, setSelectedUser] = React.useState(null);
+const BorrowingRequestList = ({brList, item, onChangeResvList, onChangeSelectedUser, selectedUser}) => {
   const authUser = React.useContext(userContext);
   const nav = useNavigate();
 
@@ -138,11 +136,11 @@ const BorrowingRequestList = ({brList, item, onChangeResvList}) => {
   }
 
   const highlightUser = (i) => {
-    setSelectedUser(i);
+    onChangeSelectedUser(i);
   }
 
   const removeHighlightUser = () => {
-    setSelectedUser(null);
+    onChangeSelectedUser(null);
   }
 
   return (

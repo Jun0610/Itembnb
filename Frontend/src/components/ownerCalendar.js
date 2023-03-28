@@ -18,13 +18,24 @@ const inDateRange = (date, startDate, endDate) => {
     return false;
 }
 
-const OwnerCalendar = ( {selectedItem} ) => {
+const OwnerCalendar = ( {selectedItem, selectedResv} ) => {
     const [date, setDate] = React.useState(null);
     const [availList, setAvailList] = React.useState(selectedItem.unavailList);
 
     const reset = () => {
         setDate(null)
     }
+
+    useEffect(() => {
+        console.log("selectedResv: ", selectedResv);
+        if (selectedResv) {
+            var endDate = new Date(selectedResv.endDate)
+            endDate.setDate(endDate.getDate() + 1)
+            setDate([new Date(selectedResv.startDate), endDate])
+        } else {
+            setDate(null)
+        }
+    }, [selectedResv])
 
     const itemUnavail = ({ date, view }) => {
         if (view === 'month') {

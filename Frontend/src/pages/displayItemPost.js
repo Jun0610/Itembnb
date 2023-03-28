@@ -7,7 +7,6 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
 import BorrowingRequestList from '../components/borrowingRequestList';
 import ReservationService from '../tools/reservationService';
-import SocketService, {socket} from '../tools/socketService';
 import OwnerCalendar from '../components/ownerCalendar';
 
 const DisplayItemPost = () => {
@@ -22,6 +21,8 @@ const DisplayItemPost = () => {
     const [imagesDisplay, setImagesDisplay] = React.useState([]);
     const [imagesDisplayFile, setImagesDisplayFile] = React.useState([]);
     const [currentImgIdx, setCurrentImgIdx] = React.useState(null);
+
+    const [selectedUser, setSelectedUser] = React.useState(null);
 
     const authUser = React.useContext(userContext);
     const nav = useNavigate();
@@ -234,6 +235,11 @@ const DisplayItemPost = () => {
         setPendingReservations(newPendingList);
     }
 
+    const onChangeSelectedUser = (selectedUser) => {
+        console.log("changing selected user: ", selectedUser)
+        setSelectedUser(selectedUser);
+    }
+
     return (
         <div>
             <div className="m-3 font-bold" style={{ color: "#F0D061" }}>Your Item Post</div>
@@ -299,8 +305,8 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
-            <OwnerCalendar selectedItem={item} />
-            <BorrowingRequestList brList={pendingReservations} item={item} onChangeResvList={onChangeResvList}/>
+            <OwnerCalendar selectedItem={item} selectedResv={selectedUser ? pendingReservations[selectedUser-1] : null}/>
+            <BorrowingRequestList brList={pendingReservations} item={item} onChangeResvList={onChangeResvList} selectedUser={selectedUser} onChangeSelectedUser={onChangeSelectedUser}/>
         </div>
     )
 }
