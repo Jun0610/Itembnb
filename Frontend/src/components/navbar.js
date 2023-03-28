@@ -46,8 +46,11 @@ const Navbar = () => {
     }
 
     window.onclick = (e) => {
-        console.log(e);
+
         const dropDown = document.querySelector(".drop-down-container")
+        if (dropDown === null) {
+            return;
+        }
         if (dropDown.classList.contains('open') && !e.target.matches('.nav-img')) {
             dropDown.classList.remove('open');
         }
@@ -99,21 +102,35 @@ const Navbar = () => {
 
                     <div className='drop-down-container' id='drop-down'>
                         <div className='drop-down-info'>
+
                             <NavLink to={"/user/" + authUser.user.user._id} className="drop-down-item">
-                                Profile
+                                <div>
+                                    Profile
+                                </div>
                             </NavLink>
-                            <br />
+
+
                             <NavLink to={"/item-status"} className="drop-down-item">
-                                Active Reservations
+                                <div>
+                                    Active Reservations
+                                </div>
                             </NavLink>
-                            <br />
-                            <NavLink to={"/item-status"} className="drop-down-item">
-                                Pending Reservations
+
+
+                            <NavLink to={"/pending-reservations"} className="drop-down-item">
+                                <div>
+                                    Pending Reservations
+                                </div>
                             </NavLink>
-                            <br />
+
+
                             <NavLink to="/logout" onClick={logout} className="drop-down-item">
-                                Logout
+                                <div>
+                                    Logout
+                                </div>
                             </NavLink>
+
+
 
                         </div>
 

@@ -1,6 +1,8 @@
 .status-page-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
 .borrower-status-container {
@@ -21,7 +23,6 @@
     padding-bottom: 0.5rem;
     margin: 2rem 30%;
     margin-top: 0;
-    font-weight: 600;
 }
 
 .status-page-empty-reservation {
