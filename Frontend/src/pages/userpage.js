@@ -265,10 +265,13 @@ const Userpage = () => {
         }
         if (userItems.length === 0) {
             return <p>{userInfo.name} has no items!</p>
+        } else {
+            const filteredUserItems = userItems.filter(item => item !== undefined)
+            return filteredUserItems.map(itemData =>
+                <Post post={itemData} isRequest={false} key={itemData._id} />
+            );
         }
-        return userItems.map(itemData =>
-            <Post post={itemData} isRequest={false} key={itemData._id} />
-        );
+
     }
 
     // Render list of user's requests from userRequests (a list of request data jsons)

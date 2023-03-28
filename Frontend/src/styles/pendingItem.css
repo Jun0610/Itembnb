@@ -1,0 +1,38 @@
+.pending-item-container {
+    width: 70%;
+    margin: 0 auto;
+    border-radius: 0.8rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.pending-item-container .status-item-owner-img {
+    width: 60px;
+    height: 60px;
+}
+
+.pending-item-container .status-item-more-info  {
+    margin-top: 10%;
+}
+
+.pending-item-container .status-item-container {
+    margin-bottom: 0;
+}
+
+.pending-item-bot-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+}
+
+.pending-item-bot-details {
+    text-align: center;
+    border-right: 2px solid #ddd;
+    width: 90%;
+}
+.pending-item-bot-features{
+    text-align: center;
+    padding-right: 10%;
+}

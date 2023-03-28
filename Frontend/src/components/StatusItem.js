@@ -11,10 +11,20 @@ const StatusItem = ({ statusObject, curUser }) => {
 
     let startDate = '';
     let endDate = '';
+    console.log("test");
     for (const unavail of statusObject.item.unavailList) {
         if (statusObject.reservation._id === unavail.reservId) {
             startDate = new Date(unavail.startDate).toDateString().split(" ")
             endDate = new Date(unavail.endDate).toDateString().split(" ")
+        }
+    }
+
+    if (startDate === '') {
+        for (const pending of statusObject.item.pendingList) {
+            if (statusObject.reservation._id === pending.reservId) {
+                startDate = new Date(pending.startDate).toDateString().split(" ")
+                endDate = new Date(pending.endDate).toDateString().split(" ")
+            }
         }
     }
 
@@ -27,14 +37,25 @@ const StatusItem = ({ statusObject, curUser }) => {
         UserService.getUserData(statusObject.item.ownerId).then((success) => {
             setOwner(success.data)
         })
+        console.log("test");
     }, [])
 
     const handleClickItem = () => {
-        nav(`/selected-item-post/${statusObject.item._id}`)
+        if (curUser._id === statusObject.item.ownerId) {
+            nav(`/display-item-post/${statusObject.item._id}`)
+        } else {
+            nav(`/selected-item-post/${statusObject.item._id}`)
+        }
+
     }
 
-    const handleClickOwner = () => {
-        nav(`/user/${owner._id}`)
+    const handleClickUser = () => {
+        if (curUser._id === statusObject.item.ownerId) {
+            nav(`/user/${borrower._id}`)
+        } else {
+            nav(`/user/${owner._id}`)
+        }
+
     }
 
 
@@ -56,7 +77,7 @@ const StatusItem = ({ statusObject, curUser }) => {
                             <span>{startDate[0]} {startDate[1]} {startDate[2]} &ndash; <br />{endDate[0]} {endDate[1]} {endDate[2]} <br /></span>
                             <span style={{ fontWeight: "600" }}>{endDate[3]}</span>
                         </div>
-                        <div className='status-item-owner-container' onClick={handleClickOwner}>
+                        <div className='status-item-owner-container' onClick={handleClickUser}>
                             <span className='status-item-owner-name'>{curUser._id === statusObject.item.ownerId ? `Borrower: ${borrower.name}` : `Owner: ${owner.name}`}</span>
                             <img src={curUser._id === statusObject.item.ownerId ? borrower.profilePic : owner.profilePic} alt="" className='status-item-owner-img' />
                         </div>
