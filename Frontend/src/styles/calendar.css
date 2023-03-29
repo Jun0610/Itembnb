@@ -40,7 +40,7 @@
   height: 44px;
   margin-bottom: 1em;
   border-radius:  10px 10px 0 0 ;
-  background-color: #d8bb57;
+  background-color: #F7D65A;
   color: #fff;
   font-weight: bold;
 
@@ -101,7 +101,10 @@ abbr[title] {
   background: #ffff76;
 }
 .background-red {
-  background-color: #ff9b9b;
+  background-color: #fd786c;
+}
+.background-blue {
+  background-color: #a6fbfb;
 }
 .react-calendar__tile--now:enabled:hover,
 .react-calendar__tile--now:enabled:focus {
@@ -183,7 +186,7 @@ abbr[title] {
   font-size: large;
   font-weight: bold;
   color: #fff;
-  background-color: #d8bb57;
+  background-color: #F7D65A;
   width: 100%;
   border-radius: 10px;
 }
