@@ -158,7 +158,6 @@ router.get("/get-active-reservation/lender/:userId", async (req, res) => {
 
             for (const unavail of item.unavailList) {
                 if (unavail.reservId) {
-                    console.log(unavail.re);
                     const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(unavail.reservId) })
                     if (reservation && (reservation.status === "approved" || reservation.status === "active")) {
                         const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })

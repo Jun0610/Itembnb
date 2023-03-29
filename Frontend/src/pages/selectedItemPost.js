@@ -179,18 +179,6 @@ const SelectedItemPost = () => {
                             <div className="item-post-row">
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
-                            <div className="owner">
-                                <div className="owner-details">
-                                    <NavLink to={"/user/" + owner._id}>
-                                        <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}>{selectedItem.ownerId ? owner.name : "owner not shown"}</span> </h4>
-
-                                    </NavLink>
-                                    <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
-                                </div>
-
-                                <img src={owner.profilePic} alt="" className="owner-img" />
-
-                            </div>
                             {ownerInfo()}
                         </div>
                         {reservationInfo()}
