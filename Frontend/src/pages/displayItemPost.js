@@ -7,7 +7,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
 import BorrowingRequestList from '../components/borrowingRequestList';
 import ReservationService from '../tools/reservationService';
-import SocketService, {socket} from '../tools/socketService';
+import SocketService, { socket } from '../tools/socketService';
 import OwnerCalendar from '../components/ownerCalendar';
 
 const DisplayItemPost = () => {
@@ -22,6 +22,7 @@ const DisplayItemPost = () => {
     const [imagesDisplay, setImagesDisplay] = React.useState([]);
     const [imagesDisplayFile, setImagesDisplayFile] = React.useState([]);
     const [currentImgIdx, setCurrentImgIdx] = React.useState(null);
+    const [refresh, setRefresh] = React.useState(1);
 
     const authUser = React.useContext(userContext);
     const nav = useNavigate();
@@ -30,6 +31,9 @@ const DisplayItemPost = () => {
         // logs in user across refreshes
         if (sessionStorage.getItem('curUser') !== null) {
             authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
+
+            SocketService.connect();
+            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
         // call API to fetch the item data
         async function fetchCategories() {
@@ -56,7 +60,8 @@ const DisplayItemPost = () => {
         }
 
         fetchCategories().then(fetchItem()).then(fetchPendingReservations());
-    }, []);
+        console.log("hi");
+    }, [refresh]);
 
     const onItemChange = (e) => {
         setItem({
@@ -299,8 +304,8 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
-            <OwnerCalendar selectedItem={item} />
-            <BorrowingRequestList brList={pendingReservations} item={item} onChangeResvList={onChangeResvList}/>
+            <OwnerCalendar selectedItem={item} setRefresh={setRefresh} refresh={refresh} />
+            <BorrowingRequestList brList={pendingReservations} item={item} onChangeResvList={onChangeResvList} />
         </div>
     )
 }

@@ -18,15 +18,19 @@ const inDateRange = (date, startDate, endDate) => {
     return false;
 }
 
-const OwnerCalendar = ( {selectedItem} ) => {
+
+const OwnerCalendar = ({ selectedItem, setRefresh, refresh }) => {
     const [date, setDate] = React.useState(null);
     const [availList, setAvailList] = React.useState(selectedItem.unavailList);
+
+
 
     const reset = () => {
         setDate(null)
     }
 
     const itemUnavail = ({ date, view }) => {
+
         if (view === 'month') {
             if (date.getTime() < Date.now())
                 return 'background-red';
@@ -48,7 +52,19 @@ const OwnerCalendar = ( {selectedItem} ) => {
                             console.log("except:" + except);
                             ret = null;
                         }
-                            
+
+                    }
+                }
+            }
+            if (selectedItem.pendingList && ret === null) {
+                console.log("bye");
+                for (let i = 0; i < selectedItem.pendingList.length; i++) {
+                    console.log("hi");
+                    if (selectedItem.pendingList[i].startDate !== "1970-01-01T00:00:00.000Z" && selectedItem.pendingList[i].endDate !== "1970-01-01T00:00:00.000Z") {
+                        let date1 = new Date(selectedItem.pendingList[i].startDate);
+                        let date2 = new Date(selectedItem.pendingList[i].endDate);
+                        if (inDateRange(date, date1, date2))
+                            ret = "background-blue";
                     }
                 }
             }
@@ -56,7 +72,7 @@ const OwnerCalendar = ( {selectedItem} ) => {
         }
     }
 
-    const makeExcep = () => {
+    const makeExcep = async () => {
         if (!date) {
             alert("Please select a date range");
             return;
@@ -64,7 +80,7 @@ const OwnerCalendar = ( {selectedItem} ) => {
             alert("Please select a single date");
             return;
         }
-        fetch('http://localhost:8888/api/item/mark-unavail', {
+        await fetch('http://localhost:8888/api/item/mark-unavail', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -77,9 +93,13 @@ const OwnerCalendar = ( {selectedItem} ) => {
                 exception: date[0]
             })
         })
+
+        setRefresh(refresh + 1);
+        alert("successfully added exception")
+        window.location.reload(false);
     }
 
-    const makeRecur = () => {
+    const makeRecur = async () => {
         if (!date) {
             alert("Please select a date range");
             return;
@@ -87,7 +107,7 @@ const OwnerCalendar = ( {selectedItem} ) => {
             alert("Please select a single date");
             return;
         }
-        fetch('http://localhost:8888/api/item/mark-unavail', {
+        await fetch('http://localhost:8888/api/item/mark-unavail', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -100,14 +120,18 @@ const OwnerCalendar = ( {selectedItem} ) => {
                 exception: null
             })
         })
+
+        setRefresh(refresh + 1);
+        alert("successfully added recurrent unavailability")
+        window.location.reload(false);
     }
 
-    const makeUnavail = () => {
+    const makeUnavail = async () => {
         if (!date) {
             alert("Please select a date range");
             return;
         }
-        fetch('http://localhost:8888/api/item/mark-unavail', {
+        await fetch('http://localhost:8888/api/item/mark-unavail', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,6 +144,10 @@ const OwnerCalendar = ( {selectedItem} ) => {
                 exception: null
             })
         })
+
+        setRefresh(refresh + 1);
+        alert("successfully added unavailability")
+        window.location.reload(false);
     }
 
     return (
