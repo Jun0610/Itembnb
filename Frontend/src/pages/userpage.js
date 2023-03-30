@@ -9,6 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Loading, LoadingSmall } from "../components/Loading";
 import userContext from '../contexts/userContext';
 import Post from "../components/post";
+import SocketService, { socket } from '../tools/socketService';
 
 import "../styles/homepage.css";
 import "../styles/userpage.css";
@@ -50,6 +51,9 @@ const Userpage = () => {
             const userRequestData = await RequestService.getRequestsFromList(userInfoData.requestPosts);
             setUserRequests(userRequestData);
             setRequestsLoaded(true);
+
+            SocketService.connect();
+            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
 
         fetchData();

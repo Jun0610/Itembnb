@@ -35,8 +35,8 @@ const DisplayItemPost = () => {
         if (sessionStorage.getItem('curUser') !== null) {
             authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
 
-            //SocketService.connect();
-            //socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+            SocketService.connect();
+            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
         // call API to fetch the item data
         async function fetchCategories() {
