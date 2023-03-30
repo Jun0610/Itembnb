@@ -1,6 +1,5 @@
 import Calendar from "react-calendar"
-import React, { useContext, useEffect } from "react"
-import userContext from "../contexts/userContext"
+import React, { useEffect } from "react"
 
 
 const inDateRange = (date, startDate, endDate) => {
