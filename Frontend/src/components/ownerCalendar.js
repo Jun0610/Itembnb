@@ -1,5 +1,5 @@
 import Calendar from "react-calendar"
-import React from "react"
+import React, {useEffect} from "react"
 
 
 const inDateRange = (date, startDate, endDate) => {
@@ -18,14 +18,22 @@ const inDateRange = (date, startDate, endDate) => {
 }
 
 
-const OwnerCalendar = ({ selectedItem, setRefresh, refresh }) => {
+const OwnerCalendar = ({ selectedItem,  selectedResv, setRefresh, refresh }) => {
     const [date, setDate] = React.useState(null);
-
-
 
     const reset = () => {
         setDate(null)
     }
+
+    useEffect(() => {
+        console.log("selectedResv: ", selectedResv);
+        if (selectedResv) {
+            var endDate = new Date(selectedResv.endDate)
+            setDate([new Date(selectedResv.startDate), endDate])
+        } else {
+            setDate(null)
+        }
+    }, [selectedResv])
 
     const itemUnavail = ({ date, view }) => {
 
@@ -55,9 +63,7 @@ const OwnerCalendar = ({ selectedItem, setRefresh, refresh }) => {
                 }
             }
             if (selectedItem.pendingList && ret === null) {
-                console.log("bye");
                 for (let i = 0; i < selectedItem.pendingList.length; i++) {
-                    console.log("hi");
                     if (selectedItem.pendingList[i].startDate !== "1970-01-01T00:00:00.000Z" && selectedItem.pendingList[i].endDate !== "1970-01-01T00:00:00.000Z") {
                         let date1 = new Date(selectedItem.pendingList[i].startDate);
                         let date2 = new Date(selectedItem.pendingList[i].endDate);

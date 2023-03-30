@@ -24,6 +24,9 @@ const DisplayItemPost = () => {
     const [currentImgIdx, setCurrentImgIdx] = React.useState(null);
     const [refresh, setRefresh] = React.useState(1);
 
+    const [selectedUser, setSelectedUser] = React.useState(null);
+    const [endDates, setEndDates] = React.useState([])
+
     const authUser = React.useContext(userContext);
     const nav = useNavigate();
 
@@ -32,8 +35,8 @@ const DisplayItemPost = () => {
         if (sessionStorage.getItem('curUser') !== null) {
             authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
 
-            SocketService.connect();
-            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+            //SocketService.connect();
+            //socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
         // call API to fetch the item data
         async function fetchCategories() {
@@ -56,6 +59,15 @@ const DisplayItemPost = () => {
             await ReservationService.getPendingReservations(id).then((data) => {
                 console.log(data.data);
                 setPendingReservations(data.data);
+
+                if (data.data) {
+                    var dates = [];
+                    for (const e of data.data) {
+                        var date = new Date(e.endDate);
+                        dates.push(date.toISOString().substring(0, 10));
+                    }
+                    setEndDates(dates);
+                }
             });
         }
 
@@ -238,6 +250,10 @@ const DisplayItemPost = () => {
         setPendingReservations(newPendingList);
     }
 
+    const onChangeSelectedUser = (selectedUser) => {
+        setSelectedUser(selectedUser);
+    }
+
     return (
         <div>
             <div className="m-3 font-bold" style={{ color: "#F0D061" }}>Your Item Post</div>
@@ -303,8 +319,8 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
-            <OwnerCalendar selectedItem={item} setRefresh={setRefresh} refresh={refresh} />
-            <BorrowingRequestList brList={pendingReservations} item={item} onChangeResvList={onChangeResvList} />
+            <OwnerCalendar selectedItem={item} selectedResv={selectedUser ? pendingReservations[selectedUser-1] : null} setRefresh={setRefresh} refresh={refresh}/>
+            <BorrowingRequestList endDates={endDates} brList={pendingReservations} item={item} onChangeResvList={onChangeResvList} selectedUser={selectedUser} onChangeSelectedUser={onChangeSelectedUser}/>
         </div>
     )
 }

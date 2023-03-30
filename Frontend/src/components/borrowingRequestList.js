@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ReservationService from '../tools/reservationService';
 import { confirmAlert } from 'react-confirm-alert';
 import { socket } from '../tools/socketService';
@@ -7,9 +7,7 @@ import userContext from '../contexts/userContext';
 import { useNavigate } from 'react-router-dom';
 import EmailService from '../tools/emailService';
 
-const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
-
-  const [selectedUser, setSelectedUser] = React.useState(null);
+const BorrowingRequestList = ({endDates, brList, item, onChangeResvList, onChangeSelectedUser, selectedUser}) => {
   const authUser = React.useContext(userContext);
   const nav = useNavigate();
 
@@ -75,12 +73,13 @@ const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
                   console.log(response);
                   if (response !== 'success') {
                     await EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`).then(() => {
-                      onChangeResvList(brList.filter(e => e._id !== resv._id));
-                      alert("Successfully approved!");
+                      
                       window.location.reload(false);
                     });
                   }
                 });
+                onChangeResvList(brList.filter(e => e._id !== resv._id));
+                alert("Successfully approved!");
               })
             } else {
               // there are conflicts; must ask for second confirmation
@@ -106,13 +105,14 @@ const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
                   socket.on('emitBackL', async (response) => {
                     if (response !== 'success') {
                       await EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`).then(() => {
-                        onChangeResvList(brList.filter(e => !conflictIds.includes(e._id) || e._id !== resv._id))
                         alert("Okay!")
                         window.location.reload(false);
                       });
                     }
                   });
                 })
+
+                onChangeResvList(brList.filter(e => !conflictIds.includes(e._id) || e._id !== resv._id))
 
 
               }
@@ -131,13 +131,13 @@ const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
               socket.on('emitBackL', async (response) => {
                 if (response !== 'success') {
                   await EmailService.sendEmailNoRedirection(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`).then(() => {
-                    onChangeResvList(brList.filter(e => e._id !== resv._id));
-                    alert("Successfully denied!");
                     window.location.reload(false);
                   });
                 }
               });
             })
+            onChangeResvList(brList.filter(e => e._id !== resv._id));
+            alert("Successfully denied!");
 
           },
         }
@@ -146,11 +146,11 @@ const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
   }
 
   const highlightUser = (i) => {
-    setSelectedUser(i);
+    onChangeSelectedUser(i);
   }
 
   const removeHighlightUser = () => {
-    setSelectedUser(null);
+    onChangeSelectedUser(null);
   }
 
   return (
@@ -179,7 +179,7 @@ const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
                       End date
                     </div>
                     <div class="bg-white/25 rounded-r-lg content-center p-1">
-                      {e.endDate.substring(0, 10)}
+                      {endDates[i]}
                     </div>
                   </div>
                 </div>

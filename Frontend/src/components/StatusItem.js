@@ -12,18 +12,23 @@ const StatusItem = ({ statusObject, curUser }) => {
     let startDate = '';
     let endDate = '';
     console.log("test");
-    for (const unavail of statusObject.item.unavailList) {
-        if (statusObject.reservation._id === unavail.reservId) {
-            startDate = new Date(unavail.startDate).toDateString().split(" ")
-            endDate = new Date(unavail.endDate).toDateString().split(" ")
+    console.log("item: ", statusObject.item)
+    if (statusObject.item && statusObject.item.unavailList) {
+        for (const unavail of statusObject.item.unavailList) {
+            if (statusObject.reservation._id === unavail.reservId) {
+                startDate = new Date(unavail.startDate).toDateString().split(" ")
+                endDate = new Date(unavail.endDate).toDateString().split(" ")
+            }
         }
     }
 
     if (startDate === '') {
-        for (const pending of statusObject.item.pendingList) {
-            if (statusObject.reservation._id === pending.reservId) {
-                startDate = new Date(pending.startDate).toDateString().split(" ")
-                endDate = new Date(pending.endDate).toDateString().split(" ")
+        if (statusObject.item && statusObject.item.pendingList) {
+            for (const pending of statusObject.item.pendingList) {
+                if (statusObject.reservation._id === pending.reservId) {
+                    startDate = new Date(pending.startDate).toDateString().split(" ")
+                    endDate = new Date(pending.endDate).toDateString().split(" ")
+                }
             }
         }
     }
@@ -34,9 +39,11 @@ const StatusItem = ({ statusObject, curUser }) => {
         UserService.getUserData(statusObject.reservation.borrowerId).then((success) => {
             setBorrower(success.data)
         })
-        UserService.getUserData(statusObject.item.ownerId).then((success) => {
-            setOwner(success.data)
-        })
+        if (statusObject.item) {    
+            UserService.getUserData(statusObject.item.ownerId).then((success) => {
+                setOwner(success.data)
+            })
+        }
         console.log("test");
     }, [])
 

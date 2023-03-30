@@ -124,7 +124,7 @@ router.get("/get-active-reservation/borrower/:userId", async (req, res) => {
             const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(reservId) })
             if (reservation.status === "approved" || reservation.status === "active") {
                 const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
-                activeReservations.push({ item, reservation })
+                if (item != null) activeReservations.push({ item, reservation })
             }
         }
         if (activeReservations.length === 0) {

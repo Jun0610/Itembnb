@@ -17,8 +17,8 @@ const Homepage = () => {
     useEffect(() => {
         if (sessionStorage.getItem('curUser') !== null) {
             selectedUser.login(JSON.parse(sessionStorage.getItem('curUser')))
-            SocketService.connect();
-            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+            //SocketService.connect();
+            //socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
     }, [])
 
