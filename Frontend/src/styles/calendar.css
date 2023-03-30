@@ -91,7 +91,7 @@ abbr[title] {
   line-height: 16px;
 }
 .react-calendar__tile:disabled {
-  background-color: #ff9b9b;
+  background-color: #fd786c;
 }
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {

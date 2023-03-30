@@ -1,6 +1,5 @@
 import Calendar from "react-calendar"
-import React, { useContext, useEffect } from "react"
-import userContext from "../contexts/userContext"
+import React from "react"
 
 
 const inDateRange = (date, startDate, endDate) => {
@@ -21,7 +20,6 @@ const inDateRange = (date, startDate, endDate) => {
 
 const OwnerCalendar = ({ selectedItem, setRefresh, refresh }) => {
     const [date, setDate] = React.useState(null);
-    const [availList, setAvailList] = React.useState(selectedItem.unavailList);
 
 
 
