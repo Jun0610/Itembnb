@@ -6,8 +6,7 @@ import ReservationService from '../tools/reservationService'
 import StatusTracker from '../components/StatusTracker'
 import { useNavigate } from 'react-router-dom';
 import "../styles/statusPage.css"
-
-
+import SocketService, { socket } from '../tools/socketService';
 
 
 const StatusPage = () => {
@@ -25,6 +24,8 @@ const StatusPage = () => {
 
             try {
                 curUser.login(JSON.parse(sessionStorage.getItem('curUser')));
+                SocketService.connect();
+                socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
                 const userId = JSON.parse(sessionStorage.getItem('curUser'))._id;
                 const borrowerRes = await ReservationService.getActiveBorrowerReservations(userId);
                 if (borrowerRes.data === null) {
@@ -53,8 +54,6 @@ const StatusPage = () => {
         console.log("re-rendering lender's list");
     }, [useRef(activeLenderReservations)])
 
-    // console.log(activeBorrowerReservations);
-    console.log(activeLenderReservations);
 
     const borrowerStatus = () => {
         if (activeBorrowerReservations === null) {

@@ -71,15 +71,17 @@ const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
 
                 // handle email notification or live notification here
                 SocketService.emit('emitMsg', { type: 'toBorrower', name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: item._id });
-                socket.on('emitBackL', (response) => {
+                socket.on('emitBackL', async (response) => {
+                  console.log(response);
                   if (response !== 'success') {
-                    EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`);
+                    await EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`).then(() => {
+                      onChangeResvList(brList.filter(e => e._id !== resv._id));
+                      alert("Successfully approved!");
+                      window.location.reload(false);
+                    });
                   }
                 });
-              }).then(() => {
-                onChangeResvList(brList.filter(e => e._id !== resv._id));
-                alert("Successfully approved!");
-              });
+              })
             } else {
               // there are conflicts; must ask for second confirmation
               if (window.confirm(`There are conflicts with these other requests:- ${result}. Accepting this request means the other reservations will be deleted. Do you want to proceed?`)) {
@@ -89,9 +91,9 @@ const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
                   await ReservationService.denyRequest(conflictResv._id, conflictResv.startDate, conflictResv.endDate, item._id).then(() => {
                     // handle email notification or live notification here
                     SocketService.emit('emitMsg', { type: 'toBorrower', name: authUser.user.user.name, recipient: conflictResv.borrower.email, msg: "denied" });
-                    socket.on('emitBackL', (response) => {
+                    socket.on('emitBackL', async (response) => {
                       if (response === 'success') {
-                        EmailService.sendEmailNoRedirection(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`);
+                        await EmailService.sendEmailNoRedirection(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`);
                       }
                     });
                   })
@@ -101,18 +103,21 @@ const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
 
                   // handle email notification or live notification here
                   SocketService.emit('emitMsg', { type: 'toBorrower', name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: item._id });
-                  socket.on('emitBackL', (response) => {
+                  socket.on('emitBackL', async (response) => {
                     if (response !== 'success') {
-                      EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`);
+                      await EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`).then(() => {
+                        onChangeResvList(brList.filter(e => !conflictIds.includes(e._id) || e._id !== resv._id))
+                        alert("Okay!")
+                        window.location.reload(false);
+                      });
                     }
                   });
-                });
+                })
 
-                onChangeResvList(brList.filter(e => !conflictIds.includes(e._id) || e._id !== resv._id))
-                alert("Okay!")
+
               }
             }
-            window.location.reload(false);
+
           }
 
         },
@@ -123,16 +128,17 @@ const BorrowingRequestList = ({ brList, item, onChangeResvList }) => {
             await ReservationService.denyRequest(resv._id, resv.startDate, resv.endDate, item._id).then(() => {
               // handle email notification or live notification here
               SocketService.emit('emitMsg', { type: 'toBorrower', name: authUser.user.user.name, recipient: borrower.email, msg: "denied" });
-              socket.on('emitBackL', (response) => {
-                if (response === 'success') {
-                  EmailService.sendEmailNoRedirection(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`);
+              socket.on('emitBackL', async (response) => {
+                if (response !== 'success') {
+                  await EmailService.sendEmailNoRedirection(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`).then(() => {
+                    onChangeResvList(brList.filter(e => e._id !== resv._id));
+                    alert("Successfully denied!");
+                    window.location.reload(false);
+                  });
                 }
               });
-            }).then(() => {
-              onChangeResvList(brList.filter(e => e._id !== resv._id));
-              alert("Successfully denied!");
-            });
-            window.location.reload(false);
+            })
+
           },
         }
       ],
