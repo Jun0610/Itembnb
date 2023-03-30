@@ -1,8 +1,7 @@
-import { useEffect } from "react";
-import {socket} from "../tools/socketService";
+import { useEffect, useContext } from "react";
+import SocketService, {socket} from "../tools/socketService";
 import { useNavigate } from 'react-router-dom';
 import {confirmAlert} from "react-confirm-alert";
-
 
 export const NotificationProvider = (props) => {
     const nav = useNavigate();

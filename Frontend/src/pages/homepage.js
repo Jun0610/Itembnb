@@ -13,12 +13,11 @@ const Homepage = () => {
     const [isLoadingItem, setIsLoadingItem] = React.useState(true);
     const selectedUser = useContext(userContext);
 
-
     useEffect(() => {
         if (sessionStorage.getItem('curUser') !== null) {
             selectedUser.login(JSON.parse(sessionStorage.getItem('curUser')))
-            //SocketService.connect();
-            //socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+            SocketService.connect();
+            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
     }, [])
 
@@ -40,18 +39,12 @@ const Homepage = () => {
         getRequestPosts();
     }, []);
 
-    /*
-    useEffect(() => {
-        if (socket.connected) {
-            socket.on(`emitAnotherUser`, (response) => alert(`${response}`));
-        }
-    }, [selectedUser])*/
-
     if (isLoading || isLoadingItem) return (<Loading />);
 
     else
         return (
             <div>
+                <button onClick={() => alert("Does alert button reloads?")}>Press me</button>
                 <h1 className='item-post-header'>Item posts</h1>
                 <div className='cardcontainer'>
                     {itemPosts.map((item) => (

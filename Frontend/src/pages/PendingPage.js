@@ -16,8 +16,8 @@ const PendingPage = () => {
                 nav('/')
                 return
             }
-            //SocketService.connect();
-            //socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+            SocketService.connect();
+            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
             const res = await ReservationService.getPendingReservationsForUser(JSON.parse(sessionStorage.getItem('curUser'))._id);
             setPendingReservations(res.data);
         }

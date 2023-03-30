@@ -24,8 +24,8 @@ const StatusPage = () => {
 
             try {
                 curUser.login(JSON.parse(sessionStorage.getItem('curUser')));
-                //SocketService.connect();
-                //socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+                SocketService.connect();
+                socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
                 const userId = JSON.parse(sessionStorage.getItem('curUser'))._id;
                 const borrowerRes = await ReservationService.getActiveBorrowerReservations(userId);
                 if (borrowerRes.data === null) {
