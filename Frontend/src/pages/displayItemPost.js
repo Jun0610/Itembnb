@@ -60,7 +60,6 @@ const DisplayItemPost = () => {
         }
 
         fetchCategories().then(fetchItem()).then(fetchPendingReservations());
-        console.log("hi");
     }, [refresh]);
 
     const onItemChange = (e) => {

@@ -7,6 +7,7 @@ import ReservationService from "../tools/reservationService";
 import { Loading, LoadingSmall } from "../components/Loading";
 import ItemCalendar from "../components/borrowerCalendar";
 import "../styles/itempost.css";
+import SocketService, { socket } from '../tools/socketService';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -25,6 +26,8 @@ const SelectedItemPost = () => {
                 authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
                 //get reservation data for user
                 setUserReserv(await ReservationService.getUserReservation(itemId, JSON.parse(sessionStorage.getItem('curUser'))._id));
+                SocketService.connect();
+                socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
             }
 
             //get item data
