@@ -26,8 +26,8 @@ const SelectedItemPost = () => {
                 authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
                 //get reservation data for user
                 setUserReserv(await ReservationService.getUserReservation(itemId, JSON.parse(sessionStorage.getItem('curUser'))._id));
-                SocketService.connect();
-                socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+                //SocketService.connect();
+                //socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
             }
 
             //get item data

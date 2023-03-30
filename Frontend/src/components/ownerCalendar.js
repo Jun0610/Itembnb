@@ -29,7 +29,6 @@ const OwnerCalendar = ({ selectedItem,  selectedResv, setRefresh, refresh }) => 
         console.log("selectedResv: ", selectedResv);
         if (selectedResv) {
             var endDate = new Date(selectedResv.endDate)
-            endDate.setDate(endDate.getDate() + 1)
             setDate([new Date(selectedResv.startDate), endDate])
         } else {
             setDate(null)
@@ -64,9 +63,7 @@ const OwnerCalendar = ({ selectedItem,  selectedResv, setRefresh, refresh }) => 
                 }
             }
             if (selectedItem.pendingList && ret === null) {
-                console.log("bye");
                 for (let i = 0; i < selectedItem.pendingList.length; i++) {
-                    console.log("hi");
                     if (selectedItem.pendingList[i].startDate !== "1970-01-01T00:00:00.000Z" && selectedItem.pendingList[i].endDate !== "1970-01-01T00:00:00.000Z") {
                         let date1 = new Date(selectedItem.pendingList[i].startDate);
                         let date2 = new Date(selectedItem.pendingList[i].endDate);
