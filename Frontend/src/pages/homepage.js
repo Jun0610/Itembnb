@@ -3,6 +3,7 @@ import Post from "../components/post";
 import Loading from "../components/Loading";
 import userContext from "../contexts/userContext";
 import "../styles/homepage.css";
+import SocketService, { socket } from '../tools/socketService';
 
 const Homepage = () => {
 
@@ -16,6 +17,8 @@ const Homepage = () => {
     useEffect(() => {
         if (sessionStorage.getItem('curUser') !== null) {
             selectedUser.login(JSON.parse(sessionStorage.getItem('curUser')))
+            SocketService.connect();
+            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
     }, [])
 

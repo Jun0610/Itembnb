@@ -98,7 +98,7 @@ router.delete('/delete-user/:userId', async (req, res) => {
 		})
 
 		//then delete user
-        await db.collection('users').deleteOne({ _id: new mongo.ObjectId(req.params.userId) })
+		await db.collection('users').deleteOne({ _id: new mongo.ObjectId(req.params.userId) })
 
 		res.status(200).json({ success: true, data: "item successfully deleted." })
 	} catch (err) {

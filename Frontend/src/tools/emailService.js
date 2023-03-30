@@ -6,36 +6,36 @@ const template_id_no_redirection = 'template_rafcnub';
 const public_key = 'GOFeOE5aTFGzBv1A2';
 
 class EmailService {
-    static sendEmailNoRedirection(sender, receiver, msg) {
-      const body = {
-        to_name: receiver.name,
-        from_name: sender.user.user.name,
-        reply_to: sender.user.user.email,
-        message: msg,
-        to_email: receiver.email,
-      }
-      emailjs.send(service_id, template_id_no_redirection, body, public_key).then((result) => {
-        console.log(result.text);
-      }, (error) => {
-          console.log(error.text);
-      });
+  static async sendEmailNoRedirection(sender, receiver, msg) {
+    const body = {
+      to_name: receiver.name,
+      from_name: sender.user.user.name,
+      reply_to: sender.user.user.email,
+      message: msg,
+      to_email: receiver.email,
     }
+    await emailjs.send(service_id, template_id_no_redirection, body, public_key).then((result) => {
+      console.log(result.text);
+    }, (error) => {
+      console.log(error.text);
+    });
+  }
 
-    static sendEmailRedirection(sender, receiver, msg, url) {
-        const body = {
-            to_name: receiver.name,
-            from_name: sender.user.user.name,
-            reply_to: sender.user.user.email,
-            message: msg,
-            url: url,
-            to_email: receiver.email,
-          }
-          emailjs.send(service_id, template_id_redirection, body, public_key).then((result) => {
-            console.log(result.text);
-          }, (error) => {
-              console.log(error.text);
-          });
+  static async sendEmailRedirection(sender, receiver, msg, url) {
+    const body = {
+      to_name: receiver.name,
+      from_name: sender.user.user.name,
+      reply_to: sender.user.user.email,
+      message: msg,
+      url: url,
+      to_email: receiver.email,
     }
+    await emailjs.send(service_id, template_id_redirection, body, public_key).then((result) => {
+      console.log(result.text);
+    }, (error) => {
+      console.log(error.text);
+    });
+  }
 }
 
 export default EmailService;

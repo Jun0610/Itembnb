@@ -4,6 +4,7 @@ import ReservationService from '../tools/reservationService';
 import PendingItem from '../components/PendingItem';
 import Loading from '../components/Loading';
 import "../styles/pendingPage.css"
+import SocketService, { socket } from '../tools/socketService';
 
 const PendingPage = () => {
     const nav = useNavigate();
@@ -15,7 +16,8 @@ const PendingPage = () => {
                 nav('/')
                 return
             }
-
+            SocketService.connect();
+            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
             const res = await ReservationService.getPendingReservationsForUser(JSON.parse(sessionStorage.getItem('curUser'))._id);
             setPendingReservations(res.data);
         }

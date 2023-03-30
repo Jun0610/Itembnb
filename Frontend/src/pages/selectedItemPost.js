@@ -7,6 +7,7 @@ import ReservationService from "../tools/reservationService";
 import { Loading, LoadingSmall } from "../components/Loading";
 import ItemCalendar from "../components/borrowerCalendar";
 import "../styles/itempost.css";
+import SocketService, { socket } from '../tools/socketService';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -25,6 +26,8 @@ const SelectedItemPost = () => {
                 authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
                 //get reservation data for user
                 setUserReserv(await ReservationService.getUserReservation(itemId, JSON.parse(sessionStorage.getItem('curUser'))._id));
+                SocketService.connect();
+                socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
             }
 
             //get item data
@@ -178,18 +181,6 @@ const SelectedItemPost = () => {
                             </div>
                             <div className="item-post-row">
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
-                            </div>
-                            <div className="owner">
-                                <div className="owner-details">
-                                    <NavLink to={"/user/" + owner._id}>
-                                        <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}>{selectedItem.ownerId ? owner.name : "owner not shown"}</span> </h4>
-
-                                    </NavLink>
-                                    <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
-                                </div>
-
-                                <img src={owner.profilePic} alt="" className="owner-img" />
-
                             </div>
                             {ownerInfo()}
                         </div>
