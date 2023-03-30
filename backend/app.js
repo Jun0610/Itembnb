@@ -44,7 +44,7 @@ io.on('connection', (socket) => {
     socket.on('sendId', (response) => {
         console.log("making join for :", response)
         socket.join(`${response}`);
-        connectedUsers.push(response)
+        if (!connectedUsers.includes(response)) connectedUsers.push(response)
         console.log(connectedUsers);
     })
 
