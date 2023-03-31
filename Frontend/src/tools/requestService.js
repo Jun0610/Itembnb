@@ -51,7 +51,7 @@ class RequestService {
     }
 
     static async addRecommendedItems(request, itemsToAdd) {
-        // Remove already recommended items to avoid dupes
+        // remove dupes
         itemsToAdd = itemsToAdd.filter(x => !request.recommendedItems.includes(x));
 
         return Promise.all(itemsToAdd.map(async itemId => {
@@ -73,7 +73,7 @@ class RequestService {
     }
 
     static async deleteRecommendedItems(request, itemsToRemove) {
-        // Remove already non-recommended items to avoid dupes
+        // remove dupes
         itemsToRemove = itemsToRemove.filter(x => request.recommendedItems.includes(x));
 
         return Promise.all(itemsToRemove.map(async itemId => {
