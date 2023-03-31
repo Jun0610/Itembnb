@@ -27,18 +27,6 @@ const StatusTracker = ({ statusObject, curUser, user, activeLenderReservations, 
         }
     }, [status])
 
-    const isOneDayDiff = (firstDate, secondDate) => {
-        if (firstDate.getFullYear() == secondDate.getFullYear()) {
-            if (firstDate.getMonth() == secondDate.getMonth()) {
-                if ((secondDate.getDate() - firstDate.getDate()) == 1 || (secondDate.getDate() - firstDate.getDate()) == 0) {
-                    console.log("diff: ", secondDate.getDate() - firstDate.getDate())
-                    return true
-                }
-                else return false
-            } else return false
-        } else return false
-    }
-
     const handleItemReceived = async () => {
         const result = await ReservationService.itemReceived(statusObject.reservation._id);
         if (result.data === "received" || result.status === 201) {

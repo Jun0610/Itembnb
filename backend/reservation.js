@@ -122,6 +122,7 @@ router.get("/get-active-reservation/borrower/:userId", async (req, res) => {
         const activeReservations = [];
         for (const reservId of user.reservHist) {
             const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(reservId) })
+            if (reservation === null) continue; 
             if (reservation.status === "approved" || reservation.status === "active") {
                 const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
                 if (item != null) activeReservations.push({ item, reservation })
@@ -155,16 +156,18 @@ router.get("/get-active-reservation/lender/:userId", async (req, res) => {
         const activeReservations = [];
         for (const itemId of user.postedItems) {
             const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(itemId) })
-
-            for (const unavail of item.unavailList) {
-                if (unavail.reservId) {
-                    const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(unavail.reservId) })
-                    if (reservation && (reservation.status === "approved" || reservation.status === "active")) {
-                        const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
-                        activeReservations.push({ item, reservation })
+            if (item && item.unavailList) {
+                for (const unavail of item.unavailList) {
+                    if (unavail.reservId) {
+                        const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(unavail.reservId) })
+                        if (reservation && reservation.unavailList === null) continue; 
+                        if (reservation && (reservation.status === "approved" || reservation.status === "active")) {
+                            const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
+                            activeReservations.push({ item, reservation })
+                        }
                     }
+    
                 }
-
             }
         }
         if (activeReservations.length === 0) {

@@ -259,7 +259,8 @@ const DisplayRequestPost = () => {
                 SocketService.emit('emitRequestAddItem',
                     message);
 
-                await EmailService.sendEmailRedirection(authUser, requestUser, `${authUser.user.user.name} has recommended item(s) for your item request "${request.name}"!`, `http://localhost:3000/display-request-post/${request._id}`);
+                const newUser = await UserService.getUserData(requestUser._id)
+                if (newUser.data.isNotification) await EmailService.sendEmailRedirection(authUser, requestUser, `${authUser.user.user.name} has recommended item(s) for your item request "${request.name}"!`, `http://localhost:3000/display-request-post/${request._id}`);
             }
 
             // Remove already non-recommended items to avoid dupes
