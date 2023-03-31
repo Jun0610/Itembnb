@@ -78,7 +78,6 @@ const Navbar = () => {
     console.log("notif list (outside): ", listOfNotifications);
 
     window.onclick = (e) => {
-        console.log(e);
         const dropDown = document.querySelector(".drop-down-container")
         const notifBar = document.querySelector('.notification-bar')
         if (dropDown === null || notifBar === null) {
@@ -138,8 +137,8 @@ const Navbar = () => {
                                     }
 
                                     {(listOfNotifications !== undefined && listOfNotifications.length !== 0) ?
-                                        listOfNotifications.map((notification) => 
-                                            (<div>{notification}</div>)
+                                        listOfNotifications.map((notification) =>
+                                            (<div className='notification-item'>{notification}</div>)
                                         ) : (<div></div>)
                                     }
 
