@@ -65,17 +65,17 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
             alert("Please select a date range");
             return;
         }
+        let invalid = false;
         if (selectedItem.unavailList) {
-            for (let i = 0; i < selectedItem.unavailList.length; i++) {
-                let date1 = new Date(selectedItem.unavailList[i].startDate);
-                let date2 = new Date(selectedItem.unavailList[i].endDate);
-
-                if (inDateRange(date1, date[0], date[1]) || inDateRange(date2, date[0], date[1])) {
-                    alert("Item is unavailable on some dates in the selected range");
-                    return;
-                }
+            let d2 = new Date(date[1].getFullYear(), date[1].getMonth(), date[1].getDate());
+            for (var d = new Date(date[0].getFullYear(), date[0].getMonth(), date[0].getDate()); d <= d2; d.setDate(d.getDate() + 1)) {
+                invalid = itemUnavail({ date: d, view: 'month' });
+                if (invalid) break;
             }
-
+            if (invalid) {
+                alert("Item is unavailable on some dates in the selected range");
+                return;
+            }
         }
         fetch('http://localhost:8888/api/reservation/make-reservation', {
             method: 'POST',
