@@ -58,7 +58,13 @@ const Navbar = () => {
         dropDown.classList.toggle('open');
     }
 
-    const handleNotifications = () => {
+    const handleNotifications = async () => {
+        if (enable === 'Disable') {
+            const res = await UserService.getUserData(JSON.parse(sessionStorage.getItem('curUser'))._id);
+            setUserData(res.data);
+            setListOfNotifications(res.data.notificationList)
+        }
+
         const notifBarOpen = document.getElementById('notification')
         notifBarOpen.classList.toggle('open')
     }
@@ -127,12 +133,12 @@ const Navbar = () => {
                         <div id='notification' className='notification-bar'>
                             {notifications === 'notifications-on' &&
                                 <div className='notification-bar-on'>
-                                    <button className='enable-notification-btn' onClick={enableNotification}>{enable} notifications</button>
+                                    <button className='enable-notification-btn' onClick={enableNotification}>{enable} deadline notifications</button>
                                     <hr style={{ width: "80%", margin: "1rem auto" }} />
 
                                     {(listOfNotifications === undefined || listOfNotifications.length === 0) &&
                                         <div style={{ color: "#a19f9f", paddingBottom: "1rem" }}>
-                                            You have no notifications yet!
+                                            You have no deadline notifications yet!
                                         </div>
                                     }
 
@@ -145,7 +151,7 @@ const Navbar = () => {
                                 </div>}
                             {notifications === 'notifications-off' &&
                                 <div className='notification-bar-off'>
-                                    <button className='enable-notification-btn' onClick={enableNotification}>{enable} notifications</button>
+                                    <button className='enable-notification-btn' onClick={enableNotification}>{enable} deadline notifications</button>
                                     <hr style={{ width: "80%", margin: "1rem auto" }} />
                                     <div style={{ color: "#a19f9f", paddingBottom: "1rem" }}>
                                         Please enable notifications to see your notifications
