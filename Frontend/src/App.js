@@ -20,6 +20,7 @@ import PendingPage from "./pages/PendingPage";
 import EmailDisplayItemPost from "./pages/emailDisplayItemPost";
 import EmailStatusPage from "./pages/emailStatusPage";
 import AccountSettings from "./pages/accountSettings";
+import EmailSelectedItemPost from "./pages/emailSelectedItemPost";
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                                 <Route exact path="/create-item-post" element={<CreateItemPost />} />
                                 <Route exact path='/create-item-request' element={<CreateRequest />} />
                                 <Route path="/display-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailDisplayItemPost />} />
+                                <Route path="/selected-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailSelectedItemPost />} />
                                 <Route path="/item-status/:id" element={<EmailStatusPage />} />
                                 <Route path="/display-item-post/:id" element={<DisplayItemPost />} />
                                 <Route path="/display-request-post/:id" element={<DisplayRequestPost />} />

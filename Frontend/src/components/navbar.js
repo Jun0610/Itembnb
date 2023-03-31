@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import UserService from '../tools/userService';
 import App from '../App';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell } from '@fortawesome/free-solid-svg-icons';
 import userContext from '../contexts/userContext';
 import SocketService from '../tools/socketService';
 
@@ -12,6 +14,9 @@ const Navbar = () => {
 
     const authUser = useContext(userContext);
     const [userData, setUserData] = useState({});
+    const [notifications, setNotifications] = useState('notifications-off')
+    const [listOfNotifications, setListOfNotifications] = useState(undefined)
+    const [enable, setEnable] = useState("Enable")
     const nav = useNavigate();
 
     //keeps user logged in
@@ -24,11 +29,19 @@ const Navbar = () => {
             try {
                 const res = await UserService.getUserData(JSON.parse(sessionStorage.getItem('curUser'))._id);
                 setUserData(res.data);
+                setListOfNotifications(res.data.notificationList)
+                const res2 = await UserService.getNotificationStatus(JSON.parse(sessionStorage.getItem('curUser'))._id);
+                setNotifications(res2.data)
+                if (res2.data === 'notifications-on') {
+                    setNotifications('notifications-on')
+                    setEnable("Disable")
+                }
             } catch (err) {
                 return err
             }
         }
         fetchUserData();
+        console.log("notif list: ", listOfNotifications);
     }, [sessionStorage.getItem('curUser')])
 
     const logout = (e) => {
@@ -45,17 +58,41 @@ const Navbar = () => {
         dropDown.classList.toggle('open');
     }
 
-    window.onclick = (e) => {
+    const handleNotifications = () => {
+        const notifBarOpen = document.getElementById('notification')
+        notifBarOpen.classList.toggle('open')
+    }
 
-        const dropDown = document.querySelector(".drop-down-container")
-        if (dropDown === null) {
-            return;
-        }
-        if (dropDown.classList.contains('open') && !e.target.matches('.nav-img')) {
-            dropDown.classList.remove('open');
+    const enableNotification = async () => {
+        if (enable === "Enable") {
+            setEnable("Disable")
+            await UserService.turnOnNotifications(JSON.parse(sessionStorage.getItem('curUser'))._id)
+            setNotifications("notifications-on")
+        } else {
+            setEnable("Enable")
+            UserService.turnOffNotifications(JSON.parse(sessionStorage.getItem('curUser'))._id)
+            setNotifications('notifications-off')
         }
     }
 
+    console.log("notif list (outside): ", listOfNotifications);
+
+    window.onclick = (e) => {
+        const dropDown = document.querySelector(".drop-down-container")
+        const notifBar = document.querySelector('.notification-bar')
+        if (dropDown === null || notifBar === null) {
+            return;
+        }
+        if (dropDown.classList.contains('open') && !e.target.matches('.nav-img')) {
+
+            dropDown.classList.remove('open');
+        }
+        if (notifBar.classList.contains('open') && e.target.namespaceURI !== "http://www.w3.org/2000/svg") {
+
+            notifBar.classList.remove('open');
+        }
+
+    }
 
     return (
         <nav className="customNavBar">
@@ -72,13 +109,58 @@ const Navbar = () => {
                 </li>
 
                 }
-                {!authUser.isAuth && <li>
-                    <NavLink to="/login" className="custom-nav-link">
-                        Login
-                    </NavLink>
-                </li>
+                {!authUser.isAuth &&
+
+                    <li>
+                        <NavLink to="/login" className="custom-nav-link">
+                            Login
+                        </NavLink>
+                    </li>
 
                 }
+                {authUser.isAuth &&
+                    <li>
+                        <div className='bell'>
+                            <FontAwesomeIcon icon={faBell} className={notifications} onClick={handleNotifications} />
+                        </div>
+
+                        <div id='notification' className='notification-bar'>
+                            {notifications === 'notifications-on' &&
+                                <div className='notification-bar-on'>
+                                    <button className='enable-notification-btn' onClick={enableNotification}>{enable} notifications</button>
+                                    <hr style={{ width: "80%", margin: "1rem auto" }} />
+
+                                    {(listOfNotifications === undefined || listOfNotifications.length === 0) &&
+                                        <div style={{ color: "#a19f9f", paddingBottom: "1rem" }}>
+                                            You have no notifications yet!
+                                        </div>
+                                    }
+
+                                    {(listOfNotifications !== undefined && listOfNotifications.length !== 0) ?
+                                        listOfNotifications.map((notification) =>
+                                            (<div className='notification-item'>{notification}</div>)
+                                        ) : (<div></div>)
+                                    }
+
+                                </div>}
+                            {notifications === 'notifications-off' &&
+                                <div className='notification-bar-off'>
+                                    <button className='enable-notification-btn' onClick={enableNotification}>{enable} notifications</button>
+                                    <hr style={{ width: "80%", margin: "1rem auto" }} />
+                                    <div style={{ color: "#a19f9f", paddingBottom: "1rem" }}>
+                                        Please enable notifications to see your notifications
+                                    </div>
+
+                                </div>}
+
+                        </div>
+
+
+                    </li>
+
+
+                }
+
                 {authUser.isAuth && <li>
                     <NavLink to="/create-item-post" className="custom-nav-link">
                         Create Item Post!

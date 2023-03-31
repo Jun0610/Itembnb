@@ -2,8 +2,10 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { confirmAlert } from 'react-confirm-alert';
 import "../styles/statusTracker.css"
+import EmailService from '../tools/emailService';
 import ReservationService from '../tools/reservationService';
 import StatusItem from './StatusItem';
+import UserService from '../tools/userService';
 
 const StatusTracker = ({ statusObject, curUser, user, activeLenderReservations, setActiveLenderReservations }) => {
 
@@ -25,11 +27,38 @@ const StatusTracker = ({ statusObject, curUser, user, activeLenderReservations, 
         }
     }, [status])
 
+    const isOneDayDiff = (firstDate, secondDate) => {
+        if (firstDate.getFullYear() == secondDate.getFullYear()) {
+            if (firstDate.getMonth() == secondDate.getMonth()) {
+                if ((secondDate.getDate() - firstDate.getDate()) == 1 || (secondDate.getDate() - firstDate.getDate()) == 0) {
+                    console.log("diff: ", secondDate.getDate() - firstDate.getDate())
+                    return true
+                }
+                else return false
+            } else return false
+        } else return false
+    }
+
     const handleItemReceived = async () => {
-        console.log(statusObject.reservation._id);
         const result = await ReservationService.itemReceived(statusObject.reservation._id);
         if (result.data === "received" || result.status === 201) {
             setStatus("active")
+
+            console.log("user: ", curUser)
+            console.log("notification: ", curUser.isNotification)
+            if (curUser.isNotification) {
+                // check if the reservation is within a day
+                const targetDate = new Date()
+                const resvDate = new Date(statusObject.reservation.endDate)
+                console.log(`targetDate: ${targetDate}, resvDate: ${resvDate}`)
+                if (resvDate - targetDate < 2 * 86399000) {
+                    console.log("it is one day diff!")
+                    resvDate.setDate(resvDate.getDate() - 1)
+                    EmailService.sendEmailBorrow(curUser, `Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`, `http://localhost:3000/selected-item-post/itemId/${statusObject.item._id}/ownerId/${curUser._id}`)
+                    alert(`Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`)
+                    await UserService.addNotification(curUser._id, `Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`)
+                }
+            }
         } else {
             alert(result.data)
         }

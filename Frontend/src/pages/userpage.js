@@ -51,12 +51,23 @@ const Userpage = () => {
             const userRequestData = await RequestService.getRequestsFromList(userInfoData.requestPosts);
             setUserRequests(userRequestData);
             setRequestsLoaded(true);
-
-            SocketService.connect();
-            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
-
         fetchData();
+
+        async function connectSocket() {
+            // check if user is logged in with sessionStorage, because checking authUser.user.isAuth doesn't work in useEffect
+            const loggedInUser = JSON.parse(sessionStorage.getItem('curUser'));
+
+            if (loggedInUser !== null) {
+                // log in user automatically if session storage indicates they've already logged in, in another tab
+                authUser.login(loggedInUser);
+
+                SocketService.connect();
+                socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+            }
+        }
+        connectSocket();
+
     }, []);
 
     /* --- Profile editing functionality --- */

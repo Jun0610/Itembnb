@@ -44,7 +44,6 @@ const Homepage = () => {
     else
         return (
             <div>
-                <button onClick={() => alert("Does alert button reloads?")}>Press me</button>
                 <h1 className='item-post-header'>Item posts</h1>
                 <div className='cardcontainer'>
                     {itemPosts.map((item) => (

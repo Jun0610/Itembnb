@@ -11,8 +11,6 @@ const StatusItem = ({ statusObject, curUser }) => {
 
     let startDate = '';
     let endDate = '';
-    console.log("test");
-    console.log("item: ", statusObject.item)
     if (statusObject.item && statusObject.item.unavailList) {
         for (const unavail of statusObject.item.unavailList) {
             if (statusObject.reservation._id === unavail.reservId) {
@@ -70,7 +68,6 @@ const StatusItem = ({ statusObject, curUser }) => {
     if (owner === null || borrower === null) {
         return <Loading />
     } else {
-        console.log(borrower);
         return (
             <div className='status-item-container'>
                 <div className='status-item-img-container'>

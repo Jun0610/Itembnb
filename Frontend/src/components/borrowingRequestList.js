@@ -69,15 +69,15 @@ const BorrowingRequestList = ({ endDates, brList, item, onChangeResvList, onChan
 
                                 // handle email notification or live notification here
                                 SocketService.emit('emitMsg', { type: 'toBorrower', name: authUser.user.user.name, recipient: borrower.email, msg: "approved", itemId: item._id });
-
                                 socket.on('emitBackL', async (response) => {
                                     console.log(response);
                                     if (response !== 'success') {
                                         await EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`).then(() => {
 
-                                            window.location.reload(false);
+
                                         });
                                     }
+                                    window.location.reload(false);
                                 });
                                 onChangeResvList(brList.filter(e => e._id !== resv._id));
                                 alert("Successfully approved!");
@@ -107,9 +107,10 @@ const BorrowingRequestList = ({ endDates, brList, item, onChangeResvList, onChan
                                         if (response !== 'success') {
                                             await EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`).then(() => {
                                                 alert("Okay!")
-                                                window.location.reload(false);
+
                                             });
                                         }
+                                        window.location.reload(false);
                                     });
                                 })
 
@@ -132,9 +133,10 @@ const BorrowingRequestList = ({ endDates, brList, item, onChangeResvList, onChan
                             socket.on('emitBackL', async (response) => {
                                 if (response !== 'success') {
                                     await EmailService.sendEmailNoRedirection(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`).then(() => {
-                                        window.location.reload(false);
+
                                     });
                                 }
+                                window.location.reload(false);
                             });
                         })
                         onChangeResvList(brList.filter(e => e._id !== resv._id));
@@ -184,35 +186,13 @@ const BorrowingRequestList = ({ endDates, brList, item, onChangeResvList, onChan
                                         </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <div class="flex gap-0 m-1">
-                                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
-                                            Borrower
-                                        </div>
-                                        <div class="bg-white/25 rounded-r-lg content-center p-1">
-                                            {e.borrower.name}
-                                        </div>
-                                    </div>
-                                    <div class="flex gap-0 m-1">
-                                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
-                                            Borrower email
-                                        </div>
-                                        <div class="bg-white/25 rounded-r-lg content-center p-1">
-                                            {e.borrower.email}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex w-64"></div>
-                                <div className='justify-end mt-2'>
-                                    <img onClick={() => handleUserRedirect(e.borrower._id)} className="flex-none object-scale-down h-24" style={{ borderRadius: "50%", width: "auto", cursor: "pointer" }} src={e.borrower.profilePic && e.borrower.profilePic !== "" ? e.borrower.profilePic : "https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"} alt="" />
-                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
             }
         </div>
-    )
+    );
 }
 
-export default BorrowingRequestList
+export default BorrowingRequestList;
