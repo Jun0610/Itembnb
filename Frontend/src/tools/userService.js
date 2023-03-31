@@ -88,6 +88,24 @@ class UserService {
         }
     }
 
+    static async addNotification(userId, message) {
+        const request = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        }
+        try {
+            const res = await fetch(`${url}/add-notification/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            console.log(response);
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+
     static async getUserData(userId) {
         console.log("getting user data");
         const request = {
