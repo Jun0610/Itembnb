@@ -205,7 +205,7 @@ router.get('/get-pending-reservations-of-user/:userId', async (req, res) => {
             }
             const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
             if (item === null) {
-                throw new Error("item not found")
+                continue;
             }
             pendingReservations.push({ reservation, item })
         }

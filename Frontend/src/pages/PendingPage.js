@@ -25,7 +25,6 @@ const PendingPage = () => {
         pageLoad();
     }, [])
 
-    console.log(pendingReservations);
     if (pendingReservations !== null && pendingReservations.length !== 0) {
         return (
             <div className='pending-page-container'>
