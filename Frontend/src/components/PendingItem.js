@@ -7,7 +7,9 @@ import UserService from '../tools/userService'
 const PendingItem = ({ curUser, statusObject }) => {
     const [owner, setOwner] = useState(null)
     useEffect(() => {
-        UserService.getUserData(statusObject.item.ownerId).then((res) => { setOwner(res.data) })
+        if (statusObject.item) {
+            UserService.getUserData(statusObject.item.ownerId).then((res) => { setOwner(res.data) })
+        }
     }, [])
 
 

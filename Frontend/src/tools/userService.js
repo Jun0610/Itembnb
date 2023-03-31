@@ -89,6 +89,7 @@ class UserService {
     }
 
     static async addNotification(userId, message) {
+        console.log(`userId: ${userId}, message: ${message}`)
         const request = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

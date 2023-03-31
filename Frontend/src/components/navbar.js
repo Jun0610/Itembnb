@@ -31,7 +31,6 @@ const Navbar = () => {
                 setUserData(res.data);
                 setListOfNotifications(res.data.notificationList)
                 const res2 = await UserService.getNotificationStatus(JSON.parse(sessionStorage.getItem('curUser'))._id);
-                console.log(res2);
                 setNotifications(res2.data)
                 if (res2.data === 'notifications-on') {
                     setNotifications('notifications-on')
@@ -42,6 +41,7 @@ const Navbar = () => {
             }
         }
         fetchUserData();
+        console.log("notif list: ", listOfNotifications);
     }, [sessionStorage.getItem('curUser')])
 
     const logout = (e) => {
@@ -75,6 +75,8 @@ const Navbar = () => {
         }
     }
 
+    console.log("notif list (outside): ", listOfNotifications);
+
     window.onclick = (e) => {
         console.log(e);
         const dropDown = document.querySelector(".drop-down-container")
@@ -92,8 +94,6 @@ const Navbar = () => {
         }
 
     }
-
-    console.log(listOfNotifications);
 
     return (
         <nav className="customNavBar">
@@ -137,16 +137,11 @@ const Navbar = () => {
                                         </div>
                                     }
 
-                                    {(listOfNotifications !== undefined && listOfNotifications.length !== 0) &&
-                                        listOfNotifications.map((notification) => {
-                                            <div>{notification}</div>
-                                        })
+                                    {(listOfNotifications !== undefined && listOfNotifications.length !== 0) ?
+                                        listOfNotifications.map((notification) => 
+                                            (<div>{notification}</div>)
+                                        ) : (<div></div>)
                                     }
-
-
-
-
-
 
                                 </div>}
                             {notifications === 'notifications-off' &&
