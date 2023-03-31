@@ -48,8 +48,23 @@ io.on('connection', (socket) => {
         console.log(connectedUsers);
     })
 
+    // notify user an item has been added to their request
+    socket.on('emitRequestAddItem', (response) => {
+        console.log("response requestAddItem: ", response);
+
+        // send notification to borrower
+        if (connectedUsers && connectedUsers.find((e) => e === response['recipient'])) {
+            // user is online; give live notification
+            io.to(`${response['recipient']}`).emit('emitBack', { toRequester: true, msg: `${response['name']} has recommended new item(s) for your request: ${response['request_obj']['name']}!`, url: `/display-request-post/${response['request_obj']['_id']}` });
+            console.log(connectedUsers);
+            console.log("sent notification!")
+            socket.emit('emitBackR', 'success');
+        }
+    })
+
     socket.on('emitMsg', (response) => {
         console.log("response: ", response);
+
         if (response['type'] === 'toBorrower') {
             // send notification to borrower
             if (connectedUsers && connectedUsers.find((e) => e === response['recipient'])) {

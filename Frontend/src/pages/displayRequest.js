@@ -3,6 +3,9 @@ import { NavLink, useParams, useNavigate } from "react-router-dom";
 import RequestService from '../tools/requestService';
 import ItemService from '../tools/itemsService';
 import UserService from '../tools/userService';
+import { socket } from '../tools/socketService';
+import SocketService from '../tools/socketService';
+import EmailService from '../tools/emailService';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
@@ -72,6 +75,9 @@ const DisplayRequestPost = () => {
                 );
                 setCheckBoxes(checkBoxes);
                 setItemsLoaded(true);
+
+                SocketService.connect();
+                socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
             }
         }
         fetchData();
@@ -198,7 +204,7 @@ const DisplayRequestPost = () => {
         }
 
         return (
-            <div className="requestDiv m-3">
+            <div className="basicBorderDiv m-3">
                 <p className="yellowText">Items recommended for this request</p>
 
                 {linkedItemDisplay}
@@ -239,14 +245,33 @@ const DisplayRequestPost = () => {
         }
 
         async function updateRecommendedItems() {
-            const result = await RequestService.addRecommendedItems(request, checkedItems);
-            const result2 = await RequestService.deleteRecommendedItems(request, nonCheckedItems);
+            // Remove already recommended items to avoid dupes
+            const itemsToAdd = checkedItems.filter(x => !request.recommendedItems.includes(x));
+            const result = await RequestService.addRecommendedItems(request, itemsToAdd, requestUser);
+
+            // if items were actually added
+            console.log(itemsToAdd);
+            if (itemsToAdd.length > 0) {
+                // handle email notification or live notification here
+                // if any items have actually been added, notify user
+                const message = { name: authUser.user.user.name, recipient: requestUser.email, msg: "request_additems", request_obj: request };
+                console.log(message);
+                SocketService.emit('emitRequestAddItem',
+                    message);
+
+                await EmailService.sendEmailRedirection(authUser, requestUser, `${authUser.user.user.name} has recommended item(s) for your item request "${request.name}"!`, `http://localhost:3000/display-request-post/${request._id}`);
+            }
+
+            // Remove already non-recommended items to avoid dupes
+            const itemsToRemove = nonCheckedItems.filter(x => request.recommendedItems.includes(x));
+            const result2 = await RequestService.deleteRecommendedItems(request, itemsToRemove);
             const final_result = result.concat(result2);
             if (final_result.every((item) => item.success)) {
                 alert("Recommended items updated successfully.");
 
                 // to refresh recommended items list
-                window.location.reload();
+                window.location.reload(false);
+                // TODO THIS BREAKS THE LIVE NOTIFS
             }
             else {
                 alert("Recommended items failed to update. Sorry.");
@@ -314,9 +339,9 @@ const DisplayRequestPost = () => {
         if (authUser.user.isAuth) { // if logged in
 
             // if request creator and currently logged in user are different people
-            if (authUser.user.user._id != request.ownerID) {
+            if (authUser.user.user._id !== request.ownerID) {
                 return (
-                    <div className="requestDiv m-3">
+                    <div className="basicBorderDiv m-3">
                         <div>
                             <p className="yellowText">Which items would you like to recommend for this request?</p>
                             <button class="defaultButton" onClick={switchView}>Switch View</button>
@@ -331,7 +356,7 @@ const DisplayRequestPost = () => {
 
             // if request belongs to currently logged in user
             return (
-                <div className="requestDiv m-3">
+                <div className="basicBorderDiv m-3">
                     <p>This is your request, so you can't recommend any items for it.</p>
                 </div>
             )
@@ -339,7 +364,7 @@ const DisplayRequestPost = () => {
 
         // if user is not logged in
         return (
-            <div className="requestDiv m-3">
+            <div className="basicBorderDiv m-3">
                 <p>You are not logged in, so you can't try to fulfill this request!</p>
             </div>
         )
@@ -357,7 +382,7 @@ const DisplayRequestPost = () => {
             </div>
 
             <EditButtonHeader />
-            <div className='requestDiv m-3'>
+            <div className='basicBorderDiv m-3'>
                 <label htmlFor='name' className="font-bold yellowText">Name: </label>
                 <input className="mt-1 px-2 rounded-md inputNoOutline" id="name" type="text" value={request.name} name="name" readOnly={isEditing ? false : true} style={isEditing ? { background: "#f1f1f1", color: "black" } : { background: "none", color: "#545454" }} onChange={onRequestChange} />
                 <p className="input-error">{inputErrors.name}</p>

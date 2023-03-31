@@ -1,24 +1,3 @@
-.requestDiv {
-    border: 1px solid #999999;
-    border-radius: 10px;
-    padding: 15px;
-}
-.requestDiv .defaultButton {
-    font-weight: bold;
-    color: white;
-    background-color: rgb(247, 214, 90);
-    border-radius: 9999px;
-    padding: 0.5rem 1.5rem 0.5rem 1.5rem;
-    margin: 10px;
-
-    display: block;
-}
-.requestDiv .defaultButton:hover {
-    background-color: rgb(255, 198, 41);
-    transform: scale(1.05);
-    transition: transform 0.3s;
-}
-
 .item-small {
     border-top: 1px solid #999999;
     border-bottom: 1px solid #999999;
