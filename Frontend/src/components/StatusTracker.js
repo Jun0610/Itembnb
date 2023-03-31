@@ -55,7 +55,7 @@ const StatusTracker = ({ statusObject, curUser, user, activeLenderReservations, 
                 console.log("Sending email and live notification now...")
                 console.log("item: ", statusObject)
                 resvDate.setDate(resvDate.getDate() - 1)
-                EmailService.sendEmailBorrow(curUser, `Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`, `http://localhost:3000/selected-item-post/${curUser._id}`)
+                EmailService.sendEmailBorrow(curUser, `Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`, `http://localhost:3000/selected-item-post/itemId/${statusObject.item._id}/ownerId/${curUser._id}`)
                 alert(`Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`)
             }
         } else {
