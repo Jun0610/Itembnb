@@ -54,9 +54,15 @@ const StatusTracker = ({ statusObject, curUser, user, activeLenderReservations, 
                 if (resvDate - targetDate < 2 * 86399000) {
                     console.log("it is one day diff!")
                     resvDate.setDate(resvDate.getDate() - 1)
-                    EmailService.sendEmailBorrow(curUser, `Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`, `http://localhost:3000/selected-item-post/itemId/${statusObject.item._id}/ownerId/${curUser._id}`)
-                    alert(`Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`)
+                    const res = await UserService.getUserData(curUser._id);
+                    const newUser = res.data;
+                    if (newUser.isNotification) {
+                        await EmailService.sendEmailBorrow(curUser, `Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`, `http://localhost:3000/selected-item-post/itemId/${statusObject.item._id}/ownerId/${curUser._id}`)
+                        alert(`Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`)
+                    }
+
                     await UserService.addNotification(curUser._id, `Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`)
+
                 }
             }
         } else {
