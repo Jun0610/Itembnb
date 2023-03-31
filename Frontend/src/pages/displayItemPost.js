@@ -64,6 +64,7 @@ const DisplayItemPost = () => {
                     var dates = [];
                     for (const e of data.data) {
                         var date = new Date(e.endDate);
+                        date.setDate(date.getDate() - 1)
                         dates.push(date.toISOString().substring(0, 10));
                     }
                     setEndDates(dates);
