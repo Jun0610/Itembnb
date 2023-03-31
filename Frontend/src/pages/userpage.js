@@ -51,12 +51,23 @@ const Userpage = () => {
             const userRequestData = await RequestService.getRequestsFromList(userInfoData.requestPosts);
             setUserRequests(userRequestData);
             setRequestsLoaded(true);
-
-            SocketService.connect();
-            socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
-
         fetchData();
+
+        async function connectSocket() {
+            // check if user is logged in with sessionStorage, because checking authUser.user.isAuth doesn't work in useEffect
+            const loggedInUser = JSON.parse(sessionStorage.getItem('curUser'));
+
+            if (loggedInUser !== null) {
+                // log in user automatically if session storage indicates they've already logged in, in another tab
+                authUser.login(loggedInUser);
+
+                SocketService.connect();
+                socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+            }
+        }
+        connectSocket();
+
     }, []);
 
     /* --- Profile editing functionality --- */
@@ -214,8 +225,8 @@ const Userpage = () => {
                     <h1>Editing Your Profile</h1>
 
                     <div className="add_padding">
-                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditProfile()}>Save Changes</button>
-                        <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditCancel()}>Cancel</button>
+                        <button className="hover:bg-orange-400 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditProfile()}>Save Changes</button>
+                        <button className="hover:bg-orange-400 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditCancel()}>Cancel</button>
                         <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleDeleteUser()}>Delete Account</button>
                     </div>
 
@@ -247,10 +258,16 @@ const Userpage = () => {
                     {(authUser.isAuth && authUser.user.user._id === userInfo._id) &&
                         (
                             <span>
-                                <p><Link to="/favorite-items">Welcome, {userInfo.name}! See your favorite items!</Link></p>
-
                                 <div className="add_padding">
-                                    <button className="hover:bg-orange-200 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditProfile()}>Edit Profile</button>
+                                    <button className="hover:bg-orange-400 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn" onClick={() => handleEditProfile()}>Edit Profile</button>
+
+                                    <Link to="/settings">
+                                        <button className="hover:bg-orange-400 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn">Account Settings</button>
+                                    </Link>
+
+                                    <Link to="/favorite-items">
+                                        <button className="hover:bg-orange-400 text-white font-bold py-2 px-4 rounded-full m-2 user-page-btn">Favorite Items</button>
+                                    </Link>
                                 </div>
                             </span>
                         )}
