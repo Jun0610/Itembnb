@@ -73,8 +73,6 @@ const BorrowingRequestList = ({ endDates, brList, item, onChangeResvList, onChan
                   console.log(response);
                   if (response !== 'success') {
                     await EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`).then(() => {
-
-
                     });
                   }
                   window.location.reload(false);
@@ -84,7 +82,7 @@ const BorrowingRequestList = ({ endDates, brList, item, onChangeResvList, onChan
               })
             } else {
               // there are conflicts; must ask for second confirmation
-              if (window.confirm(`There are conflicts with these other requests:- ${result}. Accepting this request means the other reservations will be deleted. Do you want to proceed?`)) {
+              if (window.confirm(`There are conflicts with these other requests:- ${result}. Accepting this request means the other reservations will be denied. Do you want to proceed?`)) {
                 // accepting current confirmation; must deny all others on the conflictId array
                 for (const conflictResv of conflictResvs) {
 

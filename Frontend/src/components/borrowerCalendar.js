@@ -77,12 +77,6 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
             }
 
         }
-        console.log({
-            borrowerId: authUser.user.user._id,
-            itemId: selectedItem._id,
-            startDate: date[0],
-            endDate: date[1]
-        });
         fetch('http://localhost:8888/api/reservation/make-reservation', {
             method: 'POST',
             headers: {
