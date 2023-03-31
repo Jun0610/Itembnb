@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { confirmAlert } from 'react-confirm-alert';
 import "../styles/statusTracker.css"
+import EmailService from '../tools/emailService';
 import ReservationService from '../tools/reservationService';
 import StatusItem from './StatusItem';
 
@@ -25,11 +26,38 @@ const StatusTracker = ({ statusObject, curUser, user, activeLenderReservations, 
         }
     }, [status])
 
+    const isOneDayDiff = (firstDate, secondDate) => {
+        console.log(`firstDate: ${firstDate}`);
+        console.log(`secondDate: ${secondDate}`);
+        console.log("diff: ", secondDate.getDate() - firstDate.getDate())
+    
+        if (firstDate.getFullYear() == secondDate.getFullYear()) {
+            if (firstDate.getMonth() == secondDate.getMonth()) {
+                if ((secondDate.getDate() - firstDate.getDate()) == 1 || (secondDate.getDate() - firstDate.getDate()) == 0) {
+                    return true
+                }
+                else return false
+            } else return false
+        } else return false
+    }
+
     const handleItemReceived = async () => {
         console.log(statusObject.reservation._id);
         const result = await ReservationService.itemReceived(statusObject.reservation._id);
         if (result.data === "received" || result.status === 201) {
             setStatus("active")
+
+            // check if the reservation is within a day
+            const targetDate = new Date()
+            const resvDate = new Date(statusObject.reservation.endDate)
+            console.log("target date: ", targetDate, "resv date: ", resvDate)
+            if (isOneDayDiff(targetDate, resvDate)) {
+                console.log("Sending email and live notification now...")
+                console.log("item: ", statusObject)
+                resvDate.setDate(resvDate.getDate() - 1)
+                EmailService.sendEmailBorrow(curUser, `Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`, `http://localhost:3000/selected-item-post/${curUser._id}`)
+                alert(`Remember to return ${statusObject.item.name} on ${resvDate.toISOString().substring(0, 10)}!`)
+            }
         } else {
             alert(result.data)
         }
