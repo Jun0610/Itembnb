@@ -38,6 +38,56 @@ class UserService {
 
     }
 
+    static async turnOnNotifications(userId) {
+        const request = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        }
+        try {
+            const res = await fetch(`${url}/turn-on-notifications/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            console.log(response);
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async turnOffNotifications(userId) {
+        const request = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        }
+        try {
+            const res = await fetch(`${url}/turn-off-notifications/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            console.log(response);
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async getNotificationStatus(userId) {
+        console.log("getting user data");
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-notification-status/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     static async getUserData(userId) {
         console.log("getting user data");
         const request = {
