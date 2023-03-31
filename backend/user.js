@@ -197,4 +197,17 @@ router.get('/get-notification-status/:userId', async (req, res) => {
 	}
 })
 
+
+/*req.body = {
+ message: message
+}*/
+router.put('/add-notification/:userId', async (req, res) => {
+	try {
+		await db.collection("user").updateOne({ _id: new mongo.ObjectId(req.params.userId) }, { $addToSet: { notificationList: req.body.message } })
+		res.status(200).json({ success: true, data: "successfully added notification" })
+	} catch (err) {
+		res.status(404).json({ success: false, data: err.messsage })
+	}
+})
+
 module.exports = router;
