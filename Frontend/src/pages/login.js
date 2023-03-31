@@ -3,7 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/login.css";
 import userContext from "../contexts/userContext";
 import { useNavigate } from "react-router-dom";
-import SocketService, {socket} from "../tools/socketService";
+import SocketService, { socket } from "../tools/socketService";
+import { confirmAlert } from "react-confirm-alert";
 
 const Login = () => {
     const [email, setEmail] = useState(null);
@@ -45,6 +46,29 @@ const Login = () => {
                     // set socket connection with server
                     SocketService.connect();
                     socket.emit('sendId', email);
+                    let notificationString = ''
+                    for (const notification of data.data.notificationList) {
+                        const date = new Date(notification.slice(notification.length - 11, notification.length - 1))
+                        date.setMilliseconds(86399000)
+                        if ((date > Date.now()) && (Date.now() - date <= 2 * 86399000)) {
+                            notificationString += "-" + notification + "\n"
+                        }
+                    }
+                    if (notificationString !== '') {
+                        confirmAlert({
+                            title: 'Status Update',
+                            message: notificationString,
+                            buttons: [
+                                {
+                                    label: 'OK',
+                                    onClick: () => {
+                                    }
+
+                                }
+                            ],
+                        })
+                    }
+
                 });
             } else {
                 console.log("failure");
@@ -55,6 +79,8 @@ const Login = () => {
             }
         });
     };
+
+
 
     return (
         <div className="fullscreen">
