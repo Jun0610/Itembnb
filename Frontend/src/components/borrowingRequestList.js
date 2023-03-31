@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import ReservationService from '../tools/reservationService';
 import { confirmAlert } from 'react-confirm-alert';
 import { socket } from '../tools/socketService';
@@ -7,7 +7,7 @@ import userContext from '../contexts/userContext';
 import { useNavigate } from 'react-router-dom';
 import EmailService from '../tools/emailService';
 
-const BorrowingRequestList = ({endDates, brList, item, onChangeResvList, onChangeSelectedUser, selectedUser}) => {
+const BorrowingRequestList = ({ endDates, brList, item, onChangeResvList, onChangeSelectedUser, selectedUser }) => {
   const authUser = React.useContext(userContext);
   const nav = useNavigate();
 
@@ -73,10 +73,11 @@ const BorrowingRequestList = ({endDates, brList, item, onChangeResvList, onChang
                   console.log(response);
                   if (response !== 'success') {
                     await EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`).then(() => {
-                      
-                      window.location.reload(false);
+
+
                     });
                   }
+                  window.location.reload(false);
                 });
                 onChangeResvList(brList.filter(e => e._id !== resv._id));
                 alert("Successfully approved!");
@@ -106,9 +107,10 @@ const BorrowingRequestList = ({endDates, brList, item, onChangeResvList, onChang
                     if (response !== 'success') {
                       await EmailService.sendEmailRedirection(authUser, borrower, `${authUser.user.user.name} has approved your borrowing request!`, `http://localhost:3000/item-status/${borrower._id}`).then(() => {
                         alert("Okay!")
-                        window.location.reload(false);
+
                       });
                     }
+                    window.location.reload(false);
                   });
                 })
 
@@ -131,9 +133,10 @@ const BorrowingRequestList = ({endDates, brList, item, onChangeResvList, onChang
               socket.on('emitBackL', async (response) => {
                 if (response !== 'success') {
                   await EmailService.sendEmailNoRedirection(authUser, borrower, `${authUser.user.user.name} has denied your borrowing request!`).then(() => {
-                    window.location.reload(false);
+
                   });
                 }
+                window.location.reload(false);
               });
             })
             onChangeResvList(brList.filter(e => e._id !== resv._id));
