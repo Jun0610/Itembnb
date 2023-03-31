@@ -166,4 +166,35 @@ router.put('/:userId/unfavorite-item', async (req, res) => {
 	}
 })
 
+router.put('/turn-on-notifications/:userId', async (req, res) => {
+	try {
+		await db.collection("users").updateOne({ _id: new mongo.ObjectId(req.params.userId) }, { $set: { isNotification: true } })
+		res.status(201).json({ success: true, data: "notifications-on" })
+	} catch (err) {
+		res.status(404).json({ success: false, data: err.messsage })
+	}
+})
+
+router.put('/turn-off-notifications/:userId', async (req, res) => {
+	try {
+		await db.collection("users").updateOne({ _id: new mongo.ObjectId(req.params.userId) }, { $set: { isNotification: false } })
+		res.status(201).json({ success: true, data: "notifications-off" })
+	} catch (err) {
+		res.status(404).json({ success: false, data: err.messsage })
+	}
+})
+
+router.get('/get-notification-status/:userId', async (req, res) => {
+	try {
+		const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) })
+		if (user.isNotification) {
+			res.status(201).json({ success: true, data: "notifications-on" })
+		} else {
+			res.status(201).json({ success: true, data: "notifications-off" })
+		}
+	} catch (err) {
+		res.status(404).json({ success: false, data: err.messsage })
+	}
+})
+
 module.exports = router;
