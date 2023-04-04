@@ -21,7 +21,7 @@ import EmailDisplayItemPost from "./pages/emailDisplayItemPost";
 import EmailStatusPage from "./pages/emailStatusPage";
 import AccountSettings from "./pages/accountSettings";
 import EmailSelectedItemPost from "./pages/emailSelectedItemPost";
-
+import ChatPage from "./pages/chatPage";
 
 function App() {
     return (
@@ -49,6 +49,7 @@ function App() {
                                 <Route exact path="/favorite-items" element={<FavoriteItems />} />
                                 <Route exact path='/item-status' element={<StatusPage />}></Route>
                                 <Route exact path='/pending-reservations' element={<PendingPage />}></Route>
+                                <Route exact path='/chat' element={<ChatPage />}></Route>
                             </Routes>
                         </NotificationProvider>
                     </Router>
