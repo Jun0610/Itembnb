@@ -160,7 +160,7 @@ const SelectedItemPost = () => {
                 <div className="itempost-outer">
                     <div className="item-post-row">
                         <h1>{selectedItem.name}</h1>
-                        {/* NEED TO FIX REVIEWS */}
+                        {/* Fix rating below */}
                         <h1>4/5</h1>
                     </div>
 
@@ -183,6 +183,7 @@ const SelectedItemPost = () => {
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
                             {ownerInfo()}
+                            {/*List of reviews here*/}
                         </div>
                         {reservationInfo()}
                     </div>

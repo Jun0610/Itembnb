@@ -21,6 +21,8 @@ import EmailDisplayItemPost from "./pages/emailDisplayItemPost";
 import EmailStatusPage from "./pages/emailStatusPage";
 import AccountSettings from "./pages/accountSettings";
 import EmailSelectedItemPost from "./pages/emailSelectedItemPost";
+import LendingHistory from "./pages/lendingHistory";
+import BorrowingHistory from "./pages/borrowingHistory";
 
 
 function App() {
@@ -36,6 +38,8 @@ function App() {
                                 <Route exact path="/" element={<Home />} />
                                 <Route exact path="/create-item-post" element={<CreateItemPost />} />
                                 <Route exact path='/create-item-request' element={<CreateRequest />} />
+                                <Route exact path='/lending-history' element={<LendingHistory />} />
+                                <Route exact path='/borrowing-history' element={<BorrowingHistory />} />
                                 <Route path="/display-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailDisplayItemPost />} />
                                 <Route path="/selected-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailSelectedItemPost />} />
                                 <Route path="/item-status/:id" element={<EmailStatusPage />} />
