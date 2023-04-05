@@ -211,6 +211,17 @@ const Navbar = () => {
                                 </div>
                             </NavLink>
 
+                            <NavLink to="/borrowing-history" className="drop-down-item">
+                                <div>
+                                    Borrowing History
+                                </div>
+                            </NavLink>
+
+                            <NavLink to="/lending-history" className="drop-down-item">
+                                <div>
+                                    Lending History
+                                </div>
+                            </NavLink>
 
                             <NavLink to="/logout" onClick={logout} className="drop-down-item">
                                 <div>
