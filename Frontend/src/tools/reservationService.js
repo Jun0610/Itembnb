@@ -78,6 +78,21 @@ class ReservationService {
         }
     }
 
+    static async getAllPastBorrowingHistory(userId) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-past-borrowing-reservations/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     static async itemReceived(reservId) {
         const request = {
             method: 'PUT',

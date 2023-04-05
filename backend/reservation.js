@@ -218,7 +218,56 @@ router.get('/get-pending-reservations-of-user/:userId', async (req, res) => {
     }
 })
 
+// get completed reservation history for a user
+router.get('/get-past-borrowing-reservations/:userId', async (req, res) => {
+    try {
+        const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) });
+        if (user === null) {
+            throw new Error("user not found")
+        }
+        const borrowedReservations = []
+        for (const reservId of user.reservHist) {
+            const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(reservId) });
+            if (reservation === null || reservation.status !== 'completed') continue;
 
+            const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
+            if (item === null) continue;
+
+            borrowedReservations.push({ reservation, item })
+        }
+        res.status(201).json({ success: true, data: borrowedReservations });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+router.get("/get-past-lending-reservations/:userId", async (req, res) => {
+    try {
+        const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) });
+        const lendedReservations = [];
+        for (const itemId of user.postedItems) {
+            const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(itemId) })
+            if (item && item.reservHist) {
+                for (const resvid of item.reservHist) {
+                    const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(resvid) })
+                    
+                    if (reservation && reservation.unavailList === null) continue; 
+                    if (reservation && (reservation.status === "completed")) {
+                        const borrower = await db.collection("users").findOne({ _id: new mongo.ObjectId(reservation.borrowerId) })
+                        lendedReservations.push({ item, reservation, borrower })
+                    }
+                }
+            }
+        }
+        if (lendedReservations.length === 0) {
+            res.status(201).json({ success: true, data: null });
+        } else {
+            res.status(201).json({ success: true, data: lendedReservations });
+        }
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
 
 //get reservation based on reservId
 router.get("/get-reservation-by-id/:reservId", async (req, res) => {
