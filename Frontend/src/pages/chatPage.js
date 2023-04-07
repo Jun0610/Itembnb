@@ -1,5 +1,6 @@
 import Talk from 'talkjs';
 import { useEffect, useState, useRef } from 'react';
+import '../styles/chatPage.css'
 
 const ChatPage = ()  =>  {
 
@@ -40,15 +41,15 @@ const ChatPage = ()  =>  {
       conversation.setParticipant(currentUser);
       conversation.setParticipant(otherUser);
 
-      const chatbox = session.createChatbox();
-      chatbox.select(conversation);
-      chatbox.mount(chatboxEl.current);
+      const inbox = session.createInbox();
+      inbox.select(conversation);
+      inbox.mount(chatboxEl.current);
 
       return () => session.destroy();
     }
   }, [talkLoaded]);
 
-  return <div ref={chatboxEl} />;
+  return <div className='chat-page' ref={chatboxEl} />;
   
 }
 
