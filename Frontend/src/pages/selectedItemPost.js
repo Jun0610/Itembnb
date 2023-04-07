@@ -9,6 +9,7 @@ import ItemCalendar from "../components/borrowerCalendar";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
+import { useNavigate } from 'react-router-dom';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -19,6 +20,10 @@ const SelectedItemPost = () => {
     const [selectedItem, setSelectedItem] = useState({});
     const [itemReviews, setItemReviews] = useState([]);
     const [itemRating, setItemRating] = useState(null);
+    const [editReviewIdx, setEditReviewIdx] = useState(null);
+    const [review, setReview] = useState(null);
+    const [rating, setRating] = useState(null);
+    const nav = useNavigate();
 
     //make sure user is logged in and get item details
     useEffect(() => {
@@ -77,10 +82,9 @@ const SelectedItemPost = () => {
             }
         }
         getItemReviews();
-    }, [itemReviews])
+    }, [])
 
     const reservationInfo = () => {
-        console.log("userReserv", userReserv);
         if (!authUser.user.isAuth) {
             return (
                 <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
@@ -89,7 +93,6 @@ const SelectedItemPost = () => {
             );
         }
         if (JSON.stringify(userReserv) !== "{}" && userReserv.data !== null) {
-            console.log("userReserv", userReserv);
             if (userReserv.data.status === "pending") {
                 return (
                     <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
@@ -167,6 +170,42 @@ const SelectedItemPost = () => {
         );
     }
 
+    // edit owner review
+    const editOwnerReview = (i) => {
+        const updateReview = async () => {
+            // update in database and frontend
+            itemReviews[i].review.reviewTxt = review
+            itemReviews[i].review.rating = rating
+            itemReviews[i].review.dateModified = new Date(Date.now())
+            await ReviewService.updateReview(itemReviews[i].review)
+            setEditReviewIdx(null)
+            setReview(null)
+            setRating(null)
+            alert("Successfully edited your review!")
+        }
+
+        if (editReviewIdx === i) updateReview()
+        else {
+            setEditReviewIdx(i)
+            setReview(itemReviews[i].review.reviewTxt)
+            setRating(itemReviews[i].review.rating)
+        }
+    }
+
+    const onDeleteReview = (idx) => {
+        const deleteReview = async (idx) => {
+            await ReviewService.deleteReview(itemReviews[idx].review._id, itemId)
+            setItemReviews(itemReviews.filter((_, i) => idx !== i))
+            alert("Successfully deleted your review!");
+        }
+        deleteReview(idx);
+    }
+
+    const onInputChange = (e) => {
+        if (e.target.id === "review") setReview(e.target.value)
+        else setRating(e.target.value)
+    }
+
     if (selectedItem !== null) {
 
         return (
@@ -174,7 +213,6 @@ const SelectedItemPost = () => {
                 <div className="itempost-outer">
                     <div className="item-post-row">
                         <h1>{selectedItem.name}</h1>
-                        {/* Fix rating below */}
                         <h1>{itemRating}/5</h1>
                     </div>
 
@@ -197,10 +235,51 @@ const SelectedItemPost = () => {
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
                             {ownerInfo()}
-                            <div>
+                            <div className="font-bold">
+                                Reviews
+                            </div>
+                            <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
                                 {itemReviews.map((e, i) => (
-                                    <div key={i}>
-                                        {e.review.rating}, {e.user.name}: {e.review.reviewTxt}
+                                    <div key={i} className="grid border-2 rounded-3xl border-yellow-400 m-2 p-2">
+                                        <div className="grid grid-cols-3 justify-start">
+                                            <div>
+                                                <img onClick={() => {nav(`/user/${e.user._id}`)}} src={e.user.profilePic} alt="" className="object-scale-down h-16" style={{ cursor: "pointer" }}/>
+                                            </div>
+                                            <div className="grid grid-rows-2 ml-2">    
+                                                <div>   
+                                                    {e.user.name}
+                                                </div>
+                                                <div>   
+                                                    {new Date(e.review.dateModified).toDateString()}
+                                                </div>
+                                            </div>
+                                            {
+                                                e.user._id === authUser.user.user._id && editReviewIdx === i ? 
+                                                <div>
+                                                    <input id="rating" className="mt-1 border border-slate-300 py-2 rounded-md" type="number" min="1" max="5" value={rating} onChange={onInputChange} />
+                                                </div>
+                                                : 
+                                                <div className="justify-self-end">   
+                                                        {e.review.rating}/5
+                                                </div>
+                                            }
+                                        </div>
+                                        {
+                                            e.user._id === authUser.user.user._id && editReviewIdx === i ? 
+                                            <div>
+                                                <input id="review" className="mt-1 block border border-slate-300 w-full py-2 rounded-md" type="text" value={review} onChange={onInputChange} />
+                                            </div>
+                                            : 
+                                            <div className="mt-3"> 
+                                                {e.review.reviewTxt}
+                                            </div>
+                                        }
+                                        {e.user._id === authUser.user.user._id ? 
+                                        <div className="flex justify-end gap-4">
+                                            <i className="fa-solid fa-trash mt-1 icon-3x" style={{ cursor: "pointer" }} onClick={() => {onDeleteReview(i)}}></i>
+                                            <i className={editReviewIdx && editReviewIdx === i ? "place-self-end fa-solid fa-save mt-1 icon-3x" : "place-self-end fa-solid fa-pencil mt-1 icon-3x"} style={{ cursor: "pointer" }} onClick={() => editOwnerReview(i)}></i>
+                                        </div>
+                                         : <div></div>}
                                     </div>))}
                             </div>
                         </div>

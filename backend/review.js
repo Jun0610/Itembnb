@@ -30,11 +30,43 @@ router.get("/get-review/:id", async(req, res) => {
                 }
             }
         }
-        res.status(200).json({ success: true, data: reviewsWithUsers, rating: 1.0 * rating/reviewsWithUsers.length })
+        res.status(200).json({ success: true, data: reviewsWithUsers, rating: 1.0 * rating / reviewsWithUsers.length })
     } catch (err) {
         console.log(err)
         res.status(404).json({ success: false, data: err.message })
     }
+})
+
+router.put("/update-review/:id", async(req, res) => {
+    try {
+        //find the review
+        const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(req.params.id) })
+        if (!review) res.status(404).json({ success: false, data: "no review found" })
+        console.log("body: ", req.body);
+        const result = await db.collection("reviews").updateOne({ _id: new mongo.ObjectId(req.params.id) }, { $set: { "rating": parseInt(req.body.rating), "dateModified": new Date(Date.now()), "reviewTxt": req.body.reviewTxt } })
+        res.status(201).json({ success: true, data: result });
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+router.delete('/delete-review/review-id/:reviewId/item-id/:itemId', async(req, res) => {
+    try {
+        const reviewId = req.params.reviewId;
+        const itemId = req.params.itemId;
+
+        // remove the review from reviews
+        await db.collection('reviews').deleteOne({ _id: new mongo.ObjectId(reviewId) })
+
+        // remove the review from the review array
+        await db.collection('items').updateOne({ _id: new mongo.ObjectId(itemId) }, { $pull: { review: reviewId } })
+
+        res.status(200).json({ success: true, data: "item successfully deleted." })
+    } catch (err) {
+        res.status(200).json({ success: false, data: err });
+    }
+
 })
 
 module.exports = router;
