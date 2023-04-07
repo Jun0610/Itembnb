@@ -31,6 +31,21 @@ class ReviewService {
             console.log(err);
         }
     }
+
+    static async deleteReview(reviewId, itemId) {
+        return new Promise((resolve, reject) => {
+            fetch(`${url}/delete-review/review-id/${reviewId}/item-id/${itemId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            }).then(res => res.json()).then(
+                (result) => {
+                    resolve(result);
+                }
+            ).catch((err) => {
+                reject(err);
+            })
+        })
+    }
 }
 
 export default ReviewService;

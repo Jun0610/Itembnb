@@ -181,6 +181,7 @@ const SelectedItemPost = () => {
             setEditReviewIdx(null)
             setReview(null)
             setRating(null)
+            alert("Successfully edited your review!")
         }
 
         if (editReviewIdx === i) updateReview()
@@ -189,6 +190,15 @@ const SelectedItemPost = () => {
             setReview(itemReviews[i].review.reviewTxt)
             setRating(itemReviews[i].review.rating)
         }
+    }
+
+    const onDeleteReview = (idx) => {
+        const deleteReview = async (idx) => {
+            await ReviewService.deleteReview(itemReviews[idx].review._id, itemId)
+            setItemReviews(itemReviews.filter((_, i) => idx !== i))
+            alert("Successfully deleted your review!");
+        }
+        deleteReview(idx);
     }
 
     const onInputChange = (e) => {
@@ -264,7 +274,12 @@ const SelectedItemPost = () => {
                                                 {e.review.reviewTxt}
                                             </div>
                                         }
-                                        {e.user._id === authUser.user.user._id ? <i className={editReviewIdx && editReviewIdx === i ? "place-self-end fa-solid fa-save mt-1 icon-3x" : "place-self-end fa-solid fa-pencil mt-1 icon-3x"} style={{ cursor: "pointer" }} onClick={() => editOwnerReview(i)}></i> : <div></div>}
+                                        {e.user._id === authUser.user.user._id ? 
+                                        <div className="flex justify-end gap-4">
+                                            <i className="fa-solid fa-trash mt-1 icon-3x" style={{ cursor: "pointer" }} onClick={() => {onDeleteReview(i)}}></i>
+                                            <i className={editReviewIdx && editReviewIdx === i ? "place-self-end fa-solid fa-save mt-1 icon-3x" : "place-self-end fa-solid fa-pencil mt-1 icon-3x"} style={{ cursor: "pointer" }} onClick={() => editOwnerReview(i)}></i>
+                                        </div>
+                                         : <div></div>}
                                     </div>))}
                             </div>
                         </div>
