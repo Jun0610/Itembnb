@@ -128,11 +128,9 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
 
                         <label className='calendar-column-label' >From: {date ? date[0].toLocaleDateString() : "None"}</label>
                         <label className='calendar-column-label' >To: {date ? date[1].toLocaleDateString() : "None"}</label>
-                        {date ? console.log(date[1]) : console.log("test")}
                     </div>
                     <div>
                         <button className='calendar-column-btn' onClick={reset}>Clear</button>
-                        {console.log(authUser)}
                         <button className='calendar-column-btn' onClick={makeReq}>Make Request</button>
                     </div>
                 </div>

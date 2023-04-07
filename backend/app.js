@@ -1,5 +1,5 @@
 const express = require('express')
-const { db, mongo } = require('./mongo')   //gets mongodb db instance
+const { db, mongo } = require('./mongo') //gets mongodb db instance
 const cors = require('cors')
 const socketIo = require('socket.io')
 const http = require('http')
@@ -21,6 +21,9 @@ app.use("/api/item", item);
 const request = require("./request").router;
 app.use("/api/request", request)
 
+//review-related processing
+const review = require('./review')
+app.use("/api/review", review)
 
 //user-related processing
 const user = require("./user")

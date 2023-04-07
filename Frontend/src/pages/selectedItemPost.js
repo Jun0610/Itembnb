@@ -8,6 +8,7 @@ import { Loading, LoadingSmall } from "../components/Loading";
 import ItemCalendar from "../components/borrowerCalendar";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
+import ReviewService from "../tools/reviewService";
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -16,6 +17,8 @@ const SelectedItemPost = () => {
     const [userReserv, setUserReserv] = useState({});
     const [reservSuccess, setReservSuccess] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
+    const [itemReviews, setItemReviews] = useState([]);
+    const [itemRating, setItemRating] = useState(null);
 
     //make sure user is logged in and get item details
     useEffect(() => {
@@ -63,7 +66,18 @@ const SelectedItemPost = () => {
 
     }, [reservSuccess])
 
-    console.log(authUser);
+    //checking item review
+    useEffect(() => {
+        const getItemReviews = async () => {
+            //get reservation data for user
+            if (sessionStorage.getItem('curUser') !== null) {
+                const itemReviews = await ReviewService.getReviewByItem(itemId)
+                setItemReviews(itemReviews.data)
+                setItemRating(itemReviews.rating)
+            }
+        }
+        getItemReviews();
+    }, [itemReviews])
 
     const reservationInfo = () => {
         console.log("userReserv", userReserv);
@@ -161,7 +175,7 @@ const SelectedItemPost = () => {
                     <div className="item-post-row">
                         <h1>{selectedItem.name}</h1>
                         {/* Fix rating below */}
-                        <h1>4/5</h1>
+                        <h1>{itemRating}/5</h1>
                     </div>
 
                     <div className="cardcontainer">
@@ -183,7 +197,12 @@ const SelectedItemPost = () => {
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
                             {ownerInfo()}
-                            {/*List of reviews here*/}
+                            <div>
+                                {itemReviews.map((e, i) => (
+                                    <div key={i}>
+                                        {e.review.rating}, {e.user.name}: {e.review.reviewTxt}
+                                    </div>))}
+                            </div>
                         </div>
                         {reservationInfo()}
                     </div>
