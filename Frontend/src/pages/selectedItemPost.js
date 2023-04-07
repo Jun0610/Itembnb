@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 import userContext from "../contexts/userContext";
 import ItemService from "../tools/itemsService";
 import UserService from "../tools/userService.js";
@@ -9,7 +9,6 @@ import ItemCalendar from "../components/borrowerCalendar";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
-import { useNavigate } from 'react-router-dom';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -177,6 +176,13 @@ const SelectedItemPost = () => {
             itemReviews[i].review.reviewTxt = review
             itemReviews[i].review.rating = rating
             itemReviews[i].review.dateModified = new Date(Date.now())
+
+            // update the average rating on item
+            var totalRating = 0;
+            for (const ir of itemReviews) totalRating += parseInt(ir.review.rating)
+            
+            setItemRating(1.0*totalRating/itemReviews.length)
+
             await ReviewService.updateReview(itemReviews[i].review)
             setEditReviewIdx(null)
             setReview(null)
@@ -196,6 +202,14 @@ const SelectedItemPost = () => {
         const deleteReview = async (idx) => {
             await ReviewService.deleteReview(itemReviews[idx].review._id, itemId)
             setItemReviews(itemReviews.filter((_, i) => idx !== i))
+
+            // update the average rating of the item
+            var totalRating = 0;
+            const newItemReviews = itemReviews.filter((_, i) => idx !== i)
+            for (const ir of newItemReviews) totalRating += parseInt(ir.review.rating)
+            
+            setItemRating(1.0*totalRating/newItemReviews.length)
+
             alert("Successfully deleted your review!");
         }
         deleteReview(idx);
