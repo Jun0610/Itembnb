@@ -20,10 +20,10 @@ const SelectedItemPost = () => {
     const [selectedItem, setSelectedItem] = useState({});
     const [itemRating, setItemRating] = useState(null);
     const [itemReviews, setItemReviews] = useState([]);
+    const [OGItemReviews, setOGItemReviews] = useState([]);
     const [editReviewIdx, setEditReviewIdx] = useState(null);
     const [review, setReview] = useState(null);
     const [rating, setRating] = useState(null);
-
 
     //make sure user is logged in and get item details
     useEffect(() => {
@@ -80,6 +80,7 @@ const SelectedItemPost = () => {
             if (sessionStorage.getItem('curUser') !== null) {
                 const itemReviews = await ReviewService.getReviewByItem(itemId)
                 setItemReviews(itemReviews.data)
+                setOGItemReviews(itemReviews.data)
                 setItemRating(itemReviews.rating)
             }
         }
@@ -135,6 +136,14 @@ const SelectedItemPost = () => {
         if (e.target.id === "review") setReview(e.target.value)
         else setRating(e.target.value)
     }  
+
+    const filterStar = (i) => {
+        setItemReviews(OGItemReviews.filter((e) => e.review.rating === i))
+    }
+
+    const resetFilter = (i) => {
+        setItemReviews(OGItemReviews)
+    }
 
     //========== review section end ============
 
@@ -253,7 +262,7 @@ const SelectedItemPost = () => {
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
                             {ownerInfo()}
-                            <ItemRatings itemReviews={itemReviews} onDeleteReview={onDeleteReview} onInputChange={onInputChange} editOwnerReview={editOwnerReview} authUser={authUser} editReviewIdx={editReviewIdx} rating={rating} review={review}/>
+                            <ItemRatings itemReviews={itemReviews} onDeleteReview={onDeleteReview} onInputChange={onInputChange} editOwnerReview={editOwnerReview} authUser={authUser} editReviewIdx={editReviewIdx} rating={rating} review={review} filterStar={filterStar} resetFilter={resetFilter}/>
                         </div>
                         {reservationInfo()}
                     </div>

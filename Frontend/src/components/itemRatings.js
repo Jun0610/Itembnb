@@ -1,13 +1,23 @@
 import React from 'react'
 import {useNavigate} from "react-router-dom";
 
-const ItemRatings = ({itemReviews, onDeleteReview, onInputChange, editOwnerReview, authUser, editReviewIdx, rating, review}) => {
+const ItemRatings = ({itemReviews, onDeleteReview, onInputChange, editOwnerReview, authUser, editReviewIdx, rating, review, filterStar, resetFilter}) => {
     const nav = useNavigate();
+
+    const stars = [1, 2, 3, 4, 5]
+
+    const searchStar = (i) => {
+        filterStar(i)
+    }
 
   return (
     <div>
         <div className="font-bold">
             Reviews
+        </div>
+        <div className='flex gap-4'>
+            {stars.map((e, i) => (<div onClick={() => searchStar(e)} style={{cursor: "pointer"}}>{e}-star</div>))}
+            <div onClick={resetFilter} style={{cursor: "pointer"}}>Reset</div>
         </div>
         <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
             {itemReviews.map((e, i) => (
