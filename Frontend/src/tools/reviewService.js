@@ -10,7 +10,6 @@ class ReviewService {
             const res = await fetch(`${url}/get-review/${id}`, request);
             const response = await res.json();
             response.status = res.status
-            console.log(response);
             return response
         } catch (err) {
             console.log(err);

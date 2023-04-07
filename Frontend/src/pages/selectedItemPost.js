@@ -9,6 +9,7 @@ import ItemCalendar from "../components/borrowerCalendar";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
+import { useNavigate } from 'react-router-dom';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -19,6 +20,7 @@ const SelectedItemPost = () => {
     const [selectedItem, setSelectedItem] = useState({});
     const [itemReviews, setItemReviews] = useState([]);
     const [itemRating, setItemRating] = useState(null);
+    const nav = useNavigate();
 
     //make sure user is logged in and get item details
     useEffect(() => {
@@ -77,7 +79,7 @@ const SelectedItemPost = () => {
             }
         }
         getItemReviews();
-    }, [itemReviews])
+    }, [])
 
     const reservationInfo = () => {
         console.log("userReserv", userReserv);
@@ -197,10 +199,32 @@ const SelectedItemPost = () => {
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
                             {ownerInfo()}
-                            <div>
+                            <div className="font-bold">
+                                Reviews
+                            </div>
+                            <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
                                 {itemReviews.map((e, i) => (
-                                    <div key={i}>
-                                        {e.review.rating}, {e.user.name}: {e.review.reviewTxt}
+                                    <div key={i} className="grid border-2 rounded-3xl border-yellow-400 m-2 p-2">
+                                        <div className="grid grid-cols-3 justify-start">
+                                            <div>
+                                                <img onClick={() => {nav(`/user/${e.user._id}`)}} src={e.user.profilePic} alt="" className="object-scale-down h-16" style={{ cursor: "pointer" }}/>
+                                            </div>
+                                            <div className="grid grid-rows-2 ml-2">    
+                                                <div>   
+                                                    {e.user.name}
+                                                </div>
+                                                <div>   
+                                                    {new Date(e.review.dateModified).toDateString()}
+                                                </div>
+                                            </div>
+                                            <div className="justify-self-end">   
+                                                    {e.review.rating}/5
+                                            </div>
+                                        </div>
+                                        <div className="mt-3"> 
+                                            {e.review.reviewTxt}
+                                        </div>
+                                        {e.user._id === authUser.user.user._id ? <div className="place-self-end">Edit</div> : <div></div>}
                                     </div>))}
                             </div>
                         </div>
