@@ -20,6 +20,8 @@ const SelectedItemPost = () => {
     const [selectedItem, setSelectedItem] = useState({});
     const [itemReviews, setItemReviews] = useState([]);
     const [itemRating, setItemRating] = useState(null);
+    const [editReviewIdx, setEditReviewIdx] = useState(null);
+    const [review, setReview] = useState(null);
     const nav = useNavigate();
 
     //make sure user is logged in and get item details
@@ -82,7 +84,6 @@ const SelectedItemPost = () => {
     }, [])
 
     const reservationInfo = () => {
-        console.log("userReserv", userReserv);
         if (!authUser.user.isAuth) {
             return (
                 <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
@@ -91,7 +92,6 @@ const SelectedItemPost = () => {
             );
         }
         if (JSON.stringify(userReserv) !== "{}" && userReserv.data !== null) {
-            console.log("userReserv", userReserv);
             if (userReserv.data.status === "pending") {
                 return (
                     <div className="col-6" style={{ borderLeft: "2px solid #ffec18" }}>
@@ -169,6 +169,27 @@ const SelectedItemPost = () => {
         );
     }
 
+    // edit owner review
+    const editOwnerReview = (i) => {
+        if (editReviewIdx === i) {
+            // save the review first
+            itemReviews[i].review.reviewTxt = review;
+
+            // call reviewService
+
+            setEditReviewIdx(null)
+            setReview(null)
+        }
+        else {
+            setEditReviewIdx(i)
+            setReview(itemReviews[i].review.reviewTxt)
+        }
+    }
+
+    const onReviewChange = (e) => {
+        setReview(e.target.value)
+    }
+
     if (selectedItem !== null) {
 
         return (
@@ -221,10 +242,17 @@ const SelectedItemPost = () => {
                                                     {e.review.rating}/5
                                             </div>
                                         </div>
-                                        <div className="mt-3"> 
-                                            {e.review.reviewTxt}
-                                        </div>
-                                        {e.user._id === authUser.user.user._id ? <div className="place-self-end">Edit</div> : <div></div>}
+                                        {
+                                            e.user._id === authUser.user.user._id && editReviewIdx === i ? 
+                                            <div>
+                                                <input id="review" className="mt-1 block border border-slate-300 w-full py-2 rounded-md" type="text" value={review} onChange={onReviewChange} />
+                                            </div>
+                                            : 
+                                            <div className="mt-3"> 
+                                                {e.review.reviewTxt}
+                                            </div>
+                                        }
+                                        {e.user._id === authUser.user.user._id ? <i className={editReviewIdx && editReviewIdx === i ? "place-self-end fa-solid fa-save mt-1 icon-3x" : "place-self-end fa-solid fa-pencil mt-1 icon-3x"} style={{ cursor: "pointer" }} onClick={() => editOwnerReview(i)}></i> : <div></div>}
                                     </div>))}
                             </div>
                         </div>
