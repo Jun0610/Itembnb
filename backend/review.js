@@ -37,4 +37,18 @@ router.get("/get-review/:id", async(req, res) => {
     }
 })
 
+router.put("/update-review/:id", async(req, res) => {
+    try {
+        //find the review
+        const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(req.params.id) })
+        if (!review) res.status(404).json({success: false, data: "no review found"})
+        console.log("body: ", req.body);
+        const result = await db.collection("reviews").updateOne({_id: new mongo.ObjectId(req.params.id)}, {$set: {"rating": parseInt(req.body.rating), "dateModified": new Date(Date.now()), "reviewTxt": req.body.reviewTxt}})
+        res.status(201).json({ success: true, data: result });
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
 module.exports = router;

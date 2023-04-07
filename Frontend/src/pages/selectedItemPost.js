@@ -22,6 +22,7 @@ const SelectedItemPost = () => {
     const [itemRating, setItemRating] = useState(null);
     const [editReviewIdx, setEditReviewIdx] = useState(null);
     const [review, setReview] = useState(null);
+    const [rating, setRating] = useState(null);
     const nav = useNavigate();
 
     //make sure user is logged in and get item details
@@ -171,23 +172,28 @@ const SelectedItemPost = () => {
 
     // edit owner review
     const editOwnerReview = (i) => {
-        if (editReviewIdx === i) {
-            // save the review first
-            itemReviews[i].review.reviewTxt = review;
-
-            // call reviewService
-
+        const updateReview = async () => {
+            // update in database and frontend
+            itemReviews[i].review.reviewTxt = review
+            itemReviews[i].review.rating = rating
+            itemReviews[i].review.dateModified = new Date(Date.now())
+            await ReviewService.updateReview(itemReviews[i].review)
             setEditReviewIdx(null)
             setReview(null)
+            setRating(null)
         }
+
+        if (editReviewIdx === i) updateReview()
         else {
             setEditReviewIdx(i)
             setReview(itemReviews[i].review.reviewTxt)
+            setRating(itemReviews[i].review.rating)
         }
     }
 
-    const onReviewChange = (e) => {
-        setReview(e.target.value)
+    const onInputChange = (e) => {
+        if (e.target.id === "review") setReview(e.target.value)
+        else setRating(e.target.value)
     }
 
     if (selectedItem !== null) {
@@ -197,7 +203,6 @@ const SelectedItemPost = () => {
                 <div className="itempost-outer">
                     <div className="item-post-row">
                         <h1>{selectedItem.name}</h1>
-                        {/* Fix rating below */}
                         <h1>{itemRating}/5</h1>
                     </div>
 
@@ -238,14 +243,21 @@ const SelectedItemPost = () => {
                                                     {new Date(e.review.dateModified).toDateString()}
                                                 </div>
                                             </div>
-                                            <div className="justify-self-end">   
-                                                    {e.review.rating}/5
-                                            </div>
+                                            {
+                                                e.user._id === authUser.user.user._id && editReviewIdx === i ? 
+                                                <div>
+                                                    <input id="rating" className="mt-1 border border-slate-300 py-2 rounded-md" type="number" min="1" max="5" value={rating} onChange={onInputChange} />
+                                                </div>
+                                                : 
+                                                <div className="justify-self-end">   
+                                                        {e.review.rating}/5
+                                                </div>
+                                            }
                                         </div>
                                         {
                                             e.user._id === authUser.user.user._id && editReviewIdx === i ? 
                                             <div>
-                                                <input id="review" className="mt-1 block border border-slate-300 w-full py-2 rounded-md" type="text" value={review} onChange={onReviewChange} />
+                                                <input id="review" className="mt-1 block border border-slate-300 w-full py-2 rounded-md" type="text" value={review} onChange={onInputChange} />
                                             </div>
                                             : 
                                             <div className="mt-3"> 
