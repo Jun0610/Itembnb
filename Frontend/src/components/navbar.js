@@ -41,7 +41,6 @@ const Navbar = () => {
             }
         }
         fetchUserData();
-        console.log("notif list: ", listOfNotifications);
     }, [sessionStorage.getItem('curUser')])
 
     const logout = (e) => {
