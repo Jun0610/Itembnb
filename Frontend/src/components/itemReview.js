@@ -22,6 +22,7 @@ const ItemReview = ({ reviewObject, authUser }) => {
             localReview.dateModified = new Date(Date.now());
             await ReviewService.updateReview(localReview);
             setIsEditing(false);
+            reviewObject.review = localReview;
             setLocalReview(null);
             alert("Successfully edited your review!");
         }
