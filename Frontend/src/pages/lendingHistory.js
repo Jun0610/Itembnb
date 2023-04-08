@@ -24,8 +24,14 @@ const LendingHistory = () => {
   if (!loading) {
     return (
         <div>  
-            <div>LendingHistory</div>
-            <div onClick={() => setMinimize(!minimize)}>Minimize Mode</div>
+            <div className='m-3 flex gap-4'>
+                <div className='text-xl font-bold text-yellow-400'>Borrowing History</div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" value="" class="sr-only peer" onClick={() => setMinimize(!minimize)}/>
+                    <div class="w-11 h-6 bg-blue-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                    <span class="ml-3 text-sm font-medium">Minimize Mode</span>
+                </label>
+            </div>
             {lendingHist === null || lendingHist === undefined || lendingHist.length === 0 ? <div>You don't have any lending history yet!</div>
             : <div>
             {lendingHist.map((e, i) => (
