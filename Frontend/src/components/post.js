@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import UserService from '../tools/userService.js';
 
-const Post = ({ post, isRequest, BottomComponent = () => { } }) => {
+const Post = ({ post, isRequest }) => {
     const title = post.name;
     const description = post.description;
     const price = post.price;
@@ -90,12 +90,12 @@ const Post = ({ post, isRequest, BottomComponent = () => { } }) => {
             <div className='row'>
                 <div className='card-body custom-card-body-left'>
 
-                    <NavLink to={readMoreLink()} className="userProfileLink">
+                    <NavLink to={readMoreLink()} className="lessStyledLink">
                         <h4 className='card-title'> {title} </h4>
                     </NavLink>
                     <p className='card-text item-desc'> {description} </p>
 
-                    <NavLink to={readMoreLink()} className="userProfileLink">
+                    <NavLink to={readMoreLink()} className="lessStyledLink">
                         <button className='btn custom-card-button' >Read more</button>
                     </NavLink>
                 </div>
