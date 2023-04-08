@@ -1,55 +1,29 @@
 import Talk from 'talkjs';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useContext } from 'react';
+import userContext from '../contexts/userContext';
+import SocketService, { socket } from '../tools/socketService';
+import ChatComponent from '../components/chatComp';
 import '../styles/chatPage.css'
 
 const ChatPage = ()  =>  {
 
-  const chatboxEl = useRef();
-
-  // wait for TalkJS to load
-  const [talkLoaded, markTalkLoaded] = useState(false);
+  const authUser = useContext(userContext);
 
   useEffect(() => {
-    Talk.ready.then(() => markTalkLoaded(true));
+    if (sessionStorage.getItem('curUser') !== null) {
+      authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
 
-    if (talkLoaded) {
-      const currentUser = new Talk.User({
-        id: '1',
-        name: 'Henry Mill',
-        email: 'henrymill@example.com',
-        photoUrl: 'henry.jpeg',
-        welcomeMessage: 'Hello!',
-        role: 'default',
-      });
-
-      const otherUser = new Talk.User({
-        id: '2',
-        name: 'Jessica Wells',
-        email: 'jessicawells@example.com',
-        photoUrl: 'jessica.jpeg',
-        welcomeMessage: 'Hello!',
-        role: 'default',
-      });
-
-      const session = new Talk.Session({
-        appId: 'tnfFYmAK',
-        me: currentUser,
-      });
-
-      const conversationId = Talk.oneOnOneId(currentUser, otherUser);
-      const conversation = session.getOrCreateConversation(conversationId);
-      conversation.setParticipant(currentUser);
-      conversation.setParticipant(otherUser);
-
-      const inbox = session.createInbox();
-      inbox.select(conversation);
-      inbox.mount(chatboxEl.current);
-
-      return () => session.destroy();
+      SocketService.connect();
+      socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
     }
-  }, [talkLoaded]);
+  }, []);
 
-  return <div className='chat-page' ref={chatboxEl} />;
+  return (
+    <div className='chat-page' >
+      <h1>Chat Page</h1>
+      <ChatComponent user={authUser.user} />
+    </div>
+  );
   
 }
 

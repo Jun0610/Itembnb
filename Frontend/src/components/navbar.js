@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import UserService from '../tools/userService';
 import App from '../App';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { faSquarePlus } from '@fortawesome/free-regular-svg-icons';
 import userContext from '../contexts/userContext';
 import SocketService from '../tools/socketService';
@@ -139,6 +139,16 @@ const Navbar = () => {
                 }
 
             </ul>
+            {authUser.isAuth &&
+                <div className='chat-redir'>
+                    <NavLink to="/chat" className="custom-nav-link">
+                        <FontAwesomeIcon icon={faMessage} />
+                    </NavLink>
+                    <span className='more-info-chat'>Go to Chat Page!</span>
+                </div>
+
+            }
+
             {authUser.isAuth &&
                 <div className='add-item'>
                     <NavLink to="/create-item-post" className="custom-nav-link">

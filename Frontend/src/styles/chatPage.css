@@ -2,5 +2,10 @@
 .chat-page {
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
   height: 80vh;
+}
+
+.chat-comp {
+  height: 100%;
 }
