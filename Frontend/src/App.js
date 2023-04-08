@@ -5,6 +5,7 @@ import Home from "./pages/homepage";
 import UserProfile from './pages/userpage';
 import CreateItemPost from "./pages/createItemPost";
 import CreateRequest from "./pages/createRequest";
+import CreateItemReview from "./pages/createItemReview";
 import DisplayItemPost from "./pages/displayItemPost";
 import DisplayRequestPost from "./pages/displayRequest";
 import Unavailable404 from "./pages/Unavailable404";
@@ -38,6 +39,7 @@ function App() {
                                 <Route exact path="/" element={<Home />} />
                                 <Route exact path="/create-item-post" element={<CreateItemPost />} />
                                 <Route exact path='/create-item-request' element={<CreateRequest />} />
+                                <Route exact path='/create-item-review/:itemId' element={<CreateItemReview />} />
                                 <Route exact path='/lending-history' element={<LendingHistory />} />
                                 <Route exact path='/borrowing-history' element={<BorrowingHistory />} />
                                 <Route path="/display-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailDisplayItemPost />} />
