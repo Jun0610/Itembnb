@@ -14,7 +14,7 @@ const { db, mongo } = require('./mongo')
 const express = require("express")
 const router = express.Router()
 
-router.get("/get-review/:id", async(req, res) => {
+router.get("/get-review/:id", async (req, res) => {
     try {
         //get reviews for an item
         const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(req.params.id) })
@@ -37,7 +37,7 @@ router.get("/get-review/:id", async(req, res) => {
     }
 })
 
-router.put("/update-review/:id", async(req, res) => {
+router.put("/update-review/:id", async (req, res) => {
     try {
         //find the review
         const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(req.params.id) })
@@ -51,7 +51,7 @@ router.put("/update-review/:id", async(req, res) => {
     }
 })
 
-router.delete('/delete-review/review-id/:reviewId/item-id/:itemId', async(req, res) => {
+router.delete('/delete-review/review-id/:reviewId/item-id/:itemId', async (req, res) => {
     try {
         const reviewId = req.params.reviewId;
         const itemId = req.params.itemId;
@@ -67,6 +67,31 @@ router.delete('/delete-review/review-id/:reviewId/item-id/:itemId', async(req, r
         res.status(200).json({ success: false, data: err });
     }
 
+})
+
+//create new item review
+router.post('/add-review/user-id/:userId', async (req, res) => {
+
+    try {
+        //save date as date object
+        req.body.dateModified = new Date(req.body.dateModified);
+        const results = await db.collection("reviews").insertOne(req.body);
+
+        const reviewId = results.insertedId.toString();
+        const itemId = req.body.itemId;
+
+        console.log(results);
+        console.log(reviewId);
+        console.log(itemId);
+
+        // await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.params.userId) }, { $push: { itemReviews: reviewId } })
+        const results2 = await db.collection('items').updateOne({ _id: new mongo.ObjectId(itemId) }, { $push: { review: reviewId } });
+        console.log(results2);
+        res.status(201).json({ success: true, data: "successfully added review!" });
+
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
 })
 
 module.exports = router;
