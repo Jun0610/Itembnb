@@ -34,7 +34,7 @@ const LendingHistory = () => {
                 <div>
                     {e.item.name}
                 </div> 
-                <div>
+                <div style={{cursor: "pointer"}} onClick={() => nav(`/user/${e.borrower._id}`)}>
                     {e.borrower.name}
                 </div> 
                 <div>
