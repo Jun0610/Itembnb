@@ -100,6 +100,21 @@ class ItemService {
             // return "Error!"; // should NOT HAPPEN - happens if return new Promise is not used in ItemService.getItem ?
         }));
     }
+
+    static async serchItem(searchString) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/search/${searchString}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response.data
+        } catch (err) {
+            console.log(err);
+        }
+    }
 }
 
 export default ItemService;
