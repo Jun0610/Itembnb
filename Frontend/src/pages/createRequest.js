@@ -90,7 +90,7 @@ const CreateRequest = () => {
     }
 
     if (authUser.user.user == null) {
-        return navigate("/");
+        return navigate("/login-required");
     }
     return (
         <div>

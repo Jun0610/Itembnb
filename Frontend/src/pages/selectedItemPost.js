@@ -246,9 +246,12 @@ const SelectedItemPost = () => {
                                 <div onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
                             </div>
                             <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
-                                {itemReviews.map((e, i) => (
-                                    <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
-                                ))}
+                                {itemReviews.length > 0 ?
+                                    itemReviews.map((e, i) => (
+                                        <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
+                                    )) :
+                                    <p>This item has no reviews!</p>
+                                }
                             </div>
                         </div>
                         {reservationInfo()}

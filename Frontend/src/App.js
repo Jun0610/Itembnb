@@ -9,6 +9,7 @@ import CreateItemReview from "./pages/createItemReview";
 import DisplayItemPost from "./pages/displayItemPost";
 import DisplayRequestPost from "./pages/displayRequest";
 import Unavailable404 from "./pages/Unavailable404";
+import LoginWall from "./pages/LoginWall";
 import SignUp from "./pages/signup";
 import Login from "./pages/login";
 import SelectedItemPost from "./pages/selectedItemPost";
@@ -36,6 +37,7 @@ function App() {
                         <NotificationProvider>
                             <Routes>
                                 <Route path="*" element={<Unavailable404 />} />_
+                                <Route path="/login-required" element={<LoginWall />} />_
                                 <Route exact path="/" element={<Home />} />
                                 <Route exact path="/create-item-post" element={<CreateItemPost />} />
                                 <Route exact path='/create-item-request' element={<CreateRequest />} />

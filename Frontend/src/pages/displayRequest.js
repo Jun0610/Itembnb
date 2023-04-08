@@ -321,7 +321,7 @@ const DisplayRequestPost = () => {
 
         return (
             <div className="item-small" key={itemData._id}>
-                <NavLink to={"/selected-item-post/" + itemData._id} className="userProfileLink">{itemData.name}</NavLink>
+                <NavLink to={"/selected-item-post/" + itemData._id} className="lessStyledLink">{itemData.name}</NavLink>
 
                 <p className="item-descr">{itemDescription}</p>
 
@@ -408,7 +408,7 @@ const DisplayRequestPost = () => {
 
                     {(!Object.keys(requestUser).length) ? // if request poster hasn't loaded
                         "Loading..." :
-                        <NavLink to={"/user/" + requestUser._id} className="userProfileLink">{requestUser.name}</NavLink>
+                        <NavLink to={"/user/" + requestUser._id} className="lessStyledLink">{requestUser.name}</NavLink>
                     }
 
                     <span className="font-bold yellowText"> on </span>
