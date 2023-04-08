@@ -6,8 +6,10 @@ import UserService from '../tools/userService';
 import App from '../App';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faSquarePlus } from '@fortawesome/free-regular-svg-icons';
 import userContext from '../contexts/userContext';
 import SocketService from '../tools/socketService';
+import SearchBar from './SearchBar';
 
 const Navbar = () => {
     const logo = require("../resources/logo.png");
@@ -102,10 +104,21 @@ const Navbar = () => {
 
     return (
         <nav className="customNavBar">
-            <a href="/" className="navbar-brand">
-                <img src={logo} className="brand-logo" alt='...'>
-                </img>
-            </a>
+            <div>
+                <a href="/" className="navbar-brand">
+                    <img src={logo} className="brand-logo" alt='...'>
+                    </img>
+                </a>
+            </div>
+
+
+            {authUser.isAuth &&
+                <div className='search-container'>
+                    <SearchBar />
+                </div>
+            }
+
+
 
             <ul className="nav-bar-info">
                 {!authUser.isAuth && <li>
@@ -124,65 +137,61 @@ const Navbar = () => {
                     </li>
 
                 }
-                {authUser.isAuth &&
-                    <li>
-                        <div className='bell'>
-                            <FontAwesomeIcon icon={faBell} className={notifications} onClick={handleNotifications} />
-                        </div>
-
-                        <div id='notification' className='notification-bar'>
-                            {notifications === 'notifications-on' &&
-                                <div className='notification-bar-on'>
-                                    <button className='enable-notification-btn' onClick={enableNotification}>{enable} deadline notifications</button>
-                                    <hr style={{ width: "80%", margin: "1rem auto" }} />
-
-                                    {(listOfNotifications === undefined || listOfNotifications.length === 0) &&
-                                        <div style={{ color: "#a19f9f", paddingBottom: "1rem" }}>
-                                            You have no deadline notifications yet!
-                                        </div>
-                                    }
-
-                                    {(listOfNotifications !== undefined && listOfNotifications.length !== 0) ?
-                                        listOfNotifications.map((notification) =>
-                                            (<div className='notification-item'>{notification}</div>)
-                                        ) : (<div></div>)
-                                    }
-
-                                </div>}
-                            {notifications === 'notifications-off' &&
-                                <div className='notification-bar-off'>
-                                    <button className='enable-notification-btn' onClick={enableNotification}>{enable} deadline notifications</button>
-                                    <hr style={{ width: "80%", margin: "1rem auto" }} />
-                                    <div style={{ color: "#a19f9f", paddingBottom: "1rem" }}>
-                                        Please enable notifications to see your notifications
-                                    </div>
-
-                                </div>}
-
-                        </div>
-
-
-                    </li>
-
-
-                }
-
-                {authUser.isAuth && <li>
-                    <NavLink to="/create-item-post" className="custom-nav-link">
-                        Create Item Post!
-                    </NavLink>
-                </li>
-
-                }
-                {authUser.isAuth && <li>
-                    <NavLink to="/create-item-request" className="custom-nav-link">
-                        Create Item Request!
-                    </NavLink>
-                </li>
-
-                }
 
             </ul>
+            {authUser.isAuth &&
+                <div className='add-item'>
+                    <NavLink to="/create-item-post" className="custom-nav-link">
+                        <FontAwesomeIcon icon={faSquarePlus} style={{ fontSize: "25px" }} />
+                    </NavLink>
+                    <span className='more-info-item'>Create an Item Post!</span>
+                </div>
+
+            }
+
+            {authUser.isAuth &&
+                <>
+                    <div className='bell'>
+                        <FontAwesomeIcon icon={faBell} className={notifications} onClick={handleNotifications} style={{ fontSize: "22px" }} />
+                        <span className='more-info-bell'>Notifications</span>
+                    </div>
+
+
+
+                    <div id='notification' className='notification-bar'>
+                        {notifications === 'notifications-on' &&
+                            <div className='notification-bar-on'>
+                                <button className='enable-notification-btn' onClick={enableNotification}>{enable} deadline notifications</button>
+                                <hr style={{ width: "80%", margin: "1rem auto" }} />
+
+                                {(listOfNotifications === undefined || listOfNotifications.length === 0) &&
+                                    <div style={{ color: "#a19f9f", paddingBottom: "1rem" }}>
+                                        You have no deadline notifications yet!
+                                    </div>
+                                }
+
+                                {(listOfNotifications !== undefined && listOfNotifications.length !== 0) ?
+                                    listOfNotifications.map((notification) =>
+                                        (<div className='notification-item'>{notification}</div>)
+                                    ) : (<div></div>)
+                                }
+
+                            </div>}
+                        {notifications === 'notifications-off' &&
+                            <div className='notification-bar-off'>
+                                <button className='enable-notification-btn' onClick={enableNotification}>{enable} deadline notifications</button>
+                                <hr style={{ width: "80%", margin: "1rem auto" }} />
+                                <div style={{ color: "#a19f9f", paddingBottom: "1rem" }}>
+                                    Please enable notifications to see your notifications
+                                </div>
+
+                            </div>}
+
+                    </div>
+                </>
+
+            }
+
 
             {authUser.isAuth &&
                 <>
@@ -209,6 +218,10 @@ const Navbar = () => {
                                 <div>
                                     Pending Reservations
                                 </div>
+                            </NavLink>
+
+                            <NavLink to="/create-item-request" className="drop-down-item">
+                                Create Item Request!
                             </NavLink>
 
                             <NavLink to="/borrowing-history" className="drop-down-item">

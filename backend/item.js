@@ -66,7 +66,7 @@ async function deleteItem(db, itemId, userId) {
     try {
         const res = await db.collection("items").findOne({ _id: new mongo.ObjectId(itemId) })
         const linkedToReq = res.linkedToReq;
-        if (linkedToReq) {  
+        if (linkedToReq) {
             for (const reqId of linkedToReq) {
                 await db.collection('requests').updateOne({ _id: new mongo.ObjectId(reqId) }, { $pull: { recommendedItems: itemId } })
             }
@@ -125,6 +125,26 @@ router.put("/mark-unavail", async (req, res) => {
         await db.collection("items").updateOne({ _id: new mongo.ObjectId(req.body.id) }, { $push: { unavailList: { startDate: startDate, endDate: endDate, reservId: null, day: req.body.day, exception: exceptionDate } } })
 
         res.status(200).json({ success: true, data: "unavailability successfully added!" });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+router.get("/search/:searchString", async (req, res) => {
+    try {
+        console.log(req.params.searchString);
+
+        //first get all items whose name and description match the search string
+        const items = await db.collection('items').find({ $or: [{ name: { $regex: req.params.searchString, $options: 'i' } }, { description: { $regex: req.params.searchString, $options: 'i' } }] }).toArray();
+
+        //then get items whose owner's names matches the item
+        const owners = await db.collection('users').find({ name: req.params.searchString }, { _id: 1 }).toArray();
+
+        for (const owner of owners) {
+            const item = await db.collection('items').find({ ownerId: owner._id.toString() }).toArray();
+            items.push(...item)
+        }
+        res.status(201).json({ success: true, data: items });
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
     }
