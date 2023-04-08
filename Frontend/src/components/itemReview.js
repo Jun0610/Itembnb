@@ -6,7 +6,14 @@ import ReviewService from "../tools/reviewService";
 
 const ItemReview = ({ reviewObject, authUser }) => {
     const [isEditing, setIsEditing] = useState(false);
+
+    // local copy of the review that the user edits when isEditing = true
     const [localReview, setLocalReview] = useState(null);
+
+    const userIsReviewOwner = () => {
+        return authUser.user.user != null &&
+            reviewObject.user._id === authUser.user.user._id;
+    }
 
     // edit owner review
     const editOwnerReview = () => {
@@ -60,7 +67,7 @@ const ItemReview = ({ reviewObject, authUser }) => {
                 ;
         }
 
-        if (reviewObject.user._id === authUser.user.user._id) {
+        if (userIsReviewOwner()) {
             return (
                 <div className="flex justify-end gap-4">
                     {cancelEditButton}
@@ -95,7 +102,7 @@ const ItemReview = ({ reviewObject, authUser }) => {
                     </div>
                 </div>
                 {
-                    reviewObject.user._id === authUser.user.user._id && isEditing ?
+                    userIsReviewOwner() && isEditing ?
                         <div>
                             <input id="rating" className="mt-1 border border-slate-300 py-2 rounded-md" type="number" min="1" max="5" value={localReview.rating} onChange={onInputChange} />
                         </div>
@@ -107,7 +114,7 @@ const ItemReview = ({ reviewObject, authUser }) => {
             </div>
             {
                 // Review Textbox (editable)
-                reviewObject.user._id === authUser.user.user._id && isEditing ?
+                userIsReviewOwner() && isEditing ?
                     < div >
                         <input id="reviewTxt" className="mt-1 block border border-slate-300 w-full py-2 rounded-md" type="text" value={localReview.reviewTxt} onChange={onInputChange} />
                     </div>

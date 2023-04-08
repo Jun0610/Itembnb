@@ -71,11 +71,9 @@ const SelectedItemPost = () => {
     useEffect(() => {
         const getItemReviews = async () => {
             //get reservation data for user
-            if (sessionStorage.getItem('curUser') !== null) {
-                const itemReviews = await ReviewService.getReviewByItem(itemId)
-                setItemReviews(itemReviews.data)
-                setItemRating(itemReviews.rating)
-            }
+            const itemReviews = await ReviewService.getReviewByItem(itemId)
+            setItemReviews(itemReviews.data)
+            setItemRating(itemReviews.rating)
         }
         getItemReviews();
     }, [])
