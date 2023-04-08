@@ -29,6 +29,9 @@ const DisplayRequestPost = () => {
     // Get request to be shown from the server
     const [request, setRequest] = useState({});
 
+    // loading after submission of data
+    const [loading, setLoading] = useState({ addItem: false });
+
     // Get user's posted items from the server
     const [userItems, setUserItems] = useState([]);
     const [itemsLoaded, setItemsLoaded] = useState(false);
@@ -38,6 +41,8 @@ const DisplayRequestPost = () => {
     // Get items that have been linked to this request
     const [linkedItems, setLinkedItems] = useState([]);
     const [linkedItemsLoaded, setLinkedItemsLoaded] = useState(false);
+
+    const [notifsOn, setNotifsOn] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -67,6 +72,16 @@ const DisplayRequestPost = () => {
                 // must use userInfoData instead of userInfo or it doesn't load
                 const userItemData = await ItemService.getItemsFromList(userInfoData.data.postedItems);
                 setUserItems(userItemData);
+
+                const res2 = await UserService.getNotificationStatus(loggedInUser._id);
+
+                const settings = { email: userInfoData.data.email };
+                if (res2.data === 'notifications-on') {
+                    settings.all = true;
+                }
+                else {
+                    settings.all = false;
+                }
 
                 // Set checkboxes for selecting items to recommend
                 let checkBoxes = {};
