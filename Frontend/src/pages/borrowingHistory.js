@@ -22,6 +22,7 @@ const BorrowingHistory = () => {
     return (
         <div>  
             <div>BorrowingHistory</div>
+            {borrowingHist && borrowingHist.length !== 0 ? 
             <div>
                 {borrowingHist.map((e, i) => (<div key={i} className='m-3 p-3 border-4 rounded-3xl border-yellow-400'>
                     <div className='grid grid-cols-2'>
@@ -34,8 +35,9 @@ const BorrowingHistory = () => {
                             <div>{e.reservation.endDate}</div>
                         </div>
                     </div>
-                    </div>))}
-            </div>
+                </div>))}
+            </div> : 
+            <div>You have no borrowing history yet!</div>}
         </div>
     )
   } else return <Loading />

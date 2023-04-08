@@ -2,11 +2,13 @@ import React, {useState, useEffect, useContext} from 'react'
 import ReservationService from '../tools/reservationService';
 import userContext from '../contexts/userContext';
 import Loading from '../components/Loading';
+import {useNavigate} from 'react-router-dom';
 
 const LendingHistory = () => {
     const [lendingHist, setLendingHist] = useState([]);
     const authUser = useContext(userContext);
     const [loading, setLoading] = useState(true);
+    const nav = useNavigate();
 
     useEffect(() => {
         async function getAllLendingResv() {
@@ -30,7 +32,7 @@ const LendingHistory = () => {
                     <div>{e.reservation.startDate}</div>
                     <div>{e.reservation.endDate}</div>
                     <div>{e.borrower.name}</div>
-                    <img src={e.borrower.profilePic} alt="" className="owner-img" />
+                    <img src={e.borrower.profilePic} alt="" className="owner-img" onClick={() => nav(`/user-profile/${e.borrower._id}`)} />
                 </div>
                 </div>))}
             </div>}
