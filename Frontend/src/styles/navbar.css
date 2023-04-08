@@ -6,15 +6,21 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   position: relative;
   box-sizing: border-box;
 }
 
 .navbar-brand {
-    width: 350px;
+    width: 300px;
     margin-left: 1rem;
     float: left;
+
+}
+
+.search-container {
+    padding-left: 12%;
+    align-self: center;
 }
 
 .brand-logo {
@@ -23,8 +29,7 @@
     border-radius: 1rem;
     margin: 0;
     padding-left: 1rem;
-    width: 100%;
-    object-fit: contain;
+    width: 400px;
 }
 
 
@@ -48,6 +53,37 @@
     list-style: none;
 }
 
+.add-item {
+    margin-right: 2rem;
+}
+
+.more-info-item {
+    visibility: hidden;
+    position: absolute;
+    background-color: #a7a7a7;
+    top: 80%;
+    right: 7rem;
+    padding: 2px 8px;
+    border-radius: 0.5rem;
+}
+
+.more-info-bell {
+    visibility: hidden;
+    position: absolute;
+    background-color: #a7a7a7;
+    top: 80%;
+    right: 5rem;
+    padding: 2px 8px;
+    border-radius: 0.5rem;
+}
+
+.bell:hover .more-info-bell{
+    visibility: visible;
+}
+
+.add-item:hover .more-info-item{
+    visibility: visible;
+}
 
 
 .custom-logout-btn {
@@ -67,7 +103,7 @@
     border-radius: 50%;
     width: 50px;
     height: 50px;
-    margin-right: 1rem;
+    margin-right: 2rem;
     margin-left: 1rem;
 }
 
@@ -148,7 +184,7 @@
 .notification-bar {
     position: absolute;
     top: 100%;
-    right: 35rem;
+    right: 8rem;
     border-radius: 0.8;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     width: 400px;
