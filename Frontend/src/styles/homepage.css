@@ -39,3 +39,12 @@
     border-radius: 10px;
     padding: 15px;
 }
+
+.lessStyledLink {
+    text-decoration: none;
+    color: #000000;
+}
+.lessStyledLink:hover {
+    color: #222222;
+    text-decoration: underline;
+}

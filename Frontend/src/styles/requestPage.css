@@ -31,10 +31,3 @@
 .yellowText {
     color: #f49600;
 }
-
-.userProfileLink {
-    color: #000000;
-}
-.userProfileLink:hover {
-    color: #222222;
-}

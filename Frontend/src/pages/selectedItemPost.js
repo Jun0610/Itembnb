@@ -9,7 +9,7 @@ import ItemCalendar from "../components/borrowerCalendar";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
-import { useNavigate } from 'react-router-dom';
+import ItemReview from '../components/itemReview';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -19,11 +19,9 @@ const SelectedItemPost = () => {
     const [reservSuccess, setReservSuccess] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
     const [itemReviews, setItemReviews] = useState([]);
-    const [itemRating, setItemRating] = useState(null);
-    const [editReviewIdx, setEditReviewIdx] = useState(null);
-    const [review, setReview] = useState(null);
     const [rating, setRating] = useState(null);
-    const nav = useNavigate();
+    const [OGItemReviews, setOGItemReviews] = useState([]);
+    const stars = [1, 2, 3, 4, 5]
 
     //make sure user is logged in and get item details
     useEffect(() => {
@@ -71,18 +69,59 @@ const SelectedItemPost = () => {
 
     }, [reservSuccess])
 
+    //========== review section start ===========
+
     //checking item review
     useEffect(() => {
         const getItemReviews = async () => {
             //get reservation data for user
-            if (sessionStorage.getItem('curUser') !== null) {
-                const itemReviews = await ReviewService.getReviewByItem(itemId)
-                setItemReviews(itemReviews.data)
-                setItemRating(itemReviews.rating)
-            }
+            const itemReviews = await ReviewService.getReviewByItem(itemId);
+            setItemReviews(itemReviews.data);
+            setOGItemReviews(itemReviews.data);
+            setRating(itemReviews.rating);
         }
         getItemReviews();
     }, [])
+
+    const onEditReview = (review, idx) => {
+        // update the average rating on item
+        itemReviews[idx].review = review;
+        setItemReviews(itemReviews);
+        setOGItemReviews(itemReviews);
+
+        var totalRating = 0;
+        for (const ir of itemReviews) totalRating += parseInt(ir.review.rating)
+
+        setRating(1.0 * totalRating / itemReviews.length)
+    }
+
+    const onDeleteReview = (review, idx) => {
+        const deleteReview = async (review, idx) => {
+            await ReviewService.deleteReview(review._id, itemId)
+            setItemReviews(itemReviews.filter((_, i) => idx !== i))
+            setOGItemReviews(OGItemReviews.filter((_, i) => idx !== i))
+
+            // update the average rating of the item
+            var totalRating = 0;
+            const newItemReviews = itemReviews.filter((_, i) => idx !== i)
+            for (const ir of newItemReviews) totalRating += parseInt(ir.review.rating)
+
+            setRating(1.0 * totalRating / newItemReviews.length)
+
+            alert("Successfully deleted your review!");
+        }
+        deleteReview(review, idx);
+    }
+
+    const filterStar = (i) => {
+        setItemReviews(OGItemReviews.filter((e) => e.review.rating === i))
+    }
+
+    const resetFilter = () => {
+        setItemReviews(OGItemReviews)
+    }
+
+    //========== review section end ============
 
     const reservationInfo = () => {
         if (!authUser.user.isAuth) {
@@ -170,50 +209,13 @@ const SelectedItemPost = () => {
         );
     }
 
-    // edit owner review
-    const editOwnerReview = (i) => {
-        const updateReview = async () => {
-            // update in database and frontend
-            itemReviews[i].review.reviewTxt = review
-            itemReviews[i].review.rating = rating
-            itemReviews[i].review.dateModified = new Date(Date.now())
-            await ReviewService.updateReview(itemReviews[i].review)
-            setEditReviewIdx(null)
-            setReview(null)
-            setRating(null)
-            alert("Successfully edited your review!")
-        }
-
-        if (editReviewIdx === i) updateReview()
-        else {
-            setEditReviewIdx(i)
-            setReview(itemReviews[i].review.reviewTxt)
-            setRating(itemReviews[i].review.rating)
-        }
-    }
-
-    const onDeleteReview = (idx) => {
-        const deleteReview = async (idx) => {
-            await ReviewService.deleteReview(itemReviews[idx].review._id, itemId)
-            setItemReviews(itemReviews.filter((_, i) => idx !== i))
-            alert("Successfully deleted your review!");
-        }
-        deleteReview(idx);
-    }
-
-    const onInputChange = (e) => {
-        if (e.target.id === "review") setReview(e.target.value)
-        else setRating(e.target.value)
-    }
-
     if (selectedItem !== null) {
-
         return (
             <div>
                 <div className="itempost-outer">
                     <div className="item-post-row">
                         <h1>{selectedItem.name}</h1>
-                        <h1>{itemRating}/5</h1>
+                        <h1>{rating}/5</h1>
                     </div>
 
                     <div className="cardcontainer">
@@ -237,50 +239,19 @@ const SelectedItemPost = () => {
                             {ownerInfo()}
                             <div className="font-bold">
                                 Reviews
+                                <NavLink to={"/create-item-review/" + itemId} className="lessStyledLink"><button className="defaultButton">Make Review</button></NavLink>
+                            </div>
+                            <div className='flex gap-4'>
+                                {stars.map((e, i) => (<div onClick={() => filterStar(e)} style={{ cursor: "pointer" }}>{e}-star</div>))}
+                                <div onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
                             </div>
                             <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
-                                {itemReviews.map((e, i) => (
-                                    <div key={i} className="grid border-2 rounded-3xl border-yellow-400 m-2 p-2">
-                                        <div className="grid grid-cols-3 justify-start">
-                                            <div>
-                                                <img onClick={() => {nav(`/user/${e.user._id}`)}} src={e.user.profilePic} alt="" className="object-scale-down h-16" style={{ cursor: "pointer" }}/>
-                                            </div>
-                                            <div className="grid grid-rows-2 ml-2">    
-                                                <div>   
-                                                    {e.user.name}
-                                                </div>
-                                                <div>   
-                                                    {new Date(e.review.dateModified).toDateString()}
-                                                </div>
-                                            </div>
-                                            {
-                                                e.user._id === authUser.user.user._id && editReviewIdx === i ? 
-                                                <div>
-                                                    <input id="rating" className="mt-1 border border-slate-300 py-2 rounded-md" type="number" min="1" max="5" value={rating} onChange={onInputChange} />
-                                                </div>
-                                                : 
-                                                <div className="justify-self-end">   
-                                                        {e.review.rating}/5
-                                                </div>
-                                            }
-                                        </div>
-                                        {
-                                            e.user._id === authUser.user.user._id && editReviewIdx === i ? 
-                                            <div>
-                                                <input id="review" className="mt-1 block border border-slate-300 w-full py-2 rounded-md" type="text" value={review} onChange={onInputChange} />
-                                            </div>
-                                            : 
-                                            <div className="mt-3"> 
-                                                {e.review.reviewTxt}
-                                            </div>
-                                        }
-                                        {e.user._id === authUser.user.user._id ? 
-                                        <div className="flex justify-end gap-4">
-                                            <i className="fa-solid fa-trash mt-1 icon-3x" style={{ cursor: "pointer" }} onClick={() => {onDeleteReview(i)}}></i>
-                                            <i className={editReviewIdx && editReviewIdx === i ? "place-self-end fa-solid fa-save mt-1 icon-3x" : "place-self-end fa-solid fa-pencil mt-1 icon-3x"} style={{ cursor: "pointer" }} onClick={() => editOwnerReview(i)}></i>
-                                        </div>
-                                         : <div></div>}
-                                    </div>))}
+                                {itemReviews.length > 0 ?
+                                    itemReviews.map((e, i) => (
+                                        <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
+                                    )) :
+                                    <p>This item has no reviews!</p>
+                                }
                             </div>
                         </div>
                         {reservationInfo()}

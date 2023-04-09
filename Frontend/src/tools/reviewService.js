@@ -16,6 +16,25 @@ class ReviewService {
         }
     }
 
+    static async postItemReview(review, id) {
+        console.log(review);
+
+        // new Date() gets converted to string-formatted Date through JSON.stringify
+        review.dateCreated = new Date();
+
+        return new Promise((resolve, reject) => {
+            fetch(`${url}/add-review/user-id/${id}`, {
+                method: 'post',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(review),
+            }).then(res => res.json()).then((res) => {
+                resolve(res);
+            }).catch((err) => {
+                reject(err);
+            })
+        })
+    }
+
     static async updateReview(review) {
         const request = {
             method: 'PUT',
