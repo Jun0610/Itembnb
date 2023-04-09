@@ -37,7 +37,7 @@ const StatusItem = ({ statusObject, curUser }) => {
         UserService.getUserData(statusObject.reservation.borrowerId).then((success) => {
             setBorrower(success.data)
         })
-        if (statusObject.item) {    
+        if (statusObject.item) {
             UserService.getUserData(statusObject.item.ownerId).then((success) => {
                 setOwner(success.data)
             })
