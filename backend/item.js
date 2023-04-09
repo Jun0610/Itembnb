@@ -144,7 +144,17 @@ router.get("/search/:searchString", async (req, res) => {
             const item = await db.collection('items').find({ ownerId: owner._id.toString() }).toArray();
             items.push(...item)
         }
-        res.status(201).json({ success: true, data: items });
+
+        //ensure items are unique
+        const flags = new Set();
+        const uniqueItems = items.filter(item => {
+            if (flags.has(item._id.toString())) {
+                return false;
+            }
+            flags.add(item._id.toString());
+            return true;
+        })
+        res.status(201).json({ success: true, data: uniqueItems });
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
     }

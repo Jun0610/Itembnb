@@ -23,6 +23,7 @@ import AccountSettings from "./pages/accountSettings";
 import EmailSelectedItemPost from "./pages/emailSelectedItemPost";
 import LendingHistory from "./pages/lendingHistory";
 import BorrowingHistory from "./pages/borrowingHistory";
+import SearchResultsPage from "./pages/SearchResultsPage";
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
                                 <Route exact path="/favorite-items" element={<FavoriteItems />} />
                                 <Route exact path='/item-status' element={<StatusPage />}></Route>
                                 <Route exact path='/pending-reservations' element={<PendingPage />}></Route>
+                                <Route exact path='/search-results/:searchString' element={<SearchResultsPage />}></Route>
                             </Routes>
                         </NotificationProvider>
                     </Router>
