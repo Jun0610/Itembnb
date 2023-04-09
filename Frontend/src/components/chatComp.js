@@ -22,9 +22,9 @@ const ChatComponent = ( {user, otherUser} )  =>  {
         });
   
         const otherUser = new Talk.User({
-          id: '3',
-          name: 'Adam Sandler',
-          email: 'adam@example.com',
+          id: '4',
+          name: 'test1',
+          email: 'example@example',
           role: 'default',
         });
   

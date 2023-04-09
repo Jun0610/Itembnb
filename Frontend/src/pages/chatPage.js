@@ -22,6 +22,7 @@ const ChatPage = ()  =>  {
     <div className='chat-page' >
       <h1>Chat Page</h1>
       <ChatComponent user={authUser.user} />
+      
     </div>
   );
   
