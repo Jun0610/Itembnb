@@ -4,8 +4,9 @@ import userContext from "../contexts/userContext";
 import ItemService from "../tools/itemsService";
 import UserService from "../tools/userService.js";
 import ReservationService from "../tools/reservationService";
-import { Loading, LoadingSmall } from "../components/Loading";
+import { Loading } from "../components/Loading";
 import ItemCalendar from "../components/borrowerCalendar";
+import UserInfo from "../components/userInfo";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
@@ -18,6 +19,8 @@ const SelectedItemPost = () => {
     const [userReserv, setUserReserv] = useState({});
     const [reservSuccess, setReservSuccess] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
+
+    // for handling reviews/ratings
     const [itemReviews, setItemReviews] = useState([]);
     const [rating, setRating] = useState(null);
     const [OGItemReviews, setOGItemReviews] = useState([]);
@@ -177,38 +180,6 @@ const SelectedItemPost = () => {
 
     }
 
-    const ownerInfo = () => {
-        if (Object.keys(owner).length)
-            return (
-                <div className="owner">
-                    <div className="owner-details">
-                        <NavLink to={"/user/" + owner._id}>
-                            <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}>{selectedItem.ownerId ? owner.name : "owner not shown"}</span> </h4>
-
-                        </NavLink>
-                        <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
-                    </div>
-
-                    <img src={owner.profilePic} alt="" className="owner-img" />
-
-                </div>);
-
-        return (
-            <div className="owner">
-                <div className="owner-details">
-                    <NavLink to={"/user/" + owner._id}>
-                        <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}></span> </h4>
-
-                    </NavLink>
-                    <p className='owner-desc'>Loading...</p>
-                </div>
-
-                <LoadingSmall />
-
-            </div>
-        );
-    }
-
     if (selectedItem !== null) {
         return (
             <div>
@@ -236,10 +207,10 @@ const SelectedItemPost = () => {
                             <div className="item-post-row">
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
-                            {ownerInfo()}
+                            <UserInfo user={owner} />
                             <div className="font-bold">
                                 Reviews
-                                <NavLink to={"/create-item-review/" + itemId} className="lessStyledLink"><button className="defaultButton">Make Review</button></NavLink>
+                                <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
                             </div>
                             <div className='flex gap-4'>
                                 {stars.map((e, i) => (<div onClick={() => filterStar(e)} style={{ cursor: "pointer" }}>{e}-star</div>))}
@@ -250,7 +221,7 @@ const SelectedItemPost = () => {
                                     itemReviews.map((e, i) => (
                                         <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
                                     )) :
-                                    <p>This item has no reviews!</p>
+                                    <p>There are no reviews!</p>
                                 }
                             </div>
                         </div>

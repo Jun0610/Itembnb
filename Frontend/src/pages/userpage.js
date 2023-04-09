@@ -1,16 +1,18 @@
 import React, { useEffect, useContext, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, Link, useNavigate, useParams } from 'react-router-dom';
+import userContext from '../contexts/userContext';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import { Loading, LoadingSmall } from "../components/Loading";
+import Post from "../components/post";
+import ItemReview from "../components/itemReview";
+
 import UserService from '../tools/userService';
 import ItemService from '../tools/itemsService';
 import RequestService from '../tools/requestService';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import { useParams } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Loading, LoadingSmall } from "../components/Loading";
-import userContext from '../contexts/userContext';
-import Post from "../components/post";
+import ReviewService from '../tools/reviewService';
 import SocketService, { socket } from '../tools/socketService';
 
+import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
 import "../styles/userpage.css";
 
@@ -21,17 +23,20 @@ const Userpage = () => {
     /* --- Fetching info from server --- */
 
     // Get user info from the server
-    const [userInfo, setUserInfo] = useState({});
-    const [userLoaded, setUserLoaded] = useState(false);
+    const [userInfo, setUserInfo] = useState(null);
 
     // Get list of data jsons for user's posted items from the server
-    const [userItems, setUserItems] = useState([]);
-    const [itemsLoaded, setItemsLoaded] = useState(false);
+    const [userItems, setUserItems] = useState(null);
 
     // Get list of data jsons for user's requests from the server
-    const [userRequests, setUserRequests] = useState([]);
-    const [requestsLoaded, setRequestsLoaded] = useState(false);
+    const [userRequests, setUserRequests] = useState(null);
 
+    // for handling reviews/ratings
+    const [reviewsForUser, setReviewsForUser] = useState(null);
+    const [OGReviewsForUser, setOGReviewsForUser] = useState([]); // TODO implement
+    const [borrowerRating, setBorrowerRating] = useState("...");
+    const [lenderRating, setLenderRating] = useState("..."); // TODO implement
+    const [reviewsByUser, setReviewsByUser] = useState(null); // TODO implement
 
     useEffect(() => {
         async function fetchData() {
@@ -39,18 +44,15 @@ const Userpage = () => {
             let userInfoData = await UserService.getUserData(id);
             userInfoData = userInfoData.data;
             setUserInfo(userInfoData);
-            setUserLoaded(true);
 
             // load user items
             // must use userInfoData instead of userInfo or it doesn't load because of how await works
             const userItemData = await ItemService.getItemsFromList(userInfoData.postedItems);
             setUserItems(userItemData);
-            setItemsLoaded(true);
 
             // load user requests
             const userRequestData = await RequestService.getRequestsFromList(userInfoData.requestPosts);
             setUserRequests(userRequestData);
-            setRequestsLoaded(true);
         }
         fetchData();
 
@@ -69,6 +71,70 @@ const Userpage = () => {
         connectSocket();
 
     }, []);
+
+    /* --- Review Section --- */
+
+    // get borrower reviews + rating
+    useEffect(() => {
+        const getUserReviews = async () => {
+            //get reservation data for user
+            const reviews = await ReviewService.getReviewByUser(id);
+            setReviewsForUser(reviews.data);
+            setOGReviewsForUser(reviews.data);
+            setBorrowerRating(reviews.rating);
+        }
+        getUserReviews();
+    }, []);
+
+    // TODO - return true only if user can be reviewed
+    const canBeReviewed = () => {
+        return (
+            authUser.user.user != null && // user must be logged in
+            authUser.user.user._id != id // user must not be viewing their own profile
+        );
+    }
+
+    // Reviews of user (as borrower)
+    const displayReviewsOfUser = () => {
+        if (reviewsForUser == null) {
+            return <LoadingSmall />;
+        }
+        return (
+            <div>
+                {reviewsForUser.length > 0 ?
+                    reviewsForUser.map((e, i) => (
+                        <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
+                    )) :
+                    <p>There are no reviews!</p>
+                }
+            </div>
+        );
+    }
+
+    // Reviews user has made
+    const displayReviewsMadeByUser = () => {
+        if (reviewsByUser == null) {
+            return <LoadingSmall />;
+        }
+        return (
+            <div>
+                {reviewsByUser.length > 0 ?
+                    reviewsByUser.map((e, i) => (
+                        <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={console.log("delete")} onEditReview={console.log("edit")} idx={i} />
+                    )) :
+                    <p>There are no reviews!</p>
+                }
+            </div>
+        );
+    }
+
+    // TODO
+    const onEditReview = () => {
+    }
+
+    // TODO
+    const onDeleteReview = () => {
+    }
 
     /* --- Profile editing functionality --- */
 
@@ -281,7 +347,7 @@ const Userpage = () => {
 
     // Render list of user's items from userItems (a list of item data jsons)
     const displayUserItems = () => {
-        if (!itemsLoaded) {
+        if (userItems == null) {
             return <LoadingSmall />
         }
         if (userItems.length === 0) {
@@ -297,7 +363,7 @@ const Userpage = () => {
 
     // Render list of user's requests from userRequests (a list of request data jsons)
     const displayUserRequests = () => {
-        if (!requestsLoaded) {
+        if (userRequests == null) {
             return <LoadingSmall />
         }
         if (userRequests.length === 0) {
@@ -308,7 +374,7 @@ const Userpage = () => {
         );
     }
 
-    if (!userLoaded) {
+    if (userInfo == null) {
         return (
             <Loading />
         )
@@ -319,7 +385,7 @@ const Userpage = () => {
                 <div>
                     <img id="profilepic" src={userInfo.profilePic} />
 
-                    <h6 className="user_stat">Borrower Rating: {userInfo.borrowerRating}/5</h6>
+                    <h6 className="user_stat">Borrower Rating: {borrowerRating}/5</h6>
                     <h6 className="user_stat">Lender Rating: {userInfo.lenderRating}/5</h6>
                     <hr />
                     <h6 className="user_stat">{userInfo.name} has {userInfo.postedItems.length} {userInfo.postedItems.length === 1 ? "item" : "items"}</h6>
@@ -329,6 +395,11 @@ const Userpage = () => {
 
             <div id="profile_main" className="add_padding">
                 <ProfileHeader />
+
+                {canBeReviewed() ?
+                    <NavLink to={"/create-user-review/" + id} className="plainLink"><button className="defaultButton">Review this User</button></NavLink>
+                    : <div></div>
+                }
 
                 <hr />
 
@@ -341,6 +412,9 @@ const Userpage = () => {
                 <div className="cardcontainer">
                     {displayUserRequests()}
                 </div>
+
+                <h3 className="item-post-header">Reviews of {userInfo.name}</h3>
+                {displayReviewsOfUser()}
             </div>
         </div>
     );

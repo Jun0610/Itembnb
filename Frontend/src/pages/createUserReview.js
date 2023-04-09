@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { NavLink, useParams } from "react-router-dom";
 import ReviewService from "../tools/reviewService";
 import userContext from '../contexts/userContext';
-import ItemService from "../tools/itemsService";
+import UserService from "../tools/userService";
+import UserInfo from "../components/userInfo";
 import Post from "../components/post";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
 
-const CreateItemReview = () => {
-    const { itemId } = useParams(); // id of selected item
+const CreateUserReview = () => {
+    const { userId } = useParams(); // id of selected borrower
     const navigate = useNavigate();
 
     const authUser = useContext(userContext);
@@ -19,29 +20,28 @@ const CreateItemReview = () => {
         rating: 5,
         text: "Enter your review here!",
         reviewerId: "",
-        itemId: itemId,
-        userId: ""
+        itemId: "",
+        userId: userId
         /* these get changed in reviewService.postReview
         dateModified: '',
         dateCreated: '',
         */
     };
 
-    const [item, setSelectedItem] = React.useState({});
+    const [user, setSelectedUser] = React.useState({});
     const [review, setReview] = React.useState(blankReview);
     const startingErrors = { text: [], rating: [] };
     const [inputErrors, setInputErrors] = React.useState(startingErrors);
 
-    //make sure user is logged in and get item details
+    //make sure user is logged in and get user details
     useEffect(() => {
 
-        const itemPageSetUp = async () => {
-            //get item data
-            const itemData = await ItemService.getItem(itemId);
-            setSelectedItem(itemData.data);
+        const fetchData = async () => {
+            const dataObject = await UserService.getUserData(userId);
+            setSelectedUser(dataObject.data);
         }
 
-        itemPageSetUp();
+        fetchData();
 
     }, [])
 
@@ -95,8 +95,7 @@ const CreateItemReview = () => {
         e.preventDefault();
 
         if (noInputErrors()) {
-            console.log(review);
-            console.log("review made");
+            console.log("creation of " + review);
             review.reviewerId = authUser.user.user._id;
             await ReviewService.postReview(review, authUser.user.user._id).then((res) => {
                 alert("Review successfully posted!");
@@ -115,8 +114,8 @@ const CreateItemReview = () => {
     }
     return (
         <div>
-            <div className="m-3 text-xl font-bold" style={{ color: "#F0D061" }}>Review this Item!</div>
-            <div><Post key={item._id} post={item} isreview={false} /></div>
+            <div className="m-3 text-xl font-bold" style={{ color: "#F0D061" }}>Review this Borrower!</div>
+            <div><UserInfo user={user} /></div>
             <div className="m-3">
                 <form onSubmit={handleSubmit}>
                     <div className="flex gap-6 mb-6">
@@ -139,4 +138,4 @@ const CreateItemReview = () => {
     );
 };
 
-export default CreateItemReview;
+export default CreateUserReview;

@@ -81,7 +81,9 @@ const SignUp = () => {
                 "chatId": "12345",
                 "borrowerRating": 5,
                 "lenderRating": 5,
-                "profilePic": imgFile
+                "profilePic": imgFile,
+                "reviewsOfUser": [],
+                "reviewsMade": []
             };
             fetch("http://localhost:8888/api/user/register-user", {
                 method: "POST",
