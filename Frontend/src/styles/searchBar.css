@@ -15,10 +15,29 @@
     outline: 1.5px solid #9c9c9c;
 }
 
+.search-clear-button {
+    margin: 0;
+    position: relative;
+    right: 3rem;
+    /* color: #929396; */
+    color: #040404;
+    visibility: hidden;
+    padding: 0 1rem;
+    border-radius: 50%;
+}
+
+.search-clear-button:hover {
+    background-color: #918d8d97;
+}
+
+
+
+
+
 .search-button {
     float: right;
+    margin-left: -2.5rem;
     color: #040404;
-    margin-left: 0.5rem;
     padding: 0.4rem 0.7rem;
 }
 
