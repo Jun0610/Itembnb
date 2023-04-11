@@ -6,6 +6,7 @@ import UserProfile from './pages/userpage';
 import CreateItemPost from "./pages/createItemPost";
 import CreateRequest from "./pages/createRequest";
 import CreateItemReview from "./pages/createItemReview";
+import CreateUserReview from "./pages/createUserReview";
 import DisplayItemPost from "./pages/displayItemPost";
 import DisplayRequestPost from "./pages/displayRequest";
 import Unavailable404 from "./pages/Unavailable404";
@@ -26,6 +27,7 @@ import EmailSelectedItemPost from "./pages/emailSelectedItemPost";
 import ChatPage from "./pages/chatPage";
 import LendingHistory from "./pages/lendingHistory";
 import BorrowingHistory from "./pages/borrowingHistory";
+import SearchResultsPage from "./pages/SearchResultsPage";
 
 
 function App() {
@@ -43,6 +45,7 @@ function App() {
                                 <Route exact path="/create-item-post" element={<CreateItemPost />} />
                                 <Route exact path='/create-item-request' element={<CreateRequest />} />
                                 <Route exact path='/create-item-review/:itemId' element={<CreateItemReview />} />
+                                <Route exact path='/create-user-review/:userId' element={<CreateUserReview />} />
                                 <Route exact path='/lending-history' element={<LendingHistory />} />
                                 <Route exact path='/borrowing-history' element={<BorrowingHistory />} />
                                 <Route path="/display-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailDisplayItemPost />} />
@@ -58,6 +61,7 @@ function App() {
                                 <Route exact path="/favorite-items" element={<FavoriteItems />} />
                                 <Route exact path='/item-status' element={<StatusPage />}></Route>
                                 <Route exact path='/pending-reservations' element={<PendingPage />}></Route>
+                                <Route exact path='/search-results/:searchString' element={<SearchResultsPage />}></Route>
                                 <Route exact path='/chat' element={<ChatPage />}></Route>
                             </Routes>
                         </NotificationProvider>

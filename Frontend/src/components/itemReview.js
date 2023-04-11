@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/post.css';
 import { NavLink } from 'react-router-dom';
@@ -108,11 +108,11 @@ const ItemReview = ({ reviewObject, authUser, onDeleteReview, onEditReview, idx 
                 // Review Textbox (editable)
                 userIsReviewOwner() && isEditing ?
                     < div >
-                        <input id="reviewTxt" className="mt-1 block border border-slate-300 w-full py-2 rounded-md" type="text" value={localReview.reviewTxt} onChange={onInputChange} />
+                        <input id="text" className="mt-1 block border border-slate-300 w-full py-2 rounded-md" type="text" value={localReview.text} onChange={onInputChange} />
                     </div>
                     :
                     <div className="mt-3">
-                        {reviewObject.review.reviewTxt}
+                        {reviewObject.review.text}
                     </div>
             }
             {editReviewButtons()}

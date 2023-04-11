@@ -14,7 +14,30 @@ const { db, mongo } = require('./mongo')
 const express = require("express")
 const router = express.Router()
 
-router.get("/get-review/:id", async (req, res) => {
+router.get("/get-user-review/:id", async (req, res) => {
+    try {
+        //get reviews for a user
+        const reviewSubject = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.id) })
+        const reviewsWithUsers = []
+        var rating = 0.0;
+        if (reviewSubject.reviewsOfUser) {
+            for (const reviewId of reviewSubject.reviewsOfUser) {
+                const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
+                rating += review.rating;
+                if (review) {
+                    const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(review.reviewerId) })
+                    if (user) reviewsWithUsers.push({ review, user })
+                }
+            }
+        }
+        res.status(200).json({ success: true, data: reviewsWithUsers, rating: 1.0 * rating / reviewsWithUsers.length })
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+router.get("/get-item-review/:id", async (req, res) => {
     try {
         //get reviews for an item
         const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(req.params.id) })
@@ -43,7 +66,7 @@ router.put("/update-review/:id", async (req, res) => {
         const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(req.params.id) })
         if (!review) res.status(404).json({ success: false, data: "no review found" })
         console.log("body: ", req.body);
-        const result = await db.collection("reviews").updateOne({ _id: new mongo.ObjectId(req.params.id) }, { $set: { "rating": parseInt(req.body.rating), "dateModified": new Date(Date.now()), "reviewTxt": req.body.reviewTxt } })
+        const result = await db.collection("reviews").updateOne({ _id: new mongo.ObjectId(req.params.id) }, { $set: { "rating": parseInt(req.body.rating), "dateModified": new Date(Date.now()), "text": req.body.text } })
         res.status(201).json({ success: true, data: result });
     } catch (err) {
         console.log(err)
@@ -69,24 +92,37 @@ router.delete('/delete-review/review-id/:reviewId/item-id/:itemId', async (req, 
 
 })
 
-//create new item review
+//create new review
 router.post('/add-review/user-id/:userId', async (req, res) => {
-
     try {
         //save date as date object
         req.body.dateModified = new Date(req.body.dateModified);
         const results = await db.collection("reviews").insertOne(req.body);
 
         const reviewId = results.insertedId.toString();
-        const itemId = req.body.itemId;
 
         console.log(results);
         console.log(reviewId);
-        console.log(itemId);
 
-        // await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.params.userId) }, { $push: { itemReviews: reviewId } })
-        const results2 = await db.collection('items').updateOne({ _id: new mongo.ObjectId(itemId) }, { $push: { review: reviewId } });
-        console.log(results2);
+        // every user tracks reviews they've left
+        await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.params.reviewerId) }, { $push: { reviewsMade: reviewId } })
+
+        // if review is review of an item
+        if (req.body.userId == "" && req.body.itemId != "") {
+            const results2 = await db.collection('items').updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $push: { review: reviewId } });
+            console.log(results2);
+        }
+        // if review is review of a user
+        else if (req.body.itemId == "" && req.body.userId != "") {
+            const results2 = await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.body.userId) }, { $push: { reviewsOfUser: reviewId } });
+            console.log(results2);
+        }
+        else {
+            // we should never reach this point
+            console.error(req);
+            throw new Error('Improperly formatted review!');
+        }
+
         res.status(201).json({ success: true, data: "successfully added review!" });
 
     } catch (err) {
