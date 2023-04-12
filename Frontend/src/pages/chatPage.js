@@ -5,8 +5,6 @@ import ChatComponent from '../components/chatComp';
 import chatContext from '../contexts/chatContext';
 import '../styles/chatPage.css'
 
-
-
 const ChatPage = ()  =>  {
 
   	const authUser = useContext(userContext);
@@ -18,12 +16,14 @@ const ChatPage = ()  =>  {
 
 		return (
 			<div className='other-user-view'>
-					<h2>
-						Example username
-					</h2>
-					<h3>
-						example email
-					</h3>
+				{currChat.otherUser != null &&
+					<div>
+						<h2>
+							{currChat.otherUser.name}
+						</h2>
+						<button onClick={() => {console.log(currChat.otherUser)}}>Go to profile</button>
+					</div>
+				}
 			</div>
 		)
 	}
@@ -41,7 +41,7 @@ const ChatPage = ()  =>  {
 		<div className='chat-page' >
 			<ChatComponent user={authUser.user} />
 			<OtherUserView otherUser={currChat.otherUser}/>
-			<button onClick={() => {console.log(currChat.otherUser)}}>ClickMe</button>
+			
 		</div>
 	);
 	
