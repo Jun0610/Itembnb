@@ -211,4 +211,13 @@ router.put('/add-notification/:userId', async (req, res) => {
 	}
 })
 
+router.get('/get-users/:userName', async (req, res) => {
+	try {
+		const users = await db.collection('users').find({ name: { $regex: req.params.userName, $options: 'i' } }).toArray();
+		res.status(200).json({ success: true, data: users });
+	} catch (err) {
+		res.status(404).json({ success: false, data: err.messsage })
+	}
+})
+
 module.exports = router;

@@ -13,7 +13,10 @@ const SearchBar = () => {
             alert("Cannot have empty search string!")
             return;
         }
-        nav(`/search-results/${document.getElementById('search').value}`)
+
+        const searchString = document.getElementById('search').value + '+' + Math.floor(Math.random() * (10000));
+        nav(`/search-results/${searchString}`)
+
     }
 
     const handleClear = () => {
@@ -22,15 +25,19 @@ const SearchBar = () => {
         clear.style.visibility = 'hidden';
     }
 
-    const showClear = () => {
+    const onKeyDownHandler = (e) => {
         const clear = document.getElementById('clear-button');
         clear.style.visibility = 'visible';
+
+        if (e.key == "Enter") {
+            handleSearch();
+        }
     }
 
 
     return (
         <div className='search-bar-container'>
-            <input type="text" placeholder='Search here' className='search-bar' id='search' onKeyDown={showClear} />
+            <input type="text" placeholder='Search here' className='search-bar' id='search' onKeyDown={onKeyDownHandler} />
             <button className='search-clear-button' id='clear-button' onClick={handleClear}>
                 <FontAwesomeIcon icon={faXmark} />
             </button>
