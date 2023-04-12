@@ -28,13 +28,14 @@ import ChatPage from "./pages/chatPage";
 import LendingHistory from "./pages/lendingHistory";
 import BorrowingHistory from "./pages/borrowingHistory";
 import SearchResultsPage from "./pages/SearchResultsPage";
-
+import { ChatContextProvider } from "./contexts/chatContext";
 
 function App() {
     return (
         <div className="App">
             <UserContextProvider>
                 <ItemContextProvider>
+                    <ChatContextProvider>
                     <Router>
                         <Navbar />
                         <NotificationProvider>
@@ -66,6 +67,7 @@ function App() {
                             </Routes>
                         </NotificationProvider>
                     </Router>
+                    </ChatContextProvider> 
                 </ItemContextProvider>
             </UserContextProvider>
         </div>
