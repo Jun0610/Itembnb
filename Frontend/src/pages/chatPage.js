@@ -3,6 +3,7 @@ import userContext from '../contexts/userContext';
 import SocketService, { socket } from '../tools/socketService';
 import ChatComponent from '../components/chatComp';
 import chatContext from '../contexts/chatContext';
+import { NavLink } from 'react-router-dom';
 import '../styles/chatPage.css'
 
 const ChatPage = ()  =>  {
@@ -21,8 +22,17 @@ const ChatPage = ()  =>  {
 						<h2>
 							{currChat.otherUser.name}
 						</h2>
-						<button onClick={() => {console.log(currChat.otherUser)}}>Go to profile</button>
+						<NavLink to={`/user/${currChat.otherUser._id}`}>
+							<button className='profile-btn'>
+								View profile
+							</button>
+						</NavLink>
 					</div>
+				}
+				{currChat.otherUser == null &&
+					<h2>
+						No user selected
+					</h2>
 				}
 			</div>
 		)
