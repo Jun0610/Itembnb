@@ -1,0 +1,16 @@
+.search-results-container {
+    display: grid;
+    margin: 4rem auto;
+    max-width: 1400px;
+    grid-template-areas: ". . . .";
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: -1;
+}
+
+.search-results-container .card {
+    margin-bottom: 2rem;
+    z-index: 1;
+    position: relative;
+}
