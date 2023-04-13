@@ -8,19 +8,36 @@
 
 .chat-comp {
   height: 100%;
-  min-width: 50%;
+  min-width: 715px;
 }
 
 .other-user-view {
   border-radius: 10px;
   box-shadow: 0 0 10px #c0c0c0;
   margin-left: 10px;
+  margin-bottom: 10px;
   padding: 10px;
   width: 350px;
   height: 100px;
 }
 
-.profile-btn {
+.user-search-view {
+  border-radius: 10px;
+  box-shadow: 0 0 10px #c0c0c0;
+  margin-left: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  overflow: hidden;
+  width: 350px;
+  height: calc(100% - 110px);
+}
+
+.user-list {
+  height: calc(100% - 43px);
+  overflow: auto;
+}
+
+.view-profile-btn {
   padding: 5px;
   font-size: large;
   font-weight: bold;
@@ -28,4 +45,42 @@
   background-color: #F7D65A;
   width: 100%;
   border-radius: 10px;
+}
+
+.user-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.user-info-left {
+  display: flex;
+  align-items: center;
+} 
+
+.user-info-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.add-btn {
+  padding: 5px;
+  width: 37px;
+  font-size: large;
+  font-weight: bold;
+  color: #fff;
+  margin: 0 auto;
+  text-align: center;
+  background-color: #F7D65A;
+  border-radius: 50%;
 }

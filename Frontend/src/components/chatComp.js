@@ -31,12 +31,12 @@ const ChatComponent = ( {user, otherUser} )  =>  {
 			inbox.mount(chatboxEl.current);
 
 			inbox.onSelectConversation(conversation => {
-				let otherUser = {
+				let currOtherUser = {
 					_id: conversation.others[0].id,
 					name: conversation.others[0].name,
 					email: conversation.others[0].email,
 				}
-				currChat.setOtherUser(otherUser);
+				currChat.setOtherUser(currOtherUser);
 			});
 
 			inbox.onSendMessage (message => {

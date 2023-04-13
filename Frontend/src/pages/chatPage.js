@@ -1,10 +1,13 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import userContext from '../contexts/userContext';
 import SocketService, { socket } from '../tools/socketService';
 import ChatComponent from '../components/chatComp';
 import chatContext from '../contexts/chatContext';
 import { NavLink } from 'react-router-dom';
 import '../styles/chatPage.css'
+import SearchBar from '../components/SearchBar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const ChatPage = ()  =>  {
 
@@ -12,6 +15,28 @@ const ChatPage = ()  =>  {
   	const currChat = useContext(chatContext);
 
   	currChat.setUser(authUser.user);
+
+	const UserPanel = (user) => {
+
+		const handleAdd = () => {
+			console.log(user.user.profilePic, user.user.name);
+		}
+
+		return (
+			<div className='user-info'>
+				<div className='user-info-left'>
+					<img src={user.user.profilePic} alt="" className='user-img'/>
+					<h5>{user.user.name}</h5>
+				</div>
+				<div className='user-info-right'>
+					<button className='add-btn' onClick={handleAdd}>
+					<FontAwesomeIcon icon={faPlus} />
+				</button>
+				</div>
+				
+			</div>
+		)
+	}
 
 	const OtherUserView =  () => {
 
@@ -23,7 +48,7 @@ const ChatPage = ()  =>  {
 							{currChat.otherUser.name}
 						</h2>
 						<NavLink to={`/user/${currChat.otherUser._id}`}>
-							<button className='profile-btn'>
+							<button className='view-profile-btn'>
 								View profile
 							</button>
 						</NavLink>
@@ -33,6 +58,45 @@ const ChatPage = ()  =>  {
 					<h2>
 						No user selected
 					</h2>
+				}
+			</div>
+		)
+	}
+
+	const UserSearch =  () => {
+		const [userList, setUserList] = useState([]);
+		const exmUser1 = {
+			name: 'John Doe',
+			_id: '123',
+			profilePic: 'https://www.w3schools.com/howto/img_avatar.png'
+		}	
+		const exmUser2 = {	
+			name: 'Jane Doe',
+			_id: '456',	
+			profilePic: 'https://www.w3schools.com/howto/img_avatar.png'
+		}
+		const exmUser3 = {
+			name: 'John Smith',
+			_id: '789',
+			profilePic: 'https://www.w3schools.com/howto/img_avatar.png'
+		}
+
+		useEffect(() => {
+			setUserList([exmUser1, exmUser2, exmUser1, exmUser2, exmUser1, exmUser2, exmUser1, exmUser2, exmUser1, exmUser2,exmUser1, exmUser2,exmUser1, exmUser2, exmUser3]);
+		}, []);
+
+		return (
+			<div className='user-search-view'>
+				<SearchBar />
+				{userList.length > 0 &&
+					<div className='user-list'>
+						{userList.map((user) =>{
+							return (<UserPanel user={user} />)
+						})}	
+					</div>
+				}
+				{userList.length === 0 &&
+						<span>Search results will appear here</span>
 				}
 			</div>
 		)
@@ -50,7 +114,10 @@ const ChatPage = ()  =>  {
 	return (
 		<div className='chat-page' >
 			<ChatComponent user={authUser.user} />
-			<OtherUserView otherUser={currChat.otherUser}/>
+			<div>
+				<OtherUserView otherUser={currChat.otherUser}/>
+				<UserSearch />
+			</div>
 			
 		</div>
 	);
