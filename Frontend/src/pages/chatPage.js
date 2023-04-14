@@ -5,7 +5,7 @@ import ChatComponent from '../components/chatComp';
 import chatContext from '../contexts/chatContext';
 import { NavLink } from 'react-router-dom';
 import '../styles/chatPage.css'
-import SearchBar from '../components/SearchBar';
+import ChatSearchBar from '../components/ChatSearchBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -87,7 +87,7 @@ const ChatPage = ()  =>  {
 
 		return (
 			<div className='user-search-view'>
-				<SearchBar />
+				<ChatSearchBar placeholderText={"Search users"}/>
 				{userList.length > 0 &&
 					<div className='user-list'>
 						{userList.map((user) =>{
@@ -114,7 +114,7 @@ const ChatPage = ()  =>  {
 	return (
 		<div className='chat-page' >
 			<ChatComponent user={authUser.user} />
-			<div>
+			<div className='chat-right-panel'>
 				<OtherUserView otherUser={currChat.otherUser}/>
 				<UserSearch />
 			</div>

@@ -1,11 +1,13 @@
 import Talk from 'talkjs';
-import { useEffect, useState, useRef, useContext, useCallback } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import chatContext from '../contexts/chatContext';
+import ChatSearchBar from './ChatSearchBar';
 
 const ChatComponent = ( {user, otherUser} )  =>  {
 
 	const chatboxEl = useRef();
 	const currChat = useContext(chatContext);
+	const [filter, setFilter] = useState(null);
 
 	// wait for TalkJS to load
 	const [talkLoaded, markTalkLoaded] = useState(false);
@@ -26,11 +28,14 @@ const ChatComponent = ( {user, otherUser} )  =>  {
 			appId: 'tnfFYmAK',
 			me: currentUser,
 			});
-
+			
 			const inbox = session.createInbox();
 			inbox.mount(chatboxEl.current);
+			inbox.setFeedFilter({});
+			
 
 			inbox.onSelectConversation(conversation => {
+				console.log(conversation);
 				let currOtherUser = {
 					_id: conversation.others[0].id,
 					name: conversation.others[0].name,
@@ -50,7 +55,10 @@ const ChatComponent = ( {user, otherUser} )  =>  {
 	}, [talkLoaded]);
 
 	return (
-		<div className='chat-comp' ref={chatboxEl} />
+		<div>
+			<div className='chat-search-bar'><ChatSearchBar placeholderText={"Search chats"} searchFunc={setFilter}/></div>
+			<div className='chat-comp' ref={chatboxEl} />
+		</div>
 	);
 	
 }

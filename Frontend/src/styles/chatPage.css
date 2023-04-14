@@ -84,3 +84,12 @@
   background-color: #F7D65A;
   border-radius: 50%;
 }
+
+.chat-right-panel {
+  margin-top: 55px;
+}
+
+.chat-search-bar {
+  width: 286px;
+  margin-bottom: 10px;
+}
