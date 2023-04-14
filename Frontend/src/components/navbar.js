@@ -113,7 +113,7 @@ const Navbar = () => {
 
             {authUser.isAuth &&
                 <div className='search-container'>
-                    <SearchBar />
+                    <SearchBar placeholderText=""/>
                 </div>
             }
 

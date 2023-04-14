@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-const SearchBar = () => {
+const SearchBar = ( {placeholderText} ) => {
 
     const nav = useNavigate();
 
@@ -37,7 +37,7 @@ const SearchBar = () => {
 
     return (
         <div className='search-bar-container'>
-            <input type="text" placeholder='Search here' className='search-bar' id='search' onKeyDown={onKeyDownHandler} />
+            <input type="text" placeholder={placeholderText != "" ? placeholderText : 'Search here'} className='search-bar' id='search' onKeyDown={onKeyDownHandler} />
             <button className='search-clear-button' id='clear-button' onClick={handleClear}>
                 <FontAwesomeIcon icon={faXmark} />
             </button>
