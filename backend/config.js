@@ -1,5 +1,5 @@
 const mongoCredentials = {
-    uri: "mongodb+srv://itembnb:phLGhGYYjXOjCD1s@itembnb.wiipauo.mongodb.net/?retryWrites=true&w=majority"
+    uri: "mongodb+srv://itembnb:turkstra.db@itembnbdb.xzcvsqf.mongodb.net/?retryWrites=true&w=majority"
 }
 
 module.exports = mongoCredentials;
