@@ -1,8 +1,9 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { NavLink } from "react-router-dom";
 import ReservationService from '../tools/reservationService';
 import userContext from '../contexts/userContext';
 import Loading from '../components/Loading';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const LendingHistory = () => {
     const [lendingHist, setLendingHist] = useState([]);
@@ -13,13 +14,21 @@ const LendingHistory = () => {
 
     useEffect(() => {
         async function getAllLendingResv() {
-            console.log(authUser)
-            const data = await ReservationService.getAllPastLendingHistory(authUser.user.user._id);
+            // use sessionUser instead of authUser since authUser + userEffect is unreliable
+            const sessionUser = JSON.parse(sessionStorage.getItem('curUser'));
+            const data = await ReservationService.getAllPastLendingHistory(sessionUser._id);
             setLendingHist(data.data);
+            /*
+            SocketService.connect();
+            socket.emit('sendId', sessionUser.email);
+            */
         }
         getAllLendingResv().then(() => setLoading(false));
     }, []);
 
+    if (authUser.user.user == null) {
+        return nav("/login-required");
+    }
 
   if (!loading) {
     return (

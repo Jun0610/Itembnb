@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { NavLink, useParams} from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import userContext from "../contexts/userContext";
 import ItemService from "../tools/itemsService";
 import UserService from "../tools/userService.js";
 import ReservationService from "../tools/reservationService";
-import { Loading, LoadingSmall } from "../components/Loading";
+import { Loading } from "../components/Loading";
 import ItemCalendar from "../components/borrowerCalendar";
+import UserInfo from "../components/userInfo";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
@@ -18,6 +19,8 @@ const SelectedItemPost = () => {
     const [userReserv, setUserReserv] = useState({});
     const [reservSuccess, setReservSuccess] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
+
+    // for handling reviews/ratings
     const [itemReviews, setItemReviews] = useState([]);
     const [rating, setRating] = useState(null);
     const [OGItemReviews, setOGItemReviews] = useState([]);
@@ -75,24 +78,24 @@ const SelectedItemPost = () => {
     useEffect(() => {
         const getItemReviews = async () => {
             //get reservation data for user
-            const itemReviews = await ReviewService.getReviewByItem(itemId)
-            setItemReviews(itemReviews.data)
-            setOGItemReviews(itemReviews.data)
-            setRating(itemReviews.rating)
+            const itemReviews = await ReviewService.getReviewByItem(itemId);
+            setItemReviews(itemReviews.data);
+            setOGItemReviews(itemReviews.data);
+            setRating(itemReviews.rating);
         }
         getItemReviews();
     }, [])
 
-    const onEditReview = (review, idx) => {        
+    const onEditReview = (review, idx) => {
         // update the average rating on item
-        itemReviews[idx].review = review
-        setItemReviews(itemReviews)
-        setOGItemReviews(itemReviews)
+        itemReviews[idx].review = review;
+        setItemReviews(itemReviews);
+        setOGItemReviews(itemReviews);
 
         var totalRating = 0;
         for (const ir of itemReviews) totalRating += parseInt(ir.review.rating)
-           
-        setRating(1.0*totalRating/itemReviews.length)
+
+        setRating(1.0 * totalRating / itemReviews.length)
     }
 
     const onDeleteReview = (review, idx) => {
@@ -105,8 +108,8 @@ const SelectedItemPost = () => {
             var totalRating = 0;
             const newItemReviews = itemReviews.filter((_, i) => idx !== i)
             for (const ir of newItemReviews) totalRating += parseInt(ir.review.rating)
-            
-            setRating(1.0*totalRating/newItemReviews.length)
+
+            setRating(1.0 * totalRating / newItemReviews.length)
 
             alert("Successfully deleted your review!");
         }
@@ -177,38 +180,6 @@ const SelectedItemPost = () => {
 
     }
 
-    const ownerInfo = () => {
-        if (Object.keys(owner).length)
-            return (
-                <div className="owner">
-                    <div className="owner-details">
-                        <NavLink to={"/user/" + owner._id}>
-                            <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}>{selectedItem.ownerId ? owner.name : "owner not shown"}</span> </h4>
-
-                        </NavLink>
-                        <p className='owner-desc'>{owner.profileDesc || "This user has no profile description."}</p>
-                    </div>
-
-                    <img src={owner.profilePic} alt="" className="owner-img" />
-
-                </div>);
-
-        return (
-            <div className="owner">
-                <div className="owner-details">
-                    <NavLink to={"/user/" + owner._id}>
-                        <h4 className='owner-name'>Owner: <span style={{ fontWeight: "600" }}></span> </h4>
-
-                    </NavLink>
-                    <p className='owner-desc'>Loading...</p>
-                </div>
-
-                <LoadingSmall />
-
-            </div>
-        );
-    }
-
     if (selectedItem !== null) {
         return (
             <div>
@@ -236,18 +207,22 @@ const SelectedItemPost = () => {
                             <div className="item-post-row">
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
-                            {ownerInfo()}
+                            <UserInfo user={owner} />
                             <div className="font-bold">
                                 Reviews
+                                <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
                             </div>
                             <div className='flex gap-4'>
-                                {stars.map((e, i) => (<div onClick={() => filterStar(e)} style={{cursor: "pointer"}}>{e}-star</div>))}
-                                <div onClick={resetFilter} style={{cursor: "pointer"}}>Reset</div>
+                                {stars.map((e, i) => (<div onClick={() => filterStar(e)} style={{ cursor: "pointer" }}>{e}-star</div>))}
+                                <div onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
                             </div>
                             <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
-                                {itemReviews.map((e, i) => (
-                                    <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i}/>
-                                ))}
+                                {itemReviews.length > 0 ?
+                                    itemReviews.map((e, i) => (
+                                        <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
+                                    )) :
+                                    <p>There are no reviews!</p>
+                                }
                             </div>
                         </div>
                         {reservationInfo()}

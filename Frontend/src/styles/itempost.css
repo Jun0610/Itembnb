@@ -17,7 +17,7 @@
     margin: 15px 30px;
 }
 
-.owner-img {
+.user-img {
     border-radius: 50%;
     width: 150px;
     height: 150px;
@@ -27,7 +27,7 @@
     border: 2px solid #ffec18;
 }
 
-.owner {
+.user {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     max-width: 600px;
@@ -37,26 +37,26 @@
     padding: 15px;
 }
 
-.owner a {
+.user a {
     text-decoration: none;
     color: inherit;
 }
 
-.owner a:hover {
+.user a:hover {
     text-decoration: underline;
 }
 
-.owner-name {
+.user-name {
     margin-top: 0.5rem;
     margin-bottom: 1rem;
 }
 
-.about-owner {
+.about-user {
     padding-top: 10px;
     align-self: center;
 }
 
-.owner-desc {
+.user-desc {
     max-width: 400px;
     text-justify: inter-word;
 }

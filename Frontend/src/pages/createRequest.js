@@ -90,12 +90,12 @@ const CreateRequest = () => {
     }
 
     if (authUser.user.user == null) {
-        return navigate("/");
+        return navigate("/login-required");
     }
     return (
         <div>
             <div className="m-3 text-xl font-bold" style={{ color: "#F0D061" }}>Request an Item</div>
-            <div>&nbsp;If you'd like to borrow an item you can't find, you can put out a request and other users will try to fulfill it!</div>
+            <div><p>&nbsp;If you'd like to borrow an item you can't find, you can put out a request and other users will try to fulfill it!</p></div>
             <div className="m-3">
                 <form onSubmit={handleSubmit}>
                     <div className="flex gap-6 mb-6">

@@ -17,11 +17,19 @@
     float: left;
 
 }
-
 .search-container {
-    padding-left: 12%;
+    padding-left: 13.5%;
     align-self: center;
 }
+
+@media screen and (min-width: 1600px) {
+    .search-container {
+        padding-left: 24%;
+        align-self: center;
+    }
+
+}
+
 
 .brand-logo {
     background-color: white;
