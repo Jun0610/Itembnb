@@ -63,8 +63,8 @@ const BorrowingHistory = () => {
                     <div class="w-11 h-6 bg-blue-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[8px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
                     <span class="ml-3 text-sm font-medium">Minimize Mode</span>
                 </label>
-                <div onClick={() => orderByDate('date')} className='items-center font-medium text-sm p-2 bg-yellow-400 rounded-lg text-white' style={{cursor: "pointer"}}>{isAscD ? 'Display By Most Recent' : 'Display by Least Recent'}</div>
-                <div onClick={() => orderByDate('name')} className='items-center font-medium text-sm p-2 bg-yellow-400 rounded-lg text-white' style={{cursor: "pointer"}}>Display By Name &nbsp; {isAscN ? '(A-Z)' : '(Z-A)'}</div>
+                <div onClick={() => orderByDate('date')} className='items-center font-medium text-sm p-2 bg-yellow-400 rounded-lg text-white' style={{cursor: "pointer"}}>{isAscD ? 'List By Most Recent' : 'List by Least Recent'}</div>
+                <div onClick={() => orderByDate('name')} className='items-center font-medium text-sm p-2 bg-yellow-400 rounded-lg text-white' style={{cursor: "pointer"}}>List By Alphabetical Order &nbsp; {isAscN ? '(A-Z)' : '(Z-A)'}</div>
             </div>
             {borrowingHist && borrowingHist.length !== 0 ? 
             <div>
