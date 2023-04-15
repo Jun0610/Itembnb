@@ -13,6 +13,7 @@ const ChatPage = ()  =>  {
 
   	const authUser = useContext(userContext);
   	const currChat = useContext(chatContext);
+	const [invChat, setInvChat] = useState(null);
 
   	currChat.setUser(authUser.user);
 
@@ -20,6 +21,7 @@ const ChatPage = ()  =>  {
 
 		const handleAdd = () => {
 			console.log(user.user.profilePic, user.user.name);
+			setInvChat(user.user);
 		}
 
 		return (
@@ -113,7 +115,7 @@ const ChatPage = ()  =>  {
 
 	return (
 		<div className='chat-page' >
-			<ChatComponent user={authUser.user} />
+			<ChatComponent user={authUser.user} otherUser={invChat}/>
 			<div className='chat-right-panel'>
 				<OtherUserView otherUser={currChat.otherUser}/>
 				<UserSearch />

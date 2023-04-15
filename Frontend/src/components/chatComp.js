@@ -30,9 +30,39 @@ const ChatComponent = ( {user, otherUser} )  =>  {
 			});
 			
 			const inbox = session.createInbox();
-			inbox.mount(chatboxEl.current);
-			inbox.setFeedFilter({});
 			
+			
+			if (otherUser != null) {
+				console.log("runnning otheruser");
+				console.log(otherUser);
+				const otherTalkUser = new Talk.User({
+					id: otherUser._id,
+					name: otherUser.name,
+					email: otherUser.email,
+					role: 'default',
+				});
+
+				const convId = Talk.oneOnOneId(currentUser, otherTalkUser);
+				const conversation = session.getOrCreateConversation(convId);
+				conversation.setParticipant(currentUser);
+				conversation.setParticipant(otherTalkUser);
+				conversation.setAttributes({custom: {
+					firstUser: currentUser.name.localeCompare(otherTalkUser.name) < 0 ? currentUser.name : otherTalkUser.name,
+					secondUser: currentUser.name.localeCompare(otherTalkUser.name) < 0 ? otherTalkUser.name : currentUser.name
+				}});
+
+				inbox.select(conversation);
+			}
+			
+			inbox.mount(chatboxEl.current);
+			if (filter != null) {
+				inbox.setFeedFilter({custom: {
+					firstUser: ["==", currentUser.name.localeCompare(filter) < 0 ? currentUser.name : filter],
+					secondUser: ["==", currentUser.name.localeCompare(filter) < 0 ? filter : currentUser.name]
+				}});
+			} else {
+				inbox.setFeedFilter({});
+			}
 
 			inbox.onSelectConversation(conversation => {
 				console.log(conversation);
@@ -52,7 +82,7 @@ const ChatComponent = ( {user, otherUser} )  =>  {
 
 			return () => session.destroy();
 		}
-	}, [talkLoaded]);
+	}, [talkLoaded, otherUser, filter]);
 
 	return (
 		<div>

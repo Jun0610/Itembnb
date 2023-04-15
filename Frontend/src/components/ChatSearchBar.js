@@ -8,10 +8,11 @@ const ChatSearchBar = ( {placeholderText, searchFunc} ) => {
 
     const handleSearch = async () => {
         if (input === '') {
-            alert("Cannot have empty search string!")
+            searchFunc(null);
             return;
         }
-        
+
+        console.log(input);
         searchFunc(input);
     }
 
