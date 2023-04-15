@@ -13,6 +13,7 @@ const ChatComponent = ( {user, otherUser} )  =>  {
 	const [talkLoaded, markTalkLoaded] = useState(false);
 
 	useEffect(() => {
+		console.log("running chat component");
 		Talk.ready.then(() => markTalkLoaded(true)); 
 
 		currChat.setOtherUser(null);
@@ -30,7 +31,6 @@ const ChatComponent = ( {user, otherUser} )  =>  {
 			});
 			
 			const inbox = session.createInbox();
-			
 			
 			if (otherUser != null) {
 				console.log("runnning otheruser");

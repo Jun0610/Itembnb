@@ -67,44 +67,40 @@ const ChatPage = ()  =>  {
 
 	const UserSearch =  () => {
 		const [userList, setUserList] = useState([]);
-		const exmUser1 = {
-			name: 'John Doe',
-			_id: '123',
-			profilePic: 'https://www.w3schools.com/howto/img_avatar.png'
-		}	
-		const exmUser2 = {	
-			name: 'Jane Doe',
-			_id: '456',	
-			profilePic: 'https://www.w3schools.com/howto/img_avatar.png'
+		
+		const handleSearch = async (input) => {
+			if (input === '') {
+				setUserList(null);
+				return;
+			} else {
+				const res = await fetch(`http://localhost:8888/api/user/get-users/:${input}`);
+				const data = await res.json();
+				setUserList(data);
+			}
 		}
-		const exmUser3 = {
-			name: 'John Smith',
-			_id: '789',
-			profilePic: 'https://www.w3schools.com/howto/img_avatar.png'
-		}
-
-		useEffect(() => {
-			setUserList([exmUser1, exmUser2, exmUser1, exmUser2, exmUser1, exmUser2, exmUser1, exmUser2, exmUser1, exmUser2,exmUser1, exmUser2,exmUser1, exmUser2, exmUser3]);
-		}, []);
 
 		return (
 			<div className='user-search-view'>
-				<ChatSearchBar placeholderText={"Search users"}/>
-				{userList.length > 0 &&
+				<ChatSearchBar placeholderText={"Search users"} searchFunc={handleSearch}/>
+				{userList && userList.length > 0 &&
 					<div className='user-list'>
 						{userList.map((user) =>{
 							return (<UserPanel user={user} />)
 						})}	
 					</div>
 				}
-				{userList.length === 0 &&
-						<span>Search results will appear here</span>
+				{userList && userList.length === 0 &&
+					<span>No results found</span>
+				}
+				{userList == null &&
+					<span>Search for users</span>
 				}
 			</div>
 		)
 	}
 	
 	useEffect(() => {
+		console.log('chat page');
 		if (sessionStorage.getItem('curUser') !== null) {
 			authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
 

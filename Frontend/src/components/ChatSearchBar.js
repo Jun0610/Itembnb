@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import "../styles/searchBar.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -6,6 +6,10 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 const ChatSearchBar = ( {placeholderText, searchFunc} ) => {
     const [input, setInput] = useState('');
 
+    useEffect(() => {
+        console.log('chat component');
+    }, []);
+    
     const handleSearch = async () => {
         if (input === '') {
             searchFunc(null);
