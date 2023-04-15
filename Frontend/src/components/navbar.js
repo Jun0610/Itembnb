@@ -82,8 +82,6 @@ const Navbar = () => {
         }
     }
 
-    console.log("notif list (outside): ", listOfNotifications);
-
     window.onclick = (e) => {
         const dropDown = document.querySelector(".drop-down-container")
         const notifBar = document.querySelector('.notification-bar')
