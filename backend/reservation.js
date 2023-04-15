@@ -233,7 +233,10 @@ router.get('/get-past-borrowing-reservations/:userId', async (req, res) => {
             const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
             if (item === null) continue;
 
-            borrowedReservations.push({ reservation, item })
+            const lender = await db.collection("users").findOne({_id: new mongo.ObjectId(item.ownerId)})
+            if (lender === null) continue;
+
+            borrowedReservations.push({ reservation, item, lender })
         }
         res.status(201).json({ success: true, data: borrowedReservations });
     } catch (err) {
