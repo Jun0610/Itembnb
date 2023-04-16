@@ -13,6 +13,8 @@ const SearchResultsPage = () => {
     const [loading, setLoading] = useState(true);
     const [arrayContents, setArrayContents] = useState('none')
     const [sortingOrder, setSortingOrder] = useState('Default')
+    const [filterState, setFilterState] = useState({ fromPrice: '', toPrice: '', rating: '', fromDate: '', toDate: '' })
+    const [filterButtonState, setFilterButtonState] = useState('search-results-btn')
     const { searchString } = useParams();
 
     useEffect(() => {
@@ -44,8 +46,16 @@ const SearchResultsPage = () => {
     }, [searchString])
 
     useEffect(() => {
-        console.log("test");
-    }, [arrayContents])
+        console.log(filterState);
+        for (const key in filterState) {
+            if (filterState[key] !== '') {
+                setFilterButtonState('search-filter-on');
+                return;
+            }
+            setFilterButtonState('search-results-btn')
+        }
+        console.log("TEST");
+    }, [arrayContents, filterState])
 
     const openFilter = () => {
         const popUp = document.getElementById('filter-container');
@@ -148,9 +158,9 @@ const SearchResultsPage = () => {
         if (items.length > 0) {
             return (
                 <>
-                    <FilterPopUp items={items} setItems={setItems} setArrayContents={setArrayContents} />
+                    <FilterPopUp items={items} setItems={setItems} setArrayContents={setArrayContents} filterState={filterState} setFilterState={setFilterState} setOrigItems={setOrigItems} />
                     <div className='btn-container'>
-                        <button className='search-results-btn' id='open-filter' onClick={openFilter}>Filter</button>
+                        <button className={filterButtonState} id='open-filter' onClick={openFilter}>Filter</button>
                         <button className='search-results-btn' id='open-sorting' onClick={openSorting}>Sort By: {sortingOrder}</button>
                         <div className='sorting-dropdown'>
                             <div className='sorting-dropdown-btn'>
@@ -189,7 +199,7 @@ const SearchResultsPage = () => {
             return (
                 <>
                     <FilterPopUp items={items} setItems={setItems} setArrayContents={setArrayContents} />
-                    <button className='search-results-btn' onClick={openFilter}>Filter</button>
+                    <button className='search-results-btn' id='filter-btn' onClick={openFilter}>Filter</button>
                     <div className='sorting-dropdown'>
                         <button onClick={priceHighLow} className='search-results-btn'>Price High Low</button>
                         <button onClick={priceLowHigh} className='search-results-btn'>Price Low High</button>

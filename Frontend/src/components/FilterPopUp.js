@@ -3,10 +3,19 @@ import { useParams } from 'react-router-dom';
 import '../styles/filterPopUp.css'
 import ItemService from '../tools/itemsService';
 import Loading from './Loading';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-const FilterPopUp = ({ items, setItems, setArrayContents }) => {
+const FilterPopUp = ({ items, setItems, setArrayContents, filterState, setFilterState, setOrigItems }) => {
     const { searchString } = useParams();
     const [loading, setLoading] = useState(false);
+    const [fromPrice, setFromPrice] = useState(JSON.stringify(filterState.fromPrice))
+    const [toPrice, setToPrice] = useState(JSON.stringify(filterState.toPrice))
+    const [fromDate, setFromDate] = useState(JSON.stringify(filterState.fromDate))
+    const [toDate, setToDate] = useState(JSON.stringify(filterState.toDate))
+    const [rating, setRating] = useState(JSON.stringify(filterState.rating))
+
+
     window.onclick = (e) => {
 
         if (!e.target.matches("#filter-popup") && !e.target.matches("#filter-popup div") && !e.target.matches('#open-filter') && !e.target.matches('.popup-btn') && !e.target.matches('.filter-input')) {
@@ -52,7 +61,7 @@ const FilterPopUp = ({ items, setItems, setArrayContents }) => {
 
 
 
-    const submit = async () => {
+    const handleSubmit = async () => {
 
         //filter by price range
         let fromPrice = 0
@@ -128,7 +137,14 @@ const FilterPopUp = ({ items, setItems, setArrayContents }) => {
             copyFromDate.setDate(copyFromDate.getDate() + 1)
 
         }
-
+        setFilterState({
+            fromPrice: document.getElementById('from-price').value,
+            toPrice: document.getElementById('to-price').value,
+            rating: document.getElementById('rating').value,
+            fromDate: document.getElementById('from-date').value,
+            toDate: document.getElementById('to-date').value
+        })
+        console.log(filterState);
 
         setLoading(true)
         //first get unfiltered array from db
@@ -164,36 +180,70 @@ const FilterPopUp = ({ items, setItems, setArrayContents }) => {
             return check
         });
         setItems(filtered);
+        setOrigItems(filtered);
         setArrayContents('filtered')
         setLoading(false);
+
         closePopUp();
+
+
     }
+
+    const handleClear = () => {
+        setFromPrice('')
+        setToPrice('')
+        setFromDate('')
+        setToDate('')
+        setRating('')
+        setFilterState({
+            fromPrice,
+            toPrice,
+            rating,
+            fromDate,
+            toDate
+        })
+        console.log(filterState);
+    }
+
 
     if (!loading) {
         return (
             <div id='filter-container'>
                 <div id='filter-popup'>
-                    <div className='filter-label'>
-                        Price Range
+                    <button className='close-filter-btn' onClick={closePopUp}>
+                        <FontAwesomeIcon icon={faXmark} />
+                    </button>
+                    <div className='price-container'>
+                        <div className='filter-label' id='price-range'>
+                            Price Range
+                        </div>
+                        <input value={fromPrice} onChange={(e) => setFromPrice(e.target.value)} type="number" id='from-price' className='filter-input' placeholder='From Price $' />
+                        <div style={{ justifySelf: "center", alignSelf: "center", fontSize: "2rem" }}>
+                            &#8211;
+                        </div>
+                        <input value={toPrice} onChange={(e) => setToPrice(e.target.value)} type="number" className='filter-input' id='to-price' placeholder='To Price $' />
+
                     </div>
-                    <input type="number" id='from-price' className='filter-input' placeholder='From Price $' />
-                    <div className='filter-label'>
-                        To
-                    </div>
-                    <input type="number" className='filter-input' id='to-price' placeholder='To Price $' />
+
                     <div className='filter-label'>
                         Rating of at least
                     </div>
-                    <input type="number" className='filter-input' id='rating' placeholder='Rating (0-5)' />
-                    <div className='filter-label'>
-                        Available Dates
+                    <input value={rating} onChange={(e) => setRating(e.target.value)} type="number" className='filter-input' id='rating' placeholder='Rating (0-5)' />
+
+                    <div className='date-container'>
+                        <div className='filter-label' id='avail-date'>
+                            Available Dates
+                        </div>
+                        <input value={fromDate} onChange={(e) => setFromDate(e.target.value)} type="date" id='from-date' className='filter-input' />
+                        <div style={{ justifySelf: "center", alignSelf: "center", fontSize: "2rem" }}>
+                            &#8211;
+                        </div>
+                        <input value={toDate} onChange={(e) => setToDate(e.target.value)} type="date" id='to-date' className='filter-input' />
+
                     </div>
-                    <input type="date" id='from-date' className='filter-input' />
-                    <div className='filter-label'>
-                        To
-                    </div>
-                    <input type="date" id='to-date' className='filter-input' />
-                    <button onClick={submit} className='popup-btn'>Submit</button>
+
+                    <button onClick={handleSubmit} className='popup-btn'>Submit</button>
+                    <button onClick={handleClear} className='popup-btn'>Clear</button>
                 </div>
             </div>
         )
