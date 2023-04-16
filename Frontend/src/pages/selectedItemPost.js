@@ -6,11 +6,11 @@ import UserService from "../tools/userService.js";
 import ReservationService from "../tools/reservationService";
 import { Loading } from "../components/Loading";
 import ItemCalendar from "../components/borrowerCalendar";
-import UserInfo from "../components/userInfo";
+import { UserInfo } from "../components/smallInfoBox";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
-import ItemReview from '../components/itemReview';
+import { ReviewOnSubjectPage } from '../components/review';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -78,7 +78,7 @@ const SelectedItemPost = () => {
     useEffect(() => {
         const getItemReviews = async () => {
             //get reservation data for user
-            const itemReviews = await ReviewService.getReviewByItem(itemId);
+            const itemReviews = await ReviewService.getReviewsForItem(itemId);
             setItemReviews(itemReviews.data);
             setOGItemReviews(itemReviews.data);
             setRating(itemReviews.rating);
@@ -93,23 +93,23 @@ const SelectedItemPost = () => {
         setOGItemReviews(itemReviews);
 
         var totalRating = 0;
-        for (const ir of itemReviews) totalRating += parseInt(ir.review.rating)
+        for (const ir of itemReviews) totalRating += parseInt(ir.review.rating);
 
         setRating(1.0 * totalRating / itemReviews.length)
     }
 
     const onDeleteReview = (review, idx) => {
         const deleteReview = async (review, idx) => {
-            await ReviewService.deleteReview(review._id, itemId)
-            setItemReviews(itemReviews.filter((_, i) => idx !== i))
-            setOGItemReviews(OGItemReviews.filter((_, i) => idx !== i))
+            await ReviewService.deleteReview(review._id);
+            setItemReviews(itemReviews.filter((_, i) => idx !== i));
+            setOGItemReviews(OGItemReviews.filter((_, i) => idx !== i));
 
             // update the average rating of the item
             var totalRating = 0;
-            const newItemReviews = itemReviews.filter((_, i) => idx !== i)
-            for (const ir of newItemReviews) totalRating += parseInt(ir.review.rating)
+            const newItemReviews = itemReviews.filter((_, i) => idx !== i);
+            for (const ir of newItemReviews) totalRating += parseInt(ir.review.rating);
 
-            setRating(1.0 * totalRating / newItemReviews.length)
+            setRating(1.0 * totalRating / newItemReviews.length);
 
             alert("Successfully deleted your review!");
         }
@@ -117,11 +117,11 @@ const SelectedItemPost = () => {
     }
 
     const filterStar = (i) => {
-        setItemReviews(OGItemReviews.filter((e) => e.review.rating === i))
+        setItemReviews(OGItemReviews.filter((e) => e.review.rating === i));
     }
 
     const resetFilter = () => {
-        setItemReviews(OGItemReviews)
+        setItemReviews(OGItemReviews);
     }
 
     //========== review section end ============
@@ -219,7 +219,7 @@ const SelectedItemPost = () => {
                             <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
                                 {itemReviews.length > 0 ?
                                     itemReviews.map((e, i) => (
-                                        <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
+                                        <ReviewOnSubjectPage key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
                                     )) :
                                     <p>There are no reviews!</p>
                                 }

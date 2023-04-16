@@ -1,7 +1,7 @@
 const url = "http://localhost:8888/api/review";
 
 class ReviewService {
-    static async getReviewByItem(id) {
+    static async getReviewsForItem(id) {
         const request = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -16,13 +16,28 @@ class ReviewService {
         }
     }
 
-    static async getReviewByUser(id) {
+    static async getReviewsForUser(id) {
         const request = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         }
         try {
             const res = await fetch(`${url}/get-user-review/${id}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async getReviewsByUser(id) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-reviews-made-by-user/${id}`, request);
             const response = await res.json();
             response.status = res.status
             return response
@@ -67,9 +82,9 @@ class ReviewService {
         }
     }
 
-    static async deleteReview(reviewId, itemId) {
+    static async deleteReview(reviewId) {
         return new Promise((resolve, reject) => {
-            fetch(`${url}/delete-review/review-id/${reviewId}/item-id/${itemId}`, {
+            fetch(`${url}/delete-review/review-id/${reviewId}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             }).then(res => res.json()).then(

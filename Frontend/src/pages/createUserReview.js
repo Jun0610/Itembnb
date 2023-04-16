@@ -4,7 +4,7 @@ import { NavLink, useParams } from "react-router-dom";
 import ReviewService from "../tools/reviewService";
 import userContext from '../contexts/userContext';
 import UserService from "../tools/userService";
-import UserInfo from "../components/userInfo";
+import { UserInfo } from "../components/smallInfoBox";
 import Post from "../components/post";
 
 import "bootstrap/dist/css/bootstrap.min.css";

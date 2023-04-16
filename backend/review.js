@@ -14,20 +14,18 @@ const { db, mongo } = require('./mongo')
 const express = require("express")
 const router = express.Router()
 
+// get all reviews for a user
 router.get("/get-user-review/:id", async (req, res) => {
     try {
-        //get reviews for a user
         const reviewSubject = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.id) })
         const reviewsWithUsers = []
         var rating = 0.0;
-        if (reviewSubject.reviewsOfUser) {
-            for (const reviewId of reviewSubject.reviewsOfUser) {
-                const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
-                rating += review.rating;
-                if (review) {
-                    const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(review.reviewerId) })
-                    if (user) reviewsWithUsers.push({ review, user })
-                }
+        for (const reviewId of reviewSubject.reviewsOfUser) {
+            const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
+            rating += review.rating;
+            if (review) {
+                const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(review.reviewerId) })
+                if (user) reviewsWithUsers.push({ review, user })
             }
         }
         res.status(200).json({ success: true, data: reviewsWithUsers, rating: 1.0 * rating / reviewsWithUsers.length })
@@ -37,9 +35,28 @@ router.get("/get-user-review/:id", async (req, res) => {
     }
 })
 
+// get all reviews made by a user
+router.get("/get-reviews-made-by-user/:id", async (req, res) => {
+    try {
+        const reviewer = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.id) })
+        const reviewsWithUsers = []
+        for (const reviewId of reviewer.reviewsMade) {
+            const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
+            if (review) {
+                const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(review.reviewerId) })
+                if (user) reviewsWithUsers.push({ review, user })
+            }
+        }
+        res.status(200).json({ success: true, data: reviewsWithUsers })
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+// get all reviews for an item
 router.get("/get-item-review/:id", async (req, res) => {
     try {
-        //get reviews for an item
         const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(req.params.id) })
         const reviewsWithUsers = []
         var rating = 0.0;
@@ -60,9 +77,10 @@ router.get("/get-item-review/:id", async (req, res) => {
     }
 })
 
+// update review
 router.put("/update-review/:id", async (req, res) => {
     try {
-        //find the review
+        // find the review
         const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(req.params.id) })
         if (!review) res.status(404).json({ success: false, data: "no review found" })
         console.log("body: ", req.body);
@@ -72,24 +90,6 @@ router.put("/update-review/:id", async (req, res) => {
         console.log(err)
         res.status(404).json({ success: false, data: err.message })
     }
-})
-
-router.delete('/delete-review/review-id/:reviewId/item-id/:itemId', async (req, res) => {
-    try {
-        const reviewId = req.params.reviewId;
-        const itemId = req.params.itemId;
-
-        // remove the review from reviews
-        await db.collection('reviews').deleteOne({ _id: new mongo.ObjectId(reviewId) })
-
-        // remove the review from the review array
-        await db.collection('items').updateOne({ _id: new mongo.ObjectId(itemId) }, { $pull: { review: reviewId } })
-
-        res.status(200).json({ success: true, data: "item successfully deleted." })
-    } catch (err) {
-        res.status(200).json({ success: false, data: err });
-    }
-
 })
 
 //create new review
@@ -129,5 +129,51 @@ router.post('/add-review/user-id/:userId', async (req, res) => {
         res.status(404).json({ success: false, data: err.message })
     }
 })
+
+// delete review
+router.delete('/delete-review/review-id/:reviewId', async (req, res) => {
+    try {
+        const reviewId = req.params.reviewId;
+
+        await deleteReview(db, reviewId);
+
+        res.status(200).json({ success: true, data: "Review successfully deleted." })
+    } catch (err) {
+        res.status(200).json({ success: false, data: err });
+    }
+})
+
+async function deleteReview(db, reviewId) {
+    const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) });
+
+    try {
+        // first update reviewer's reviewsMade list
+        await db.collection('users').updateOne({ _id: new mongo.ObjectId(review.reviewerId) }, { $pull: { reviewsMade: reviewId } })
+
+        // then delete the review from the user/item it's for
+        // if review is review of an item
+        if (review.userId == "" && review.itemId != "") {
+            const results2 = await db.collection('items').updateOne({ _id: new mongo.ObjectId(review.itemId) }, { $pull: { review: reviewId } });
+            console.log(results2);
+        }
+        // if review is review of a user
+        else if (review.itemId == "" && review.userId != "") {
+            const results2 = await db.collection('users').updateOne({ _id: new mongo.ObjectId(review.userId) }, { $pull: { reviewsOfUser: reviewId } });
+            console.log(results2);
+        }
+        else {
+            // we should never reach this point
+            console.error(review);
+            throw new Error('Improperly formatted review!');
+        }
+
+        // then delete the review post from the reviews collection
+        await db.collection('reviews').deleteOne({ _id: new mongo.ObjectId(reviewId) })
+
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
 
 module.exports = router;

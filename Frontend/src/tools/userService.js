@@ -106,6 +106,21 @@ class UserService {
         }
     }
 
+    static async getUserDataMin(userId) {
+        console.log("getting user data");
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/user-data-min/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     static async getUserData(userId) {
         console.log("getting user data");

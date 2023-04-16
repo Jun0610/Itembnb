@@ -4,7 +4,7 @@ import userContext from '../contexts/userContext';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import { Loading, LoadingSmall } from "../components/Loading";
 import Post from "../components/post";
-import ItemReview from "../components/itemReview";
+import { ReviewOnSubjectPage, ReviewOnReviewerPage } from "../components/review.js";
 
 import UserService from '../tools/userService';
 import ItemService from '../tools/itemsService';
@@ -74,14 +74,18 @@ const Userpage = () => {
 
     /* --- Review Section --- */
 
-    // get borrower reviews + rating
+    // get user reviews + rating
     useEffect(() => {
         const getUserReviews = async () => {
-            //get reservation data for user
-            const reviews = await ReviewService.getReviewByUser(id);
-            setReviewsForUser(reviews.data);
-            setOGReviewsForUser(reviews.data);
-            setBorrowerRating(reviews.rating);
+            // get reviews for this user
+            const reviewsForUser = await ReviewService.getReviewsForUser(id);
+            setReviewsForUser(reviewsForUser.data);
+            setOGReviewsForUser(reviewsForUser.data);
+            setBorrowerRating(reviewsForUser.rating);
+
+            // get reviews made by this user
+            const reviewsByUser = await ReviewService.getReviewsByUser(id);
+            setReviewsByUser(reviewsByUser.data);
         }
         getUserReviews();
     }, []);
@@ -103,9 +107,9 @@ const Userpage = () => {
             <div>
                 {reviewsForUser.length > 0 ?
                     reviewsForUser.map((e, i) => (
-                        <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
+                        <ReviewOnSubjectPage key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
                     )) :
-                    <p>There are no reviews!</p>
+                    <p class="grayText">There are no reviews!</p>
                 }
             </div>
         );
@@ -120,9 +124,9 @@ const Userpage = () => {
             <div>
                 {reviewsByUser.length > 0 ?
                     reviewsByUser.map((e, i) => (
-                        <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={console.log("delete")} onEditReview={console.log("edit")} idx={i} />
+                        <ReviewOnReviewerPage reviewObject={e} />
                     )) :
-                    <p>There are no reviews!</p>
+                    <p class="grayText">There are no reviews!</p>
                 }
             </div>
         );
@@ -251,11 +255,15 @@ const Userpage = () => {
         }
 
         const displayProfileDescription = () => {
-            console.log(userInfo.profileDesc);
-            if (userInfo.profileDesc === "") {
-                return "This user has no profile description.";
+            let profileDescription = "";
+            if (userInfo.profileDesc === null || userInfo.profileDesc === "") {
+                profileDescription = <span class="grayText">This user has no profile description.</span>;
             }
-            return userInfo.profileDesc;
+            else {
+                profileDescription = userInfo.profileDesc;
+            }
+
+            return <p><strong>Profile Description: </strong>{profileDescription}</p>
         }
 
         const handleImageChange = (e) => {
@@ -338,7 +346,7 @@ const Userpage = () => {
                             </span>
                         )}
 
-                    <p><strong>Profile Description: </strong>{userInfo.profileDesc ? userInfo.profileDesc : <em>This user has no profile description.</em>}</p>
+                    {displayProfileDescription()}
                 </div>)
         }
     }
@@ -351,7 +359,7 @@ const Userpage = () => {
             return <LoadingSmall />
         }
         if (userItems.length === 0) {
-            return <p>{userInfo.name} has no items!</p>
+            return <p class="grayText">{userInfo.name} has no items!</p>
         } else {
             const filteredUserItems = userItems.filter(item => item !== undefined)
             return filteredUserItems.map(itemData =>
@@ -367,7 +375,7 @@ const Userpage = () => {
             return <LoadingSmall />
         }
         if (userRequests.length === 0) {
-            return <p>{userInfo.name} has no requests!</p>
+            return <p class="grayText">{userInfo.name} has no requests!</p>
         }
         return userRequests.map(request =>
             <Post post={request} isRequest={true} key={request._id} />
@@ -415,6 +423,9 @@ const Userpage = () => {
 
                 <h3 className="item-post-header">Reviews of {userInfo.name}</h3>
                 {displayReviewsOfUser()}
+
+                <h3 className="item-post-header">Reviews Made By {userInfo.name}</h3>
+                {displayReviewsMadeByUser()}
             </div>
         </div>
     );
