@@ -138,7 +138,7 @@ router.get("/search/:searchString", async (req, res) => {
         const items = await db.collection('items').find({ $or: [{ name: { $regex: req.params.searchString, $options: 'i' } }, { description: { $regex: req.params.searchString, $options: 'i' } }] }).toArray();
 
         //then get items whose owner's names matches the item
-        const owners = await db.collection('users').find({ name: req.params.searchString }, { _id: 1 }).toArray();
+        const owners = await db.collection('users').find({ name: { $regex: req.params.searchString, $options: 'i' } }, { _id: 1 }).toArray();
 
         for (const owner of owners) {
             const item = await db.collection('items').find({ ownerId: owner._id.toString() }).toArray();

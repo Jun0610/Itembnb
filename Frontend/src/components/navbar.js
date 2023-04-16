@@ -85,6 +85,7 @@ const Navbar = () => {
     window.onclick = (e) => {
         const dropDown = document.querySelector(".drop-down-container")
         const notifBar = document.querySelector('.notification-bar')
+
         if (dropDown === null || notifBar === null) {
             return;
         }
