@@ -14,7 +14,46 @@ const { db, mongo } = require('./mongo')
 const express = require("express")
 const router = express.Router()
 
-// get all reviews for a user
+//sending a single specific review
+router.get('/get-review/:id', async (req, res) => {
+    try {
+        const id = new mongo.ObjectId(req.params.id)
+        const result = await db.collection("reviews").findOne({ _id: id });
+        res.status(200).json({ success: true, data: result })
+    } catch (err) {
+        res.status(404).json({ success: false, data: err });
+    }
+})
+
+// get only average rating for a user (borrower)
+router.get("/get-user-rating/:id", async (req, res) => {
+    try {
+        const reviewSubject = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.id) })
+        let rating = 0;
+        let num_ratings = 0;
+        for (const reviewId of reviewSubject.reviewsOfUser) {
+            const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
+            if (review) {
+                if (user) {
+                    num_ratings++;
+                    rating += review.rating;
+                }
+            }
+        }
+        if (num_ratings == 0) {
+            rating = -1;
+        }
+        else {
+            rating /= num_ratings;
+        }
+        res.status(200).json({ success: true, rating: rating })
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+// get all reviews and avg. rating for a user (borrower)
 router.get("/get-user-review/:id", async (req, res) => {
     try {
         const reviewSubject = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.id) })
@@ -62,7 +101,33 @@ router.get("/get-reviews-made-by-user/:id", async (req, res) => {
     }
 })
 
-// get all reviews for an item
+// get only average rating for an item
+router.get("/get-item-rating/:id", async (req, res) => {
+    try {
+        const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(req.params.id) })
+        let rating = 0;
+        let num_ratings = 0;
+        for (const reviewId of item.review) {
+            const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
+            if (review) {
+                num_ratings++;
+                rating += review.rating;
+            }
+        }
+        if (num_ratings == 0) {
+            rating = -1;
+        }
+        else {
+            rating /= num_ratings;
+        }
+        res.status(200).json({ success: true, rating: rating })
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+// get all reviews and avg. rating for an item
 router.get("/get-item-review/:id", async (req, res) => {
     try {
         const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(req.params.id) })

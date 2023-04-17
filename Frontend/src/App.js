@@ -9,6 +9,7 @@ import CreateItemReview from "./pages/createItemReview";
 import CreateUserReview from "./pages/createUserReview";
 import DisplayItemPost from "./pages/displayItemPost";
 import DisplayRequestPost from "./pages/displayRequest";
+import DisplayReview from "./pages/displayReview";
 import Unavailable404 from "./pages/Unavailable404";
 import LoginWall from "./pages/LoginWall";
 import SignUp from "./pages/signup";
@@ -52,6 +53,7 @@ function App() {
                                 <Route path="/item-status/:id" element={<EmailStatusPage />} />
                                 <Route path="/display-item-post/:id" element={<DisplayItemPost />} />
                                 <Route path="/display-request-post/:id" element={<DisplayRequestPost />} />
+                                <Route path="/display-review/:id" element={<DisplayReview />} />
                                 <Route exact path="/signup" element={<SignUp />} />
                                 <Route exact path="/login" element={<Login />} />
                                 <Route path='/user/:id' element={<UserProfile />} />

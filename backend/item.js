@@ -3,20 +3,62 @@ const express = require("express")
 const router = express.Router()
 
 
-//sending all item posts
+// sending 'all' item posts from database (actually limited to 20)
 router.get('/get-item-posts', async (req, res) => {
     try {
-        const result = await db.collection("items").find().sort({ dateCreated: -1 }).limit(20).toArray();
-        if (result == null) {
+        const itemArray = await db.collection('items')
+            .find()
+            .limit(20)
+            .sort({ dateCreated: -1 })
+
+            // only get these attributes plus the first element of images
+            .project({ _id: 1, name: 1, description: 1, images: [{ $slice: ['$images', 1] }], price: 1, review: 1 })
+            .toArray();
+
+        if (itemArray == null) {
             res.status(200).json({ success: true, data: [] })
         } else {
-            res.status(200).json({ success: true, data: result })
+            // loop through all items and for each item get the reviews
+            for (const item of itemArray) {
+
+                let rating = 0;
+                let num_ratings = 0;
+
+                for (const reviewId of item.review) {
+                    const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
+                    if (review) {
+                        num_ratings++;
+                        rating += review.rating;
+                    }
+                }
+                if (num_ratings === 0) {
+                    rating = -1;
+                }
+                else {
+                    rating /= num_ratings;
+                }
+                item.rating = rating;
+            }
+
+            res.status(200).json({ success: true, data: itemArray })
         }
 
     } catch (err) {
         res.status(404).json({ success: false, data: err });
     }
 
+})
+
+// sending minimalist item data (just name, description, first pic, price)
+router.get('/get-item-post-min/:id', async (req, res) => {
+    try {
+        const id = new mongo.ObjectId(req.params.id)
+        const result = await db.collection("items").findOne({ _id: id });
+        const returnData = { _id: result._id, name: result.name, description: result.description, images: [result.images[0]], price: result.price }
+        res.status(200).json({ success: true, data: returnData })
+    } catch (err) {
+        res.status(404).json({ success: false, data: err });
+    }
 })
 
 //sending a specific item post

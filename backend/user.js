@@ -48,7 +48,7 @@ router.post('/user-login', async (req, res) => {
             res.status(403).json({ success: false, email: true, password: false, data: "incorrect password" })
         }
     } catch (err) {
-        res.status(404).json({ sucess: false, data: err });
+        res.status(404).json({ success: false, data: err });
     }
 })
 
@@ -64,7 +64,7 @@ router.get('/user-data-min/:id', async (req, res) => {
             res.status(200).json({ success: true, data: returnData })
         }
     } catch (err) {
-        res.status(404).json({ sucess: false, data: err });
+        res.status(404).json({ success: false, data: err });
     }
 })
 

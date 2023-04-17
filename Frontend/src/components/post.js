@@ -6,13 +6,13 @@ import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import UserService from '../tools/userService.js';
+import RatingStar from "../components/ratingStar";
 
 const Post = ({ post, isRequest }) => {
     const title = post.name;
     const description = post.description;
     const price = post.price;
-
-    const rating = 4;
+    const rating = post.rating;
 
     const selectedUser = useContext(userContext);
 
@@ -103,7 +103,7 @@ const Post = ({ post, isRequest }) => {
                 {!isRequest &&
                     <div className='card-body custom-card-body-right'>
                         <p className='card-text item-pr'> ${price} </p>
-                        <p className='card-text item-pr'> {rating}/5 </p>
+                        <p className='card-text item-pr'><RatingStar rating={rating} /></p>
                     </div>}
             </div>
         </div>

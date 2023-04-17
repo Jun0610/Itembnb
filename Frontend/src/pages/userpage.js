@@ -5,7 +5,7 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 
 import { Loading, LoadingSmall } from "../components/Loading";
 import Post from "../components/post";
-import { ReviewOnSubjectPage, ReviewOnReviewerPage } from "../components/review.js";
+import { ReviewOnSubjectPage, ReviewOnReviewerPage } from "../components/reviewComponents.js";
 import RatingStar from "../components/ratingStar.js";
 
 import UserService from '../tools/userService';
@@ -50,6 +50,7 @@ const Userpage = () => {
             // load user items
             // must use userInfoData instead of userInfo or it doesn't load because of how await works
             const userItemData = await ItemService.getItemsFromList(userInfoData.postedItems);
+            console.log(userItemData);
             setUserItems(userItemData);
 
             // load user requests

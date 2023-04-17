@@ -7,11 +7,11 @@ import ReservationService from "../tools/reservationService";
 import { Loading } from "../components/Loading";
 import ItemCalendar from "../components/borrowerCalendar";
 import { UserInfo } from "../components/smallInfoBox";
-import { RatingStar } from "../components/ratingStar";
+import RatingStar from "../components/ratingStar";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
-import { ReviewOnSubjectPage } from '../components/review';
+import { ReviewOnSubjectPage } from '../components/reviewComponents';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -210,7 +210,7 @@ const SelectedItemPost = () => {
                             </div>
                             <UserInfo user={owner} />
                             <div className="font-bold">
-                                Reviews
+                                Reviews ({originalItemReviews.length})
                                 <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
                             </div>
                             <div className='flex gap-4'>

@@ -8,6 +8,7 @@ import ItemService from "../tools/itemsService.js";
 import ReviewService from "../tools/reviewService";
 import { LoadingSmall } from "./Loading";
 import { SmallUserInfo, SmallItemInfo } from "./smallInfoBox";
+import { NavLink } from "react-router-dom";
 
 export const ReviewOnSubjectPage = ({ reviewObject, authUser, onDeleteReview, onEditReview, idx }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -88,12 +89,14 @@ export const ReviewOnSubjectPage = ({ reviewObject, authUser, onDeleteReview, on
 
             <div className="flex-auto">
                 <h5>
-                    {
-                        userIsReviewOwner() && isEditing ?
-                            <input id="rating" className="mt-1 border border-slate-300 py-2 rounded-md" type="number" min="1" max="5" value={localReview.rating} onChange={onInputChange} />
-                            :
-                            reviewObject.review.rating + "/5"
-                    }
+                    <NavLink to={`/display-review/` + reviewObject.review._id} className="lessStyledLink">
+                        {
+                            userIsReviewOwner() && isEditing ?
+                                <input id="rating" className="mt-1 border border-slate-300 py-2 rounded-md" type="number" min="1" max="5" value={localReview.rating} onChange={onInputChange} />
+                                :
+                                reviewObject.review.rating + "/5"
+                        }
+                    </NavLink>
                 </h5>
                 <div>
 
@@ -168,7 +171,9 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
     return (
         <div key={reviewObject.review._id} className="border-2 rounded-3xl border-yellow-400 m-2 p-2">
 
-            <h6>Reviewed {isItemReview ? "Item" : "Borrower"}</h6>
+            <h6><NavLink to={`/display-review/` + reviewObject.review._id} className="lessStyledLink">
+                Review of {isItemReview ? "Item" : "Borrower"}
+            </NavLink></h6>
 
             <div className="flex">
                 <div>
@@ -177,7 +182,9 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
 
                 <div className="flex-1">
                     <div>
-                        <h5>{reviewObject.review.rating}/5</h5>
+                        <h5><NavLink to={`/display-review/` + reviewObject.review._id} className="lessStyledLink">
+                            {reviewObject.review.rating}/5
+                        </NavLink></h5>
                     </div>
                     <div>
                         {new Date(reviewObject.review.dateModified).toLocaleString()}

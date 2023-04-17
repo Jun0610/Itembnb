@@ -4,6 +4,7 @@ import Loading from "../components/Loading";
 import userContext from "../contexts/userContext";
 import "../styles/homepage.css";
 import SocketService, { socket } from '../tools/socketService';
+import ItemService from '../tools/itemsService';
 
 const Homepage = () => {
 
@@ -23,9 +24,10 @@ const Homepage = () => {
 
     useEffect(() => {
         async function getItemPosts() {
-            await fetch("http://localhost:8888/api/item/get-item-posts")
-                .then((response) => response.json())
-                .then((data) => { console.log(data.data); setItemPosts(data.data); setIsLoadingItem(false) });
+            // load items from database
+            const itemInfo = await ItemService.getItemPosts();
+            setItemPosts(itemInfo.data);
+            setIsLoadingItem(false);
         }
         getItemPosts();
     }, []);

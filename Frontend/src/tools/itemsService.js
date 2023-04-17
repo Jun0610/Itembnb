@@ -1,4 +1,5 @@
 const url = "http://localhost:8888/api/item";
+const review_url = "http://localhost:8888/api/review";
 
 class ItemService {
     static async postItem(item, userId) {
@@ -15,6 +16,42 @@ class ItemService {
                 reject(err);
             })
         })
+    }
+
+    static async getItemRating(itemId) {
+        return new Promise((resolve, reject) => {
+            fetch(`${review_url}/get-item-rating/${itemId}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            }).then(res => res.json()).then((res) => {
+                resolve(res);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    }
+
+    // getting minimalist item data (just name, description, first pic, price)
+    // also getting the item's average rating
+    static async getItemMin(itemId) {
+        let itemMinData = new Promise((resolve, reject) => {
+            fetch(`${url}/get-item-post-min/${itemId}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            }).then(res => res.json()).then((res) => {
+                // const data = res.data;
+                resolve(res);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+
+        let itemRating = ItemService.getItemRating(itemId);
+
+        return Promise.all([itemMinData, itemRating]).then(([itemResult, ratingResult]) => {
+            itemResult.data.rating = ratingResult.rating;
+            return itemResult;
+        });
     }
 
     static async getItem(itemId) {
@@ -88,10 +125,25 @@ class ItemService {
         })
     }
 
+    // getting 'all' item posts from database (actually limited to 20)
+    static async getItemPosts() {
+        return new Promise((resolve, reject) => {
+            fetch(`${url}/get-item-posts`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            }).then(res => res.json()).then((res) => {
+                // const data = res.data;
+                resolve(res);
+            }).catch((err) => {
+                reject(err);
+            })
+        })
+    }
+
     // Given array of item ids (itemList), returns an array of data jsons for each item in itemList
     static async getItemsFromList(itemList) {
         return Promise.all(itemList.map(async id => {
-            const itemData = await ItemService.getItem(id);
+            const itemData = await ItemService.getItemMin(id);
             if (itemData !== undefined && itemData.success) {
                 // if this doesn't work check if object is in itemData or itemData.data
                 // console.log("item data: ", itemData.data);

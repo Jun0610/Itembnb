@@ -106,6 +106,7 @@ class UserService {
         }
     }
 
+    // getting minimalist user data (just name, profile pic, description)
     static async getUserDataMin(userId) {
         console.log("getting user data");
         const request = {
