@@ -98,7 +98,7 @@ export const ReviewOnSubjectPage = ({ reviewObject, authUser, onDeleteReview, on
                 <div>
 
                     <div>
-                        {new Date(reviewObject.review.dateModified).toDateString()}
+                        {new Date(reviewObject.review.dateModified).toLocaleString()}
                     </div>
 
 
@@ -132,7 +132,7 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
             if (reviewObject.review.userId != "" && reviewObject.review.itemId == "") {
                 setIsItemReview(false);
 
-                let subjectInfo = await UserService.getUserData(reviewObject.review.userId);
+                let subjectInfo = await UserService.getUserDataMin(reviewObject.review.userId);
                 setReviewSubject(subjectInfo);
             }
             else if (reviewObject.review.itemId != "" && reviewObject.review.userId == "") {
@@ -165,7 +165,6 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
         }
     }
 
-    console.log("review on userPage");
     return (
         <div key={reviewObject.review._id} className="border-2 rounded-3xl border-yellow-400 m-2 p-2">
 
@@ -181,7 +180,7 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
                         <h5>{reviewObject.review.rating}/5</h5>
                     </div>
                     <div>
-                        {new Date(reviewObject.review.dateModified).toDateString()}
+                        {new Date(reviewObject.review.dateModified).toLocaleString()}
                     </div>
                     <div className="mt-3">
                         {reviewObject.review.text}

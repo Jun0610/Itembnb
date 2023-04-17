@@ -7,6 +7,7 @@ import ReservationService from "../tools/reservationService";
 import { Loading } from "../components/Loading";
 import ItemCalendar from "../components/borrowerCalendar";
 import { UserInfo } from "../components/smallInfoBox";
+import { RatingStar } from "../components/ratingStar";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
@@ -21,10 +22,10 @@ const SelectedItemPost = () => {
     const [selectedItem, setSelectedItem] = useState({});
 
     // for handling reviews/ratings
-    const [itemReviews, setItemReviews] = useState([]);
     const [rating, setRating] = useState(null);
-    const [OGItemReviews, setOGItemReviews] = useState([]);
-    const stars = [1, 2, 3, 4, 5]
+    const [originalItemReviews, setOriginalItemReviews] = useState([]);
+    const [displayedItemReviews, setDisplayedItemReviews] = useState([]);
+    const stars = [1, 2, 3, 4, 5];
 
     //make sure user is logged in and get item details
     useEffect(() => {
@@ -79,8 +80,8 @@ const SelectedItemPost = () => {
         const getItemReviews = async () => {
             //get reservation data for user
             const itemReviews = await ReviewService.getReviewsForItem(itemId);
-            setItemReviews(itemReviews.data);
-            setOGItemReviews(itemReviews.data);
+            setDisplayedItemReviews(itemReviews.data);
+            setOriginalItemReviews(itemReviews.data);
             setRating(itemReviews.rating);
         }
         getItemReviews();
@@ -88,25 +89,25 @@ const SelectedItemPost = () => {
 
     const onEditReview = (review, idx) => {
         // update the average rating on item
-        itemReviews[idx].review = review;
-        setItemReviews(itemReviews);
-        setOGItemReviews(itemReviews);
+        displayedItemReviews[idx].review = review;
+        setDisplayedItemReviews(displayedItemReviews);
+        setOriginalItemReviews(displayedItemReviews);
 
         var totalRating = 0;
-        for (const ir of itemReviews) totalRating += parseInt(ir.review.rating);
+        for (const ir of displayedItemReviews) totalRating += parseInt(ir.review.rating);
 
-        setRating(1.0 * totalRating / itemReviews.length)
+        setRating(1.0 * totalRating / displayedItemReviews.length)
     }
 
     const onDeleteReview = (review, idx) => {
         const deleteReview = async (review, idx) => {
             await ReviewService.deleteReview(review._id);
-            setItemReviews(itemReviews.filter((_, i) => idx !== i));
-            setOGItemReviews(OGItemReviews.filter((_, i) => idx !== i));
+            setDisplayedItemReviews(displayedItemReviews.filter((_, i) => idx !== i));
+            setOriginalItemReviews(originalItemReviews.filter((_, i) => idx !== i));
 
             // update the average rating of the item
             var totalRating = 0;
-            const newItemReviews = itemReviews.filter((_, i) => idx !== i);
+            const newItemReviews = displayedItemReviews.filter((_, i) => idx !== i);
             for (const ir of newItemReviews) totalRating += parseInt(ir.review.rating);
 
             setRating(1.0 * totalRating / newItemReviews.length);
@@ -117,11 +118,11 @@ const SelectedItemPost = () => {
     }
 
     const filterStar = (i) => {
-        setItemReviews(OGItemReviews.filter((e) => e.review.rating === i));
+        setDisplayedItemReviews(originalItemReviews.filter((e) => e.review.rating === i));
     }
 
     const resetFilter = () => {
-        setItemReviews(OGItemReviews);
+        setDisplayedItemReviews(originalItemReviews);
     }
 
     //========== review section end ============
@@ -186,7 +187,7 @@ const SelectedItemPost = () => {
                 <div className="itempost-outer">
                     <div className="item-post-row">
                         <h1>{selectedItem.name}</h1>
-                        <h1>{rating}/5</h1>
+                        <h1><RatingStar rating={rating} /></h1>
                     </div>
 
                     <div className="cardcontainer">
@@ -217,8 +218,8 @@ const SelectedItemPost = () => {
                                 <div onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
                             </div>
                             <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
-                                {itemReviews.length > 0 ?
-                                    itemReviews.map((e, i) => (
+                                {displayedItemReviews.length > 0 ?
+                                    displayedItemReviews.map((e, i) => (
                                         <ReviewOnSubjectPage key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
                                     )) :
                                     <p>There are no reviews!</p>

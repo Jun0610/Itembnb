@@ -8,7 +8,7 @@ export const SmallUserInfo = ({ user }) => {
             <div className="user w-36">
                 <div className="user-details">
 
-                    <img src={user.profilePic} alt="" className="user-img w-10 h-10 mx-auto" />
+                    <img src={user.profilePic} alt="" className="user-img w-12 h-12 mx-auto" />
 
                     <NavLink to=
                         {"/user/" + user._id} onClick={() => window.location.href = "/user/" + user._id}>
@@ -81,12 +81,12 @@ export const SmallItemInfo = ({ item }) => {
                     <img src={item.images[0]} alt="" className="w-12 h-12 mx-auto" />
 
                     <NavLink to=
-                        {"/user/" + item._id} onClick={() => window.location.href = "/user/" + item._id}>
+                        {"/selected-item-post/" + item._id} onClick={() => window.location.href = "/selected-item-post/" + item._id}>
                         <h6 className='user-name'>{item.name}</h6>
                     </NavLink>
 
-                    {item.profileDesc ?
-                        <p className='user-desc'>{item.profileDesc}</p> :
+                    {item.description ?
+                        <p className='user-desc'>{item.description}</p> :
                         <p className='user-desc grayText'>This item has no description.</p>
                     }
                 </div>
@@ -98,8 +98,9 @@ export const SmallItemInfo = ({ item }) => {
 
                 <LoadingSmall />
 
-                <NavLink onClick={() => window.location.href = "/user/" + item._id}>
-                    <h4 className='user-name'>User: <span style={{ fontWeight: "600" }}></span> </h4>
+                <NavLink to=
+                    {"/selected-item-post/" + item._id} onClick={() => window.location.href = "/selected-item-post/" + item._id}>
+                    <h6 className='user-name'>Loading...</h6>
                 </NavLink>
 
                 <p className='user-desc'>Loading...</p>

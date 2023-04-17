@@ -2,9 +2,11 @@ import React, { useEffect, useContext, useState } from "react";
 import { NavLink, Link, useNavigate, useParams } from 'react-router-dom';
 import userContext from '../contexts/userContext';
 import { confirmAlert } from 'react-confirm-alert'; // Import
+
 import { Loading, LoadingSmall } from "../components/Loading";
 import Post from "../components/post";
 import { ReviewOnSubjectPage, ReviewOnReviewerPage } from "../components/review.js";
+import RatingStar from "../components/ratingStar.js";
 
 import UserService from '../tools/userService';
 import ItemService from '../tools/itemsService';
@@ -32,11 +34,11 @@ const Userpage = () => {
     const [userRequests, setUserRequests] = useState(null);
 
     // for handling reviews/ratings
-    const [reviewsForUser, setReviewsForUser] = useState(null);
-    const [OGReviewsForUser, setOGReviewsForUser] = useState([]); // TODO implement
+    const stars = [1, 2, 3, 4, 5]; // for filtering
+    const [originalReviewsForUser, setOriginalReviewsForUser] = useState([]); // TODO implement
+    const [originalReviewsByUser, setOriginalReviewsByUser] = useState(null); // TODO implement
     const [borrowerRating, setBorrowerRating] = useState("...");
     const [lenderRating, setLenderRating] = useState("..."); // TODO implement
-    const [reviewsByUser, setReviewsByUser] = useState(null); // TODO implement
 
     useEffect(() => {
         async function fetchData() {
@@ -56,6 +58,19 @@ const Userpage = () => {
         }
         fetchData();
 
+        const getUserReviews = async () => {
+            // get reviews for this user
+            const reviewsForUser = await ReviewService.getReviewsForUser(id);
+            console.log(reviewsForUser);
+            setOriginalReviewsForUser(reviewsForUser.data);
+            setBorrowerRating(reviewsForUser.rating);
+
+            // get reviews made by this user
+            const reviewsByUser = await ReviewService.getReviewsByUser(id);
+            setOriginalReviewsByUser(reviewsByUser.data);
+        }
+        getUserReviews();
+
         async function connectSocket() {
             // check if user is logged in with sessionStorage, because checking authUser.user.isAuth doesn't work in useEffect
             const loggedInUser = JSON.parse(sessionStorage.getItem('curUser'));
@@ -73,23 +88,6 @@ const Userpage = () => {
     }, []);
 
     /* --- Review Section --- */
-
-    // get user reviews + rating
-    useEffect(() => {
-        const getUserReviews = async () => {
-            // get reviews for this user
-            const reviewsForUser = await ReviewService.getReviewsForUser(id);
-            setReviewsForUser(reviewsForUser.data);
-            setOGReviewsForUser(reviewsForUser.data);
-            setBorrowerRating(reviewsForUser.rating);
-
-            // get reviews made by this user
-            const reviewsByUser = await ReviewService.getReviewsByUser(id);
-            setReviewsByUser(reviewsByUser.data);
-        }
-        getUserReviews();
-    }, []);
-
     // TODO - return true only if user can be reviewed
     const canBeReviewed = () => {
         return (
@@ -98,47 +96,108 @@ const Userpage = () => {
         );
     }
 
-    // Reviews of user (as borrower)
-    const displayReviewsOfUser = () => {
-        if (reviewsForUser == null) {
-            return <LoadingSmall />;
+    const DisplayReviews = () => {
+
+        // Reviews of user (as borrower)
+        const DisplayReviewsOfUser = ({ originalReviewsForUser }) => {
+
+            const [displayedReviewsForUser, setDisplayedReviewsForUser] = useState(originalReviewsForUser);
+
+            const filterReviews = (starNum) => {
+                setDisplayedReviewsForUser(originalReviewsForUser.filter((e) => e.review.rating === starNum));
+            }
+
+            const resetFilter = () => {
+                setDisplayedReviewsForUser(originalReviewsForUser);
+            }
+
+            if (displayedReviewsForUser == null) {
+                return <LoadingSmall />;
+            }
+            if (originalReviewsForUser.length == 0) {
+                return <p className="grayText">There are no reviews!</p>;
+            }
+            return (
+                <div>
+                    <div className='flex gap-4'>
+                        {stars.map((starNum, i) => (
+                            <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }}>
+                                {starNum}-star
+                            </div>
+                        ))}
+                        <div onClick={resetFilter} style={{ cursor: "pointer" }}>
+                            Reset
+                        </div>
+                    </div>
+
+                    {displayedReviewsForUser.length > 0 ?
+                        displayedReviewsForUser.map((e, i) => (
+                            <ReviewOnSubjectPage key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
+                        )) :
+                        <p className="grayText">There are no reviews!</p>
+                    }
+                </div>
+            );
         }
+
+        // Reviews user has made
+        const DisplayReviewsMadeByUser = ({ originalReviewsByUser }) => {
+
+            const [displayedReviewsByUser, setDisplayedReviewsByUser] = useState(originalReviewsByUser);
+
+            const filterReviews = (starNum) => {
+                setDisplayedReviewsByUser(originalReviewsByUser.filter((e) => e.review.rating === starNum));
+            }
+
+            const resetFilter = () => {
+                setDisplayedReviewsByUser(originalReviewsByUser);
+            }
+
+            if (displayedReviewsByUser == null) {
+                return <LoadingSmall />;
+            }
+            return (
+                <div>
+                    <div className='flex gap-4'>
+                        {stars.map((starNum, i) => (
+                            <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }}>
+                                {starNum}-star
+                            </div>
+                        ))}
+                        <div onClick={resetFilter} style={{ cursor: "pointer" }}>
+                            Reset
+                        </div>
+                    </div>
+
+                    {displayedReviewsByUser.length > 0 ?
+                        displayedReviewsByUser.map((e, i) => (
+                            <ReviewOnReviewerPage reviewObject={e} />
+                        )) :
+                        <p className="grayText">There are no reviews!</p>
+                    }
+                </div>
+            );
+        }
+
+        // TODO
+        const onEditReview = () => {
+        }
+
+        // TODO
+        const onDeleteReview = () => {
+        }
+
         return (
             <div>
-                {reviewsForUser.length > 0 ?
-                    reviewsForUser.map((e, i) => (
-                        <ReviewOnSubjectPage key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
-                    )) :
-                    <p class="grayText">There are no reviews!</p>
-                }
+                <h3 className="item-post-header">Reviews of {userInfo.name}</h3>
+                <DisplayReviewsOfUser originalReviewsForUser={originalReviewsForUser} />
+
+                <h3 className="item-post-header">Reviews Made By {userInfo.name}</h3>
+                <DisplayReviewsMadeByUser originalReviewsByUser={originalReviewsByUser} />
             </div>
         );
     }
 
-    // Reviews user has made
-    const displayReviewsMadeByUser = () => {
-        if (reviewsByUser == null) {
-            return <LoadingSmall />;
-        }
-        return (
-            <div>
-                {reviewsByUser.length > 0 ?
-                    reviewsByUser.map((e, i) => (
-                        <ReviewOnReviewerPage reviewObject={e} />
-                    )) :
-                    <p class="grayText">There are no reviews!</p>
-                }
-            </div>
-        );
-    }
-
-    // TODO
-    const onEditReview = () => {
-    }
-
-    // TODO
-    const onDeleteReview = () => {
-    }
 
     /* --- Profile editing functionality --- */
 
@@ -257,7 +316,7 @@ const Userpage = () => {
         const displayProfileDescription = () => {
             let profileDescription = "";
             if (userInfo.profileDesc === null || userInfo.profileDesc === "") {
-                profileDescription = <span class="grayText">This user has no profile description.</span>;
+                profileDescription = <span className="grayText">This user has no profile description.</span>;
             }
             else {
                 profileDescription = userInfo.profileDesc;
@@ -359,7 +418,7 @@ const Userpage = () => {
             return <LoadingSmall />
         }
         if (userItems.length === 0) {
-            return <p class="grayText">{userInfo.name} has no items!</p>
+            return <p className="grayText">{userInfo.name} has no items!</p>
         } else {
             const filteredUserItems = userItems.filter(item => item !== undefined)
             return filteredUserItems.map(itemData =>
@@ -375,7 +434,7 @@ const Userpage = () => {
             return <LoadingSmall />
         }
         if (userRequests.length === 0) {
-            return <p class="grayText">{userInfo.name} has no requests!</p>
+            return <p className="grayText">{userInfo.name} has no requests!</p>
         }
         return userRequests.map(request =>
             <Post post={request} isRequest={true} key={request._id} />
@@ -393,8 +452,8 @@ const Userpage = () => {
                 <div>
                     <img id="profilepic" src={userInfo.profilePic} />
 
-                    <h6 className="user_stat">Borrower Rating: {borrowerRating}/5</h6>
-                    <h6 className="user_stat">Lender Rating: {userInfo.lenderRating}/5</h6>
+                    <h6 className="user_stat">Borrower Rating: <RatingStar rating={borrowerRating} /></h6>
+                    <h6 className="user_stat">Lender Rating: {lenderRating}/5</h6>
                     <hr />
                     <h6 className="user_stat">{userInfo.name} has {userInfo.postedItems.length} {userInfo.postedItems.length === 1 ? "item" : "items"}</h6>
                     <h6 className="user_stat">{userInfo.name} has {userInfo.requestPosts.length} {userInfo.requestPosts.length === 1 ? "request" : "requests"}</h6>
@@ -421,11 +480,7 @@ const Userpage = () => {
                     {displayUserRequests()}
                 </div>
 
-                <h3 className="item-post-header">Reviews of {userInfo.name}</h3>
-                {displayReviewsOfUser()}
-
-                <h3 className="item-post-header">Reviews Made By {userInfo.name}</h3>
-                {displayReviewsMadeByUser()}
+                <DisplayReviews />
             </div>
         </div>
     );

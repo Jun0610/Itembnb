@@ -19,16 +19,24 @@ router.get("/get-user-review/:id", async (req, res) => {
     try {
         const reviewSubject = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.id) })
         const reviewsWithUsers = []
-        var rating = 0.0;
+        let rating = 0;
         for (const reviewId of reviewSubject.reviewsOfUser) {
             const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
-            rating += review.rating;
             if (review) {
                 const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(review.reviewerId) })
-                if (user) reviewsWithUsers.push({ review, user })
+                if (user) {
+                    reviewsWithUsers.push({ review, user })
+                    rating += review.rating;
+                }
             }
         }
-        res.status(200).json({ success: true, data: reviewsWithUsers, rating: 1.0 * rating / reviewsWithUsers.length })
+        if (reviewsWithUsers.length == 0) {
+            rating = -1;
+        }
+        else {
+            rating /= reviewsWithUsers.length;
+        }
+        res.status(200).json({ success: true, data: reviewsWithUsers, rating: rating })
     } catch (err) {
         console.log(err)
         res.status(404).json({ success: false, data: err.message })
@@ -58,19 +66,27 @@ router.get("/get-reviews-made-by-user/:id", async (req, res) => {
 router.get("/get-item-review/:id", async (req, res) => {
     try {
         const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(req.params.id) })
-        const reviewsWithUsers = []
-        var rating = 0.0;
+        const reviewsWithUsers = [];
+        let rating = 0;
         if (item.review) {
             for (const reviewId of item.review) {
                 const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
-                rating += review.rating;
                 if (review) {
                     const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(review.reviewerId) })
-                    if (user) reviewsWithUsers.push({ review, user })
+                    if (user) {
+                        rating += review.rating;
+                        reviewsWithUsers.push({ review, user });
+                    }
                 }
             }
         }
-        res.status(200).json({ success: true, data: reviewsWithUsers, rating: 1.0 * rating / reviewsWithUsers.length })
+        if (reviewsWithUsers.length == 0) {
+            rating = -1;
+        }
+        else {
+            rating /= reviewsWithUsers.length;
+        }
+        res.status(200).json({ success: true, data: reviewsWithUsers, rating: rating });
     } catch (err) {
         console.log(err)
         res.status(404).json({ success: false, data: err.message })
