@@ -117,6 +117,11 @@ class UserService {
             const res = await fetch(`${url}/user-data-min/${userId}`, request);
             const response = await res.json();
             response.status = res.status
+
+            if (response.data.profileDesc && response.data.profileDesc.length > 15) {
+                response.data.profileDesc = response.data.profileDesc.slice(0, 12) + "...";
+            }
+
             return response
         } catch (err) {
             console.log(err);

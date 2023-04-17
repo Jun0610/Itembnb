@@ -181,12 +181,30 @@ const SelectedItemPost = () => {
 
     }
 
+    const userIsOwner = () => {
+        return authUser != undefined &&
+            authUser.user.user != null &&
+            selectedItem.ownerId === authUser.user.user._id;
+    }
+
+    const ownerButton = () => {
+
+        // links to the owner view of the item post page (display-item-post)
+        if (userIsOwner()) {
+            return <NavLink to={`/display-item-post/` + selectedItem._id}><button className="defaultButton text-base" style={{ display: "inline-block" }} >Owner View</button></NavLink >
+        }
+    }
+
     if (selectedItem !== null) {
         return (
             <div>
                 <div className="itempost-outer">
                     <div className="item-post-row">
-                        <h1>{selectedItem.name}</h1>
+                        <h1>
+                            {selectedItem.name}
+                            &nbsp;{ownerButton()}
+                        </h1>
+
                         <h1><RatingStar rating={rating} /></h1>
                     </div>
 

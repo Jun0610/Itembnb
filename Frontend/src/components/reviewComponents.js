@@ -9,6 +9,7 @@ import ReviewService from "../tools/reviewService";
 import { LoadingSmall } from "./Loading";
 import { SmallUserInfo, SmallItemInfo } from "./smallInfoBox";
 import { NavLink } from "react-router-dom";
+import RatingStar from "../components/ratingStar.js";
 
 export const ReviewOnSubjectPage = ({ reviewObject, authUser, onDeleteReview, onEditReview, idx }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -59,6 +60,7 @@ export const ReviewOnSubjectPage = ({ reviewObject, authUser, onDeleteReview, on
     // Cancel Edit, Edit, Delete buttons
     // (only show up if you made the review)
     const editReviewButtons = () => {
+        /*
         let cancelEditButton = "";
         if (isEditing) {
             cancelEditButton =
@@ -74,6 +76,20 @@ export const ReviewOnSubjectPage = ({ reviewObject, authUser, onDeleteReview, on
                     <button className={isEditing ? "place-self-end fa-solid fa-save mt-1 icon-3x" : "place-self-end fa-solid fa-pencil mt-1 icon-3x"} onClick={editOwnerReview}></button>
 
                     <button className="fa-solid fa-trash mt-1 icon-3x" onClick={() => onDeleteReview(reviewObject, idx)}></button>
+                </div>
+            );
+        }
+        else {
+            return <div></div>;
+        }
+        */
+
+        if (userIsReviewOwner()) {
+            return (
+                <div className="flex justify-end gap-4">
+                    <NavLink className="lessStyledLink" to={`/display-review/` + reviewObject.review._id}><button className={"place-self-end fa-solid fa-pencil mt-1 icon-3x"}></button></NavLink>
+
+                    <NavLink className="lessStyledLink" to={`/display-review/` + reviewObject.review._id}><button className="fa-solid fa-trash mt-1 icon-3x"></button></NavLink>
                 </div>
             );
         }
