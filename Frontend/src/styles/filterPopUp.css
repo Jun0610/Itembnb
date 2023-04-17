@@ -10,7 +10,7 @@
 
 #filter-popup {
     width: 600px;
-    height: 500px;
+    height: 540px;
     position: absolute;
     top: 15%;
     left: calc(50% - 300px);
@@ -20,5 +20,92 @@
 }
 
 .filter-input {
-    border: 1px solid #9c9c9c;
+    border: 1.5px solid #9c9c9c;
+}
+
+#price-range {
+    grid-area: label;
+}
+
+.price-container {
+    display: grid;
+    grid-template-areas: 
+    "label label label"
+    ". . .";
+    width: 100%;
+    border-top: 1.5px solid #ffe600;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid #ddd;
+
+}
+
+.filter-input {
+    margin: 1rem;
+    width: 75%;
+    margin-left: 2rem;
+    padding: 0.4rem;
+    border-radius: 0.3rem;
+}
+
+.filter-input:focus {
+    border: none;
+    outline: none;
+    border: 1.5px solid #ffe600;
+}
+
+.filter-label {
+    margin-top: 1rem;
+    margin-left: 2rem;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+#rating {
+    width: 200px;
+}
+
+.date-container {
+    display: grid;
+    grid-template-areas: 
+    "label label label"
+    ". . .";
+    padding-bottom: 1rem;
+    border-top: 1.5px solid #ddd;
+    margin-top: 1rem;
+}
+
+#avail-date {
+    grid-area: label;
+}
+
+.popup-btn {
+    font-weight: 500;
+    margin-top: 0.5rem ;
+    margin-right: 2rem;
+    float: right;
+    padding: 0.5rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: 0.4rem;
+}
+
+.popup-btn:hover {
+    border: 2px solid #ffe600;
+}
+
+.close-filter-btn {
+    float: right;
+    padding-top: 0.2rem;
+    margin: 0.4rem 0;
+    padding-bottom: 0.2rem;
+    right: 2.5rem;
+    position: relative;
+    color: #9c9c9c;
+    font-size: 25px;
+    border-radius: 50%;
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+}
+
+.close-filter-btn:hover{
+    background-color: #ddd;
 }

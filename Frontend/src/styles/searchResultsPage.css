@@ -53,6 +53,17 @@
     font-size: 16px;
 }
 
+.search-filter-on {
+    padding: 0.1rem;
+    float: right;
+    margin-right: 1.5rem;
+    margin-top: 0.5rem;
+    border-radius: 0.3rem;
+    font-size: 16px;
+    border: 2.5px solid #ffe600;
+    font-weight: 600;
+}
+
 .search-results-btn:hover {
     border: 1.5px solid #ffe600;
 }
