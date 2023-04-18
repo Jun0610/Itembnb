@@ -2,7 +2,7 @@ import Calendar from 'react-calendar';
 import React, { useContext, useEffect } from 'react';
 import userContext from '../contexts/userContext';
 import '../styles/calendar.css';
-import SocketService, {socket} from '../tools/socketService';
+import SocketService, { socket } from '../tools/socketService';
 import EmailService from '../tools/emailService';
 
 const inDateRange = (date, startDate, endDate) => {
@@ -97,7 +97,7 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
         setDate(null);
 
         // send live or email notification to the lender
-        SocketService.emit('emitMsg', {type: 'toLender', owner: itemOwner.email, itemId: selectedItem._id, borrower: authUser.user.user.name});
+        SocketService.emit('emitMsg', { type: 'toLender', owner: itemOwner.email, itemId: selectedItem._id, borrower: authUser.user.user.name });
         socket.on('emitBackB', (response) => {
             if (response !== 'success') {
                 EmailService.sendEmailRedirection(authUser, itemOwner, `${authUser.user.user.name} has requested a reservation for your item!`, `http://localhost:3000/display-item-post/itemId/${selectedItem._id}/ownerId/${itemOwner._id}`);
@@ -106,6 +106,12 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
 
         alert("Request sent!");
         setReservSuccess(true);
+    }
+
+    const userIsOwner = () => {
+        return authUser != undefined &&
+            authUser.user.user != null &&
+            itemOwner._id === authUser.user.user._id;
     }
 
     return (
@@ -131,7 +137,10 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
                     </div>
                     <div>
                         <button className='calendar-column-btn' onClick={reset}>Clear</button>
-                        <button className='calendar-column-btn' onClick={makeReq}>Make Request</button>
+
+                        {userIsOwner() ?
+                            <button className='calendar-column-btn' style={{ "background-color": "#888888", "color": "#bbbbbb" }}>Make Request</button> :
+                            <button className='calendar-column-btn' onClick={makeReq}>Make Request</button>}
                     </div>
                 </div>
             </div>

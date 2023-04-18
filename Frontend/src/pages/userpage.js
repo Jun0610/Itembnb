@@ -157,6 +157,9 @@ const Userpage = () => {
             if (displayedReviewsByUser == null) {
                 return <LoadingSmall />;
             }
+            else if (displayedReviewsByUser.length === 0) {
+                return <p className="grayText">There are no reviews!</p>
+            }
             return (
                 <div>
                     <div className='flex gap-4'>
@@ -170,12 +173,9 @@ const Userpage = () => {
                         </div>
                     </div>
 
-                    {displayedReviewsByUser.length > 0 ?
-                        displayedReviewsByUser.map((e, i) => (
-                            <ReviewOnReviewerPage reviewObject={e} />
-                        )) :
-                        <p className="grayText">There are no reviews!</p>
-                    }
+                    {displayedReviewsByUser.map((e, i) => (
+                        <ReviewOnReviewerPage reviewObject={e} />
+                    ))}
                 </div>
             );
         }
