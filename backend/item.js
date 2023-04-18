@@ -160,6 +160,18 @@ router.get("/search/:searchString", async (req, res) => {
     }
 })
 
+router.get("/get-item-by-category/:category", async (req, res) => {
+    try {
+        const items = await db.collection('items').find({ category: [req.params.category] }).toArray()
+        if (items === null) {
+            res.status(201).json({ success: true, data: [] });
+        }
+        res.status(201).json({ success: true, data: items });
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
 
 
 module.exports = { router, deleteItem };

@@ -8,7 +8,7 @@
     background-color: #ffdd00d2; 
     align-items: center;
     display: flex;
-    z-index: -1;
+    z-index: 1;
 }
 
 #inner-login-container {

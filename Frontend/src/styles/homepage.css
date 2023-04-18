@@ -3,6 +3,14 @@
     overflow-y: hidden;
     white-space: nowrap;
     margin: 0 10px;
+    padding-bottom: 1rem;
+}
+.header-line {
+    /* width: 14rem;
+    margin-left: 2rem; */
+    /* background-color: #ffe600; */
+    border: 2px solid #e6e314;
+    height: 12px;
 }
 
 .item-post-header {
@@ -10,8 +18,14 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 20px 10px;
-    margin-left: 1.5rem;
+}
+
+.h1-container {
+    border-bottom: 2px solid #ffe600;
+    width: 15rem;
+    margin-bottom: 1rem;
+    margin-left: 2rem;
+    margin-top: 1rem;
 }
 
 .input-error {
