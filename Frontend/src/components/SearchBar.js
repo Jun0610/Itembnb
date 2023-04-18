@@ -37,7 +37,7 @@ const SearchBar = ( ) => {
 
     return (
         <div className='search-bar-container'>
-            <input type="text" placeholder='Search here' className='search-bar' id='search' onKeyDown={onKeyDownHandler} />
+            <input type="text" placeholder='Search here' className='search-bar' id='search' onKeyDown={onKeyDownHandler} autoComplete="off" />
             <button className='search-clear-button' id='clear-button' onClick={handleClear}>
                 <FontAwesomeIcon icon={faXmark} />
             </button>
