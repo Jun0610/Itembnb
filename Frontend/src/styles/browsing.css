@@ -35,8 +35,27 @@
     color: #ffe600;
 }
 
+#academic-colored .browsing-icon:hover {
+    color: #8e8e8e;
+}
+#outdoor-colored .browsing-icon:hover {
+    color: #8e8e8e;
+}
+#electronic-colored .browsing-icon:hover {
+    color: #8e8e8e;
+}
+#misc-colored .browsing-icon:hover {
+    color: #8e8e8e;
+}
+#entertainment-colored .browsing-icon:hover {
+    color: #8e8e8e;
+}
+#household-colored .browsing-icon:hover {
+    color: #8e8e8e;
+}
+
 #academic-colored  {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 #household-colored .browsing-icon {
@@ -44,7 +63,7 @@
 }
 
 #household-colored  {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 #outdoor-colored .browsing-icon {
@@ -52,7 +71,7 @@
 }
 
 #outdoor-colored  {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 #entertainment-colored .browsing-icon {
@@ -60,7 +79,7 @@
 }
 
 #entertainment-colored  {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 #electronic-colored .browsing-icon {
@@ -68,7 +87,7 @@
 }
 
 #electronic-colored  {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 #misc-colored .browsing-icon {
@@ -76,5 +95,5 @@
 }
 
 #misc-colored  {
-    font-weight: 500;
+    font-weight: 600;
 }
