@@ -5,7 +5,7 @@
     grid-template-areas: ". . . .";
     align-items: center;
     justify-content: center;
-    position: relative;
+
 }
 
 .search-results-container .card {
