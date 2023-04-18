@@ -115,6 +115,21 @@ class ItemService {
             console.log(err);
         }
     }
+
+    static async getItemByCategory(category) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-item-by-category/${category}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response.data
+        } catch (err) {
+            console.log(err);
+        }
+    }
 }
 
 export default ItemService;

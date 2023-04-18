@@ -191,20 +191,42 @@ const SearchResultsPage = () => {
                                 <Post key={item._id} post={item} isRequest={false} />
                             ))
                         }
+
                     </div>
+
                 </>
 
             )
         } else {
             return (
                 <>
-                    <FilterPopUp items={items} setItems={setItems} setArrayContents={setArrayContents} />
-                    <button className='search-results-btn' id='filter-btn' onClick={openFilter}>Filter</button>
-                    <div className='sorting-dropdown'>
-                        <button onClick={priceHighLow} className='search-results-btn'>Price High Low</button>
-                        <button onClick={priceLowHigh} className='search-results-btn'>Price Low High</button>
+                    <FilterPopUp items={items} setItems={setItems} setArrayContents={setArrayContents} filterState={filterState} setFilterState={setFilterState} setOrigItems={setOrigItems} />
+                    <div className='btn-container'>
+                        <button className={filterButtonState} id='open-filter' onClick={openFilter}>Filter</button>
+                        <button className='search-results-btn' id='open-sorting' onClick={openSorting}>Sort By: {sortingOrder}</button>
+                        <div className='sorting-dropdown'>
+                            <div className='sorting-dropdown-btn'>
+                                <button onClick={defaultOrder} >Default</button>
+                            </div>
+                            <div className='sorting-dropdown-btn'>
+                                <button onClick={priceHighLow}  >Price: High to Low</button>
+                            </div>
+
+                            <div className='sorting-dropdown-btn'>
+                                <button onClick={priceLowHigh}  >Price: Low to High</button>
+                            </div>
+
+                            <div className='sorting-dropdown-btn'>
+                                <button onClick={latestListings}  >Latest Listings</button>
+                            </div>
+                            <div className='sorting-dropdown-btn'>
+                                <button onClick={highlyRated}  >Most Highly Rated</button>
+                            </div>
+
+                        </div>
+
                     </div>
-                    <div className='search-results-container'>
+                    <div className='search-results-container' style={{ fontSize: "20px" }}>
                         No items match that search!
                     </div>
                 </>

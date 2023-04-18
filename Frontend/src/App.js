@@ -28,6 +28,7 @@ import ChatPage from "./pages/chatPage";
 import LendingHistory from "./pages/lendingHistory";
 import BorrowingHistory from "./pages/borrowingHistory";
 import SearchResultsPage from "./pages/SearchResultsPage";
+import CategoryPage from "./pages/CategoryPage";
 import { ChatContextProvider } from "./contexts/chatContext";
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
                                 <Route exact path='/item-status' element={<StatusPage />}></Route>
                                 <Route exact path='/pending-reservations' element={<PendingPage />}></Route>
                                 <Route exact path='/search-results/:searchString' element={<SearchResultsPage />}></Route>
+                                <Route exact path='/category-items/:category' element={<CategoryPage />}> </Route>
                                 <Route exact path='/chat' element={<ChatPage />}></Route>
                             </Routes>
                         </NotificationProvider>
@@ -70,6 +72,7 @@ function App() {
                     </ChatContextProvider> 
                 </ItemContextProvider>
             </UserContextProvider>
+
         </div>
     );
 }

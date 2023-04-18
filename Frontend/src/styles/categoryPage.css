@@ -1,0 +1,15 @@
+.category-results-container {
+    display: grid;
+    margin: 2rem auto;
+    max-width: 1400px;
+    grid-template-areas: ". . . .";
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 100%;
+}
+
+.category-results-container .card {
+    margin-bottom: 2rem;
+    position: relative;
+}

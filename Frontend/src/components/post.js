@@ -93,11 +93,15 @@ const Post = ({ post, isRequest }) => {
                     <NavLink to={readMoreLink()} className="lessStyledLink">
                         <h4 className='card-title'> {title} </h4>
                     </NavLink>
-                    <p className='card-text item-desc'> {description} </p>
-
+                    <div className='fade-container'></div>
+                    <p className='card-text item-desc'>{description}</p>
                     <NavLink to={readMoreLink()} className="lessStyledLink">
                         <button className='btn custom-card-button' >Read more</button>
                     </NavLink>
+
+
+
+
                 </div>
 
                 {!isRequest &&
