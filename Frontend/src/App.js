@@ -28,6 +28,7 @@ import EmailSelectedItemPost from "./pages/emailSelectedItemPost";
 import LendingHistory from "./pages/lendingHistory";
 import BorrowingHistory from "./pages/borrowingHistory";
 import SearchResultsPage from "./pages/SearchResultsPage";
+import CategoryPage from "./pages/CategoryPage";
 
 
 function App() {
@@ -63,11 +64,13 @@ function App() {
                                 <Route exact path='/item-status' element={<StatusPage />}></Route>
                                 <Route exact path='/pending-reservations' element={<PendingPage />}></Route>
                                 <Route exact path='/search-results/:searchString' element={<SearchResultsPage />}></Route>
+                                <Route exact path='/category-items/:category' element={<CategoryPage />}> </Route>
                             </Routes>
                         </NotificationProvider>
                     </Router>
                 </ItemContextProvider>
             </UserContextProvider>
+
         </div>
     );
 }

@@ -21,6 +21,7 @@
   height: 174px;
   max-width: 200px;
   white-space: normal;
+  
 }
 .custom-card-body-right {
   text-align: right;
@@ -33,9 +34,20 @@
   white-space: normal;
 }
 
+.fade-container {
+  position: absolute;
+  top: 5.5rem;
+  background-image: linear-gradient(to bottom, transparent, white);
+  height: 3.5rem;
+  width: 100%;
+  z-index: 1;
+}
+
 .item-desc {
-  max-height: 100px;
-  overflow: clip;
+  line-height: 1.5rem;
+  max-height: 4.5rem;
+  overflow: hidden;
+  position: relative;
 }
 
 .item-pr {

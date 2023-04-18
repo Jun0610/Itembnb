@@ -5,6 +5,7 @@ import userContext from "../contexts/userContext";
 import "../styles/homepage.css";
 import SocketService, { socket } from '../tools/socketService';
 import ItemService from '../tools/itemsService';
+import Browsing from "../components/Browsing";
 
 const Homepage = () => {
 
@@ -46,19 +47,27 @@ const Homepage = () => {
     else
         return (
             <div>
-                <h1 className='item-post-header'>Item posts</h1>
+                <Browsing />
+                <div className='h1-container'>
+                    <h1 className='item-post-header'>Item posts</h1>
+                </div>
+
                 <div className='cardcontainer'>
                     {itemPosts.map((item) => (
                         <Post key={item._id} post={item} isRequest={false} />
                     ))}
                 </div>
-                <h1 className='item-post-header'>Item requests</h1>
-                <div className='cardcontainer'>
+                <div className='h1-container' style={{ width: "20rem" }}>
+                    <h1 className='item-post-header'>Item requests</h1>
+
+                </div>
+
+                <div className='cardcontainer' >
                     {itemRequests.map((request) => (
                         <Post key={request._id} post={request} isRequest={true} />
                     ))}
                 </div>
-            </div>
+            </ div>
         );
 };
 

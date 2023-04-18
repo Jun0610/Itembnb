@@ -1,6 +1,7 @@
 .pending-page-container {
     margin: 0 auto;
     max-width: 1200px;
+    height: calc(100vh - 12rem);
 }
 
 .pending-page-title {

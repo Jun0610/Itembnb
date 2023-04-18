@@ -1,6 +1,6 @@
 .customNavBar {
   color: black;
-  background-color: #ffdd00d2;
+  background-color: #ffdd00;
   margin: 0 auto;
   padding: 0.8rem 0;
   width: 100%;
@@ -9,6 +9,7 @@
   justify-content: flex-start;
   position: relative;
   box-sizing: border-box;
+  z-index: 2;
 }
 
 .navbar-brand {

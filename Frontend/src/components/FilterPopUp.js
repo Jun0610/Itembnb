@@ -9,6 +9,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 const FilterPopUp = ({ items, setItems, setArrayContents, filterState, setFilterState, setOrigItems }) => {
     const { searchString } = useParams();
     const [loading, setLoading] = useState(false);
+    console.log(filterState);
     const [fromPrice, setFromPrice] = useState(JSON.stringify(filterState.fromPrice))
     const [toPrice, setToPrice] = useState(JSON.stringify(filterState.toPrice))
     const [fromDate, setFromDate] = useState(JSON.stringify(filterState.fromDate))
