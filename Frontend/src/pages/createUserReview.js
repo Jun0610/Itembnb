@@ -1,13 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { NavLink, useParams } from "react-router-dom";
-import ReviewService from "../tools/reviewService";
+import { useNavigate, useParams } from "react-router-dom";
 import userContext from '../contexts/userContext';
+import ReviewService from "../tools/reviewService";
 import UserService from "../tools/userService";
 import ItemService from "../tools/itemsService";
 import ReservationService from "../tools/reservationService";
 import { LendingResLarge } from "../components/reservationComponents";
-import Loading from "../components/Loading";
+import { Loading } from "../components/Loading";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";

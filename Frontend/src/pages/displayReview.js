@@ -1,17 +1,16 @@
 import React, { useEffect, useContext, useState } from "react";
 import { NavLink, useParams, useNavigate } from "react-router-dom";
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import ReactMarkdown from 'react-markdown';
+import userContext from '../contexts/userContext';
 import ItemService from '../tools/itemsService';
 import ReviewService from '../tools/reviewService';
 import ReservationService from '../tools/reservationService';
 import UserService from '../tools/userService';
-import { socket } from '../tools/socketService';
-import SocketService from '../tools/socketService';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css';
-import userContext from '../contexts/userContext';
+import SocketService, { socket } from '../tools/socketService';
 import { Loading, LoadingSmall } from "../components/Loading";
 import RatingStar from "../components/ratingStar.js";
-import ReactMarkdown from 'react-markdown';
 import { BorrowingResLarge, LendingResLarge } from "../components/reservationComponents";
 
 import "bootstrap/dist/css/bootstrap.min.css";

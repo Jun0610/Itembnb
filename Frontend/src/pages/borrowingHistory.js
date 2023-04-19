@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from "react-router-dom";
-import ReservationService from '../tools/reservationService';
 import userContext from '../contexts/userContext';
-import Loading from '../components/Loading';
+import ReservationService from '../tools/reservationService';
+import { Loading } from '../components/Loading';
 import { BorrowingResSmall, BorrowingResLarge } from '../components/reservationComponents';
 
 const BorrowingHistory = () => {
@@ -66,9 +66,9 @@ const BorrowingHistory = () => {
                 <div className='m-3 flex gap-4'>
                     <div className='text-xl font-bold text-yellow-400'>Borrowing History</div>
                     <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" value="" class="sr-only peer" onClick={() => setMinimize(!minimize)} />
+                        <input type="checkbox" value="" className="sr-only peer" onClick={() => setMinimize(!minimize)} />
                         <div className="w-11 h-6 bg-blue-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[8px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-                        <span class="ml-3 text-sm font-medium">Minimize Mode</span>
+                        <span className="ml-3 text-sm font-medium">Minimize Mode</span>
                     </label>
                     <div onClick={() => changeOrder('date')} className='items-center font-medium text-sm p-2 bg-yellow-400 rounded-lg text-white' style={{ cursor: "pointer" }}>{isAscD ? 'List By Most Recent' : 'List by Least Recent'}</div>
                     <div onClick={() => changeOrder('name')} className='items-center font-medium text-sm p-2 bg-yellow-400 rounded-lg text-white' style={{ cursor: "pointer" }}>List By Alphabetical Order &nbsp; {isAscN ? '(A-Z)' : '(Z-A)'}</div>

@@ -1,13 +1,12 @@
-import React from 'react'
-import { useState, useEffect, useContext, useRef } from 'react'
-import Loading from '../components/Loading';
+import React, { useState, useEffect, useContext, useRef } from 'react'
+import { useNavigate } from 'react-router-dom';
 import userContext from '../contexts/userContext';
 import ReservationService from '../tools/reservationService'
-import StatusTracker from '../components/StatusTracker'
-import { useNavigate } from 'react-router-dom';
-import "../styles/statusPage.css"
 import SocketService, { socket } from '../tools/socketService';
+import StatusTracker from '../components/StatusTracker'
+import { Loading } from '../components/Loading';
 
+import "../styles/statusPage.css"
 
 const StatusPage = () => {
     const [activeBorrowerReservations, setActiveBorrowerReservations] = useState([]);

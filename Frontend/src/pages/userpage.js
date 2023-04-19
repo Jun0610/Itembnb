@@ -1,19 +1,18 @@
 import React, { useEffect, useContext, useState } from "react";
 import { NavLink, Link, useNavigate, useParams } from 'react-router-dom';
 import userContext from '../contexts/userContext';
-import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from 'react-confirm-alert';
 import ReactMarkdown from 'react-markdown';
-
-import { Loading, LoadingSmall } from "../components/Loading";
-import Post from "../components/post";
-import { ReviewOnSubjectPage, ReviewOnReviewerPage } from "../components/reviewComponents.js";
-import RatingStar from "../components/ratingStar.js";
-
 import UserService from '../tools/userService';
 import ItemService from '../tools/itemsService';
 import RequestService from '../tools/requestService';
 import ReviewService from '../tools/reviewService';
 import SocketService, { socket } from '../tools/socketService';
+import Post from "../components/post";
+import RatingStar from "../components/ratingStar.js";
+import { ReviewOnSubjectPage, ReviewOnReviewerPage } from "../components/reviewComponents.js";
+import { Loading, LoadingSmall } from "../components/Loading";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";

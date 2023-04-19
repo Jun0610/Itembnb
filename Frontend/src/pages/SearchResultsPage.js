@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import ItemService from '../tools/itemsService'
 import { useParams } from 'react-router-dom'
-import Loading from '../components/Loading';
-import Post from '../components/post';
-import '../styles/searchResultsPage.css'
-import FilterPopUp from '../components/FilterPopUp';
+import ItemService from '../tools/itemsService'
 import ReviewService from '../tools/reviewService';
+import { Loading } from '../components/Loading';
+import Post from '../components/post';
+import FilterPopUp from '../components/FilterPopUp';
+
+import '../styles/searchResultsPage.css'
 
 const SearchResultsPage = () => {
     const [items, setItems] = useState([]);

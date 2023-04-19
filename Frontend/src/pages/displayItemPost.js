@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
-import Select from 'react-select';
-import ItemService from '../tools/itemsService';
-import { confirmAlert } from 'react-confirm-alert';
 import { NavLink, useParams, useNavigate } from "react-router-dom";
+import Select from 'react-select';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from 'react-confirm-alert';
 import userContext from '../contexts/userContext';
-import BorrowingRequestList from '../components/borrowingRequestList';
 import ReservationService from '../tools/reservationService';
+import ItemService from '../tools/itemsService';
 import SocketService, { socket } from '../tools/socketService';
+import BorrowingRequestList from '../components/borrowingRequestList';
 import OwnerCalendar from '../components/ownerCalendar';
-import Loading from '../components/Loading';
+import { Loading } from '../components/Loading';
 import Unavailable404 from './Unavailable404';
 
 const DisplayItemPost = () => {

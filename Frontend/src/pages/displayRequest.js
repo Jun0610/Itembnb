@@ -1,14 +1,13 @@
 import React, { useEffect, useContext, useState } from "react";
 import { NavLink, useParams, useNavigate } from "react-router-dom";
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import userContext from '../contexts/userContext';
 import RequestService from '../tools/requestService';
 import ItemService from '../tools/itemsService';
 import UserService from '../tools/userService';
-import { socket } from '../tools/socketService';
-import SocketService from '../tools/socketService';
 import EmailService from '../tools/emailService';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css';
-import userContext from '../contexts/userContext';
+import SocketService, { socket } from '../tools/socketService';
 import { Loading, LoadingSmall } from "../components/Loading";
 import Post from "../components/post";
 
@@ -360,7 +359,7 @@ const DisplayRequestPost = () => {
                     <div className="basicBorderDiv m-3">
                         <div>
                             <p className="yellowText">Which items would you like to recommend for this request?</p>
-                            <button class="defaultButton" onClick={switchView}>Switch View</button>
+                            <button className="defaultButton" onClick={switchView}>Switch View</button>
                         </div>
 
                         {displayUserItems()}

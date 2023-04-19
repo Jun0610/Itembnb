@@ -1,12 +1,12 @@
 import React, { useEffect, useContext, useState } from "react";
-import { NavLink, useParams, useNavigate } from "react-router-dom";
-import UserService from '../tools/userService';
+import { NavLink, useNavigate } from "react-router-dom";
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from 'react-confirm-alert';
 import userContext from '../contexts/userContext';
-import { Loading, LoadingSmall } from "../components/Loading";
-import SocketService, { socket } from '../tools/socketService';
-import { confirmAlert } from 'react-confirm-alert'; // Import
+import UserService from '../tools/userService';
 import EmailService from '../tools/emailService';
+import SocketService, { socket } from '../tools/socketService';
+import { Loading } from "../components/Loading";
 
 import "../styles/homepage.css";
 import "../styles/userpage.css";
