@@ -1,19 +1,19 @@
 import React, { useEffect, useContext, useState } from "react";
 import { NavLink, Link, useNavigate, useParams } from 'react-router-dom';
-import userContext from '../contexts/userContext';
-import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from 'react-confirm-alert';
 import ReactMarkdown from 'react-markdown';
 
-import { Loading, LoadingSmall } from "../components/Loading";
-import Post from "../components/post";
-import { ReviewOnSubjectPage, ReviewOnReviewerPage } from "../components/reviewComponents.js";
-import RatingStar from "../components/ratingStar.js";
-
+import userContext from '../contexts/userContext';
 import UserService from '../tools/userService';
 import ItemService from '../tools/itemsService';
 import RequestService from '../tools/requestService';
 import ReviewService from '../tools/reviewService';
 import SocketService, { socket } from '../tools/socketService';
+import Post from "../components/post";
+import RatingStar from "../components/ratingStar.js";
+import { ReviewOnSubjectPage, ReviewOnReviewerPage } from "../components/reviewComponents.js";
+import { Loading, LoadingSmall } from "../components/Loading";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
@@ -94,8 +94,8 @@ const Userpage = () => {
     const canBeReviewed = () => {
         return false;
         return (
-            authUser.user.user != null && // user must be logged in
-            authUser.user.user._id != id // user must not be viewing their own profile
+            authUser.user.user !== null && // user must be logged in
+            authUser.user.user._id !== id // user must not be viewing their own profile
         );
     }
 
@@ -112,10 +112,10 @@ const Userpage = () => {
             setDisplayedReviewsForUser(originalReviewsForUser);
         }
 
-        if (originalReviewsForUser == null) {
+        if (originalReviewsForUser === null) {
             return <LoadingSmall />;
         }
-        if (originalReviewsForUser.length == 0) {
+        if (originalReviewsForUser.length === 0) {
             return <p className="grayText">There are no reviews!</p>;
         }
         return (
@@ -336,7 +336,7 @@ const Userpage = () => {
         }) =>
             <label htmlFor="photo-upload" className="custom-file-upload fas">
                 <div className="img-wrap" >
-                    <img for="photo-upload" src={src} alt="upload image here" />
+                    <img for="photo-upload" src={src} alt="Upload here" />
                 </div>
                 <input id="photo-upload" type="file" onChange={onChange} />
             </label>
@@ -439,7 +439,7 @@ const Userpage = () => {
         <div id="page_content_container">
             <div id="profile_leftbox" className="add_padding">
                 <div>
-                    <img id="profilepic" src={userInfo.profilePic} />
+                    <img id="profilepic" src={userInfo.profilePic} alt="Profile" />
 
                     <h6 className="user_stat">Borrower Rating: <RatingStar rating={borrowerRating} /></h6>
                     <hr />

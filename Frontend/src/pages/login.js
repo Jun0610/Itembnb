@@ -1,10 +1,13 @@
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from "react-confirm-alert";
+
+import userContext from "../contexts/userContext";
+import SocketService, { socket } from "../tools/socketService";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/login.css";
-import userContext from "../contexts/userContext";
-import { useNavigate } from "react-router-dom";
-import SocketService, { socket } from "../tools/socketService";
-import { confirmAlert } from "react-confirm-alert";
 
 const Login = () => {
     const [email, setEmail] = useState(null);

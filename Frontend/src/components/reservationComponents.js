@@ -25,40 +25,41 @@ export const BorrowingResLarge = ({ e, key, nav, showReviewButton = false }) => 
             <div className='grid grid-cols-3'>
                 <div>
                     <img onClick={() => { nav(`/selected-item-post/${e.item._id}`) }} src={e.item.images[0]} style={{ cursor: "pointer" }} alt="pretty" className='h-24 object-scale-down' />
-                    <div class="flex gap-0 m-1">
-                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
+                    <div className="flex gap-0 m-1">
+                        <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             Item Name
                         </div>
-                        <div class="bg-white/25 rounded-r-lg content-center p-1">
+                        <div className="bg-white/25 rounded-r-lg content-center p-1">
                             {e.item.name}
                         </div>
                     </div>
                 </div>
                 <div>
                     <img onClick={() => { nav(`/user/${e.lender._id}`) }} src={e.lender.profilePic} style={{ cursor: "pointer" }} alt="pretty" className='h-24 object-scale-down' />
-                    <div class="flex gap-0 m-1">
-                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
+                    <div className="flex gap-0 m-1">
+                        <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             Lender Name
                         </div>
-                        <div class="bg-white/25 rounded-r-lg content-center p-1">
+                        <div className="bg-white/25 rounded-r-lg content-center p-1">
                             {e.lender.name}
                         </div>
                     </div>
                 </div>
                 <div>
-                    <div class="flex gap-0 m-1">
-                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
+                    <span style={{ "font-weight": "bold", "color": "#f7a62a" }}>Borrowed</span>
+                    <div className="flex gap-0 m-1">
+                        <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             From
                         </div>
-                        <div class="bg-white/25 rounded-r-lg content-center p-1">
+                        <div className="bg-white/25 rounded-r-lg content-center p-1">
                             {new Date(e.reservation.startDate).toDateString()}
                         </div>
                     </div>
-                    <div class="flex gap-0 mt-2 m-1">
-                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
+                    <div className="flex gap-0 mt-2 m-1">
+                        <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             To
                         </div>
-                        <div class="bg-white/25 rounded-r-lg content-center p-1">
+                        <div className="bg-white/25 rounded-r-lg content-center p-1">
                             {new Date(e.reservation.endDate).toDateString()}
                         </div>
                     </div>
@@ -98,37 +99,37 @@ export const LendingResLarge = ({ e, key, nav, showReviewButton = false }) => {
             <div className='grid grid-cols-3'>
                 <img src={e.borrower.profilePic} alt="" style={{ cursor: "pointer" }} className="owner-img h-32" onClick={() => nav(`/user/${e.borrower._id}`)} />
                 <div>
-                    <div class="flex gap-0 m-1">
-                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
+                    <div className="flex gap-0 m-1">
+                        <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             Name
                         </div>
-                        <div class="bg-white/25 rounded-r-lg content-center p-1">
+                        <div className="bg-white/25 rounded-r-lg content-center p-1">
                             {e.borrower.name}
                         </div>
                     </div>
-                    <div class="flex gap-0 m-1">
-                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
+                    <div className="flex gap-0 m-1">
+                        <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             Borrowed
                         </div>
-                        <div class="bg-white/25 rounded-r-lg content-center p-1">
+                        <div className="bg-white/25 rounded-r-lg content-center p-1">
                             {e.item.name}
                         </div>
                     </div>
                 </div>
                 <div>
-                    <div class="flex gap-0 m-1">
-                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
+                    <div className="flex gap-0 m-1">
+                        <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             From
                         </div>
-                        <div class="bg-white/25 rounded-r-lg content-center p-1">
+                        <div className="bg-white/25 rounded-r-lg content-center p-1">
                             {new Date(e.reservation.startDate).toDateString()}
                         </div>
                     </div>
-                    <div class="flex gap-0 m-1">
-                        <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
+                    <div className="flex gap-0 m-1">
+                        <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             To
                         </div>
-                        <div class="bg-white/25 rounded-r-lg content-center p-1">
+                        <div className="bg-white/25 rounded-r-lg content-center p-1">
                             {new Date(e.reservation.endDate).toDateString()}
                         </div>
                     </div>

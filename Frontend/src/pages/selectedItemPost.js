@@ -1,18 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
+import ReactMarkdown from 'react-markdown';
+
 import userContext from "../contexts/userContext";
 import ItemService from "../tools/itemsService";
 import UserService from "../tools/userService.js";
 import ReservationService from "../tools/reservationService";
-import { Loading } from "../components/Loading";
-import ItemCalendar from "../components/borrowerCalendar";
-import { UserInfo } from "../components/smallInfoBox";
-import RatingStar from "../components/ratingStar";
-import "../styles/itempost.css";
-import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
+import SocketService, { socket } from '../tools/socketService';
+import ItemCalendar from "../components/borrowerCalendar";
+import RatingStar from "../components/ratingStar";
+import { UserInfo } from "../components/smallInfoBox";
 import { ReviewOnSubjectPage } from '../components/reviewComponents';
-import ReactMarkdown from 'react-markdown';
+import { Loading } from "../components/Loading";
+
+import "../styles/itempost.css";
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -159,8 +161,8 @@ const SelectedItemPost = () => {
     }
 
     const userIsOwner = () => {
-        return authUser != undefined &&
-            authUser.user.user != null &&
+        return authUser !== undefined &&
+            authUser.user.user !== null &&
             selectedItem.ownerId === authUser.user.user._id;
     }
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useContext } from "react";
-import ItemService from "../tools/itemsService";
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
+
 import userContext from '../contexts/userContext';
+import ItemService from "../tools/itemsService";
 
 const CreateItemPost = () => {
     const authUser = useContext(userContext);
@@ -254,7 +255,7 @@ const CreateItemPost = () => {
                     </div>))}
                 </div>
             </div>
-            
+
         </div>
     );
 };

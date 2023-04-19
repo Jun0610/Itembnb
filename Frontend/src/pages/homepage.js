@@ -1,11 +1,13 @@
 import React, { useEffect, useContext } from "react";
-import Post from "../components/post";
-import Loading from "../components/Loading";
+
 import userContext from "../contexts/userContext";
-import "../styles/homepage.css";
 import SocketService, { socket } from '../tools/socketService';
 import ItemService from '../tools/itemsService';
+import Post from "../components/post";
 import Browsing from "../components/Browsing";
+import { Loading } from "../components/Loading";
+
+import "../styles/homepage.css";
 
 const Homepage = () => {
 

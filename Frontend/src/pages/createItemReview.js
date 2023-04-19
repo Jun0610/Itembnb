@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { NavLink, useParams } from "react-router-dom";
-import ReviewService from "../tools/reviewService";
+import { useParams, useNavigate } from "react-router-dom";
+
 import userContext from '../contexts/userContext';
+import ReviewService from "../tools/reviewService";
 import ItemService from "../tools/itemsService";
 import ReservationService from "../tools/reservationService";
 import { BorrowingResLarge } from "../components/reservationComponents";
-import Loading from "../components/Loading";
+import { Loading } from "../components/Loading";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
@@ -62,10 +62,10 @@ const CreateItemReview = () => {
     const getErrors = (fieldId, fieldValue) => {
         const errorArray = [];
 
-        if (fieldId == "text" && fieldValue.length === 0) {
+        if (fieldId === "text" && fieldValue.length === 0) {
             errorArray.push(fieldId + " must have at least 1 character!");
         }
-        else if (fieldId == "rating" && (fieldValue < 1 || fieldValue > 5)) {
+        else if (fieldId === "rating" && (fieldValue < 1 || fieldValue > 5)) {
             errorArray.push(fieldId + " must be from 1-5!");
         }
 

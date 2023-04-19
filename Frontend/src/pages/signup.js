@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/signup.css";
 
@@ -9,7 +10,7 @@ const ImgUpload = ({
 }) =>
     <label htmlFor="photo-upload" className="custom-file-upload fas">
         <div className="img-wrap" >
-            <img for="photo-upload" src={src} alt="upload image here" />
+            <img for="photo-upload" src={src} alt="Upload here" />
         </div>
         <input id="photo-upload" type="file" onChange={onChange} />
     </label>
