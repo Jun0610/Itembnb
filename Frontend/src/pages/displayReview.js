@@ -1,19 +1,18 @@
 import React, { useEffect, useContext, useState } from "react";
 import { NavLink, useParams, useNavigate } from "react-router-dom";
-import RequestService from '../tools/requestService';
 import ItemService from '../tools/itemsService';
 import ReviewService from '../tools/reviewService';
 import UserService from '../tools/userService';
 import { socket } from '../tools/socketService';
 import SocketService from '../tools/socketService';
-import EmailService from '../tools/emailService';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import userContext from '../contexts/userContext';
 import { Loading, LoadingSmall } from "../components/Loading";
 import Post from "../components/post";
-import { SmallUserInfo, SmallItemInfo, UserInfo } from "../components/smallInfoBox";
+import { UserInfo } from "../components/smallInfoBox";
 import RatingStar from "../components/ratingStar.js";
+import ReactMarkdown from 'react-markdown';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
@@ -294,7 +293,11 @@ const DisplayReview = () => {
                     {new Date(displayedReview.dateCreated).toLocaleString()}
                 </p>
 
-                <textarea className="mt-1 border rounded-md w-full text-sm block px-3 py-2 inputNoOutline" id="text" type="text" value={displayedReview.text} readOnly={isEditing ? false : true} rol={10} style={isEditing ? { background: "#f1f1f1", color: "black" } : { background: "none", color: "#545454" }} onChange={onInputChange} />
+                {isEditing ?
+                    <textarea className="mt-1 border rounded-md w-full text-sm block px-3 py-2 inputNoOutline" id="text" type="text" value={displayedReview.text} rol={10} style={{ background: "none", color: "#545454" }} onChange={onInputChange} /> :
+                    <div><ReactMarkdown>{displayedReview.text}</ReactMarkdown></div>
+                }
+
                 <p className="input-error">{inputErrors.text}</p>
             </div>
 

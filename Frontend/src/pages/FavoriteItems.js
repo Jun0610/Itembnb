@@ -28,7 +28,7 @@ const FavoriteItems = () => {
                 let newFavItems = [];
 
                 for (const item of userData.favoritedItems) {
-                    const data = await ItemService.getItem(item);
+                    const data = await ItemService.getItemMin(item);
                     if (data.data != null) {
                         newFavItems.push(data.data);
                     }

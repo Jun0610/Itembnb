@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { NavLink, Link, useNavigate, useParams } from 'react-router-dom';
 import userContext from '../contexts/userContext';
 import { confirmAlert } from 'react-confirm-alert'; // Import
+import ReactMarkdown from 'react-markdown';
 
 import { Loading, LoadingSmall } from "../components/Loading";
 import Post from "../components/post";
@@ -98,112 +99,91 @@ const Userpage = () => {
         );
     }
 
-    const DisplayReviews = () => {
+    // Reviews of user (as borrower)
+    const DisplayReviewsOfUser = ({ originalReviewsForUser }) => {
 
-        // Reviews of user (as borrower)
-        const DisplayReviewsOfUser = ({ originalReviewsForUser }) => {
+        const [displayedReviewsForUser, setDisplayedReviewsForUser] = useState(originalReviewsForUser);
 
-            const [displayedReviewsForUser, setDisplayedReviewsForUser] = useState(originalReviewsForUser);
+        const filterReviews = (starNum) => {
+            setDisplayedReviewsForUser(originalReviewsForUser.filter((e) => e.review.rating === starNum));
+        }
 
-            const filterReviews = (starNum) => {
-                setDisplayedReviewsForUser(originalReviewsForUser.filter((e) => e.review.rating === starNum));
-            }
+        const resetFilter = () => {
+            setDisplayedReviewsForUser(originalReviewsForUser);
+        }
 
-            const resetFilter = () => {
-                setDisplayedReviewsForUser(originalReviewsForUser);
-            }
-
-            if (originalReviewsForUser == null) {
-                return <LoadingSmall />;
-            }
-            if (originalReviewsForUser.length == 0) {
-                return <p className="grayText">There are no reviews!</p>;
-            }
-            return (
-                <div>
-                    <div className='flex gap-4'>
-                        {stars.map((starNum, i) => (
-                            <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }} key={i}>
-                                {starNum}-star
-                            </div>
-                        ))}
-                        <div onClick={resetFilter} style={{ cursor: "pointer" }}>
-                            Reset
+        if (originalReviewsForUser == null) {
+            return <LoadingSmall />;
+        }
+        if (originalReviewsForUser.length == 0) {
+            return <p className="grayText">There are no reviews!</p>;
+        }
+        return (
+            <div>
+                <div className='flex gap-4'>
+                    {stars.map((starNum, i) => (
+                        <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }} key={i}>
+                            {starNum}-star
                         </div>
+                    ))}
+                    <div onClick={resetFilter} style={{ cursor: "pointer" }}>
+                        Reset
                     </div>
-
-                    {displayedReviewsForUser.length > 0 ?
-                        displayedReviewsForUser.map((e, i) => (
-                            <ReviewOnSubjectPage key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
-                        )) :
-                        <p className="grayText">There are no reviews!</p>
-                    }
                 </div>
-            );
+
+                {displayedReviewsForUser.length > 0 ?
+                    displayedReviewsForUser.map((e, i) => (
+                        <ReviewOnSubjectPage key={i} reviewObject={e} authUser={authUser} />
+                    )) :
+                    <p className="grayText">There are no reviews!</p>
+                }
+            </div>
+        );
+    }
+
+    // Reviews user has made
+    const DisplayReviewsMadeByUser = ({ originalReviewsByUser }) => {
+
+        const [displayedReviewsByUser, setDisplayedReviewsByUser] = useState(originalReviewsByUser);
+
+        const filterReviews = (starNum) => {
+            setDisplayedReviewsByUser(originalReviewsByUser.filter((e) => e.review.rating === starNum));
+            console.log(displayedReviewsByUser);
         }
 
-        // Reviews user has made
-        const DisplayReviewsMadeByUser = ({ originalReviewsByUser }) => {
-
-            const [displayedReviewsByUser, setDisplayedReviewsByUser] = useState(originalReviewsByUser);
-
-            const filterReviews = (starNum) => {
-                setDisplayedReviewsByUser(originalReviewsByUser.filter((e) => e.review.rating === starNum));
-                console.log(displayedReviewsByUser);
-            }
-
-            const resetFilter = () => {
-                setDisplayedReviewsByUser(originalReviewsByUser);
-            }
-
-            if (originalReviewsByUser == null) {
-                return <LoadingSmall />;
-            }
-            if (originalReviewsByUser.length === 0) {
-                return <p className="grayText">There are no reviews!</p>
-            }
-
-            console.log("display", displayedReviewsByUser);
-            console.log("display 2 ", originalReviewsByUser);
-
-            return (
-                <div>
-                    <div className='flex gap-4'>
-                        {stars.map((starNum, i) => (
-                            <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }} key={i}>
-                                {starNum}-star
-                            </div>
-                        ))}
-                        <div onClick={resetFilter} style={{ cursor: "pointer" }}>
-                            Reset
-                        </div>
-                    </div>
-
-                    {displayedReviewsByUser.length > 0 ?
-                        displayedReviewsByUser.map((e, i) => (
-                            <ReviewOnReviewerPage key={i} reviewObject={e} />
-                        )) :
-                        <p className="grayText">There are no reviews!</p>
-                    }
-                </div>
-            );
+        const resetFilter = () => {
+            setDisplayedReviewsByUser(originalReviewsByUser);
         }
 
-        // TODO
-        const onEditReview = () => {
+        if (originalReviewsByUser == null) {
+            return <LoadingSmall />;
+        }
+        if (originalReviewsByUser.length === 0) {
+            return <p className="grayText">There are no reviews!</p>
         }
 
-        // TODO
-        const onDeleteReview = () => {
-        }
+        console.log("display", displayedReviewsByUser);
+        console.log("display 2 ", originalReviewsByUser);
 
         return (
             <div>
-                <h3 className="item-post-header">Reviews of {userInfo.name}</h3>
-                <DisplayReviewsOfUser originalReviewsForUser={originalReviewsForUser} />
+                <div className='flex gap-4'>
+                    {stars.map((starNum, i) => (
+                        <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }} key={i}>
+                            {starNum}-star
+                        </div>
+                    ))}
+                    <div onClick={resetFilter} style={{ cursor: "pointer" }}>
+                        Reset
+                    </div>
+                </div>
 
-                <h3 className="item-post-header">Reviews Made By {userInfo.name}</h3>
-                <DisplayReviewsMadeByUser originalReviewsByUser={originalReviewsByUser} />
+                {displayedReviewsByUser.length > 0 ?
+                    displayedReviewsByUser.map((e, i) => (
+                        <ReviewOnReviewerPage key={i} reviewObject={e} />
+                    )) :
+                    <p className="grayText">There are no reviews!</p>
+                }
             </div>
         );
     }
@@ -324,15 +304,14 @@ const Userpage = () => {
         }
 
         const displayProfileDescription = () => {
-            let profileDescription = "";
             if (userInfo.profileDesc === null || userInfo.profileDesc === "") {
-                profileDescription = <span className="grayText">This user has no profile description.</span>;
+                return <p className="grayText"><strong>This user has no profile description.</strong></p>;
             }
             else {
-                profileDescription = userInfo.profileDesc;
+                return (<div className="p-3" style={{ "max-height": "600px", "overflow-y": "scroll" }}>
+                    <ReactMarkdown>{userInfo.profileDesc}</ReactMarkdown>
+                </div>);
             }
-
-            return <p><strong>Profile Description: </strong>{profileDescription}</p>
         }
 
         const handleImageChange = (e) => {
@@ -463,7 +442,6 @@ const Userpage = () => {
                     <img id="profilepic" src={userInfo.profilePic} />
 
                     <h6 className="user_stat">Borrower Rating: <RatingStar rating={borrowerRating} /></h6>
-                    <h6 className="user_stat">Lender Rating: {lenderRating}/5</h6>
                     <hr />
                     <h6 className="user_stat">{userInfo.name} has {userInfo.postedItems.length} {userInfo.postedItems.length === 1 ? "item" : "items"}</h6>
                     <h6 className="user_stat">{userInfo.name} has {userInfo.requestPosts.length} {userInfo.requestPosts.length === 1 ? "request" : "requests"}</h6>
@@ -485,12 +463,20 @@ const Userpage = () => {
                     {displayUserItems()}
                 </div>
 
+                <br />
+
                 <h3 className="item-post-header">{userInfo.name}'s Item Requests</h3>
                 <div className="cardcontainer">
                     {displayUserRequests()}
                 </div>
 
-                <DisplayReviews />
+                <div>
+                    <h3 className="item-post-header">Reviews of {userInfo.name}</h3>
+                    <DisplayReviewsOfUser originalReviewsForUser={originalReviewsForUser} />
+
+                    <h3 className="item-post-header">Reviews Made By {userInfo.name}</h3>
+                    <DisplayReviewsMadeByUser originalReviewsByUser={originalReviewsByUser} />
+                </div>
             </div>
         </div>
     );

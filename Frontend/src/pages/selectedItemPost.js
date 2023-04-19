@@ -12,6 +12,7 @@ import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
 import { ReviewOnSubjectPage } from '../components/reviewComponents';
+import ReactMarkdown from 'react-markdown';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -19,7 +20,7 @@ const SelectedItemPost = () => {
     const [owner, setOwner] = useState({});
     const [userReserv, setUserReserv] = useState({});
     const [reservSuccess, setReservSuccess] = useState(false);
-    const [selectedItem, setSelectedItem] = useState({});
+    const [selectedItem, setSelectedItem] = useState(null);
 
     // for handling reviews/ratings
     const [rating, setRating] = useState(null);
@@ -193,8 +194,10 @@ const SelectedItemPost = () => {
                     <div className="row">
                         <div className="col-6" style={{ borderRight: "2px solid #ffec18" }}>
                             <div className="item-post-row">
-                                <h5>{selectedItem.description}</h5>
-                                <div style={{ paddingLeft: "4rem" }}>
+                                <div className="p-3" style={{ "max-height": "500px", "overflow-y": "scroll" }}>
+                                    <ReactMarkdown>{selectedItem.description}</ReactMarkdown>
+                                </div>
+                                <div style={{ paddingLeft: "2rem" }}>
 
                                 </div>
                                 <h4>${selectedItem.price}/day</h4>

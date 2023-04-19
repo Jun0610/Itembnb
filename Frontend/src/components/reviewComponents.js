@@ -5,11 +5,11 @@ import '../styles/review.css';
 
 import UserService from "../tools/userService.js";
 import ItemService from "../tools/itemsService.js";
-import ReviewService from "../tools/reviewService";
 import { LoadingSmall } from "./Loading";
 import { SmallUserInfo, SmallItemInfo } from "./smallInfoBox";
 import { NavLink } from "react-router-dom";
 import RatingStar from "../components/ratingStar.js";
+import ReactMarkdown from 'react-markdown';
 
 export const ReviewOnSubjectPage = ({ reviewObject, authUser }) => {
     const userIsReviewOwner = () => {
@@ -24,43 +24,51 @@ export const ReviewOnSubjectPage = ({ reviewObject, authUser }) => {
 
         if (userIsReviewOwner()) {
             return (
-                <div className="flex justify-end gap-4">
-                    <NavLink className="lessStyledLink" to={`/display-review/` + reviewObject.review._id}><button className={"place-self-end fa-solid fa-pencil mt-1 icon-3x"}></button></NavLink>
-                </div>
+                <NavLink className="lessStyledLink" to={`/display-review/` + reviewObject.review._id}><button className={"place-self-end fa-solid fa-pencil mt-1 icon-3x"}></button></NavLink>
             );
-        }
-        else {
-            return <div></div>;
         }
     }
 
-    return (
-        <div key={reviewObject.review._id} className="border-2 rounded-3xl border-yellow-400 m-2 p-2 flex">
+    const displayReviewText = (rawText) => {
+        if (rawText.length > 153) {
+            rawText = rawText.substring(0, 150).trim() + "...";
+        }
+        return (
+            <div>
+                <ReactMarkdown>{rawText}</ReactMarkdown>
+            </div>
+        )
+    }
 
+    return (<div key={reviewObject.review._id} className="border-2 rounded-3xl border-yellow-400 m-2 p-2 l">
+
+        <div className="flex">
             <SmallUserInfo user={reviewObject.user} />
 
-            <div className="flex-auto">
-                <h5>
-                    <NavLink to={`/display-review/` + reviewObject.review._id} className="lessStyledLink">
-                        {
-                            reviewObject.review.rating + "/5"
-                        }
-                    </NavLink>
-                </h5>
+            <div className="flex-1">
                 <div>
-
-                    <div>
-                        {new Date(reviewObject.review.dateModified).toLocaleString()}
-                    </div>
-
-                    <div className="mt-3">
-                        {reviewObject.review.text}
-                    </div>
+                    <h5><NavLink to={`/display-review/` + reviewObject.review._id} className="lessStyledLink">
+                        <RatingStar rating={reviewObject.review.rating} />
+                    </NavLink></h5>
                 </div>
+                <div>
+                    {new Date(reviewObject.review.dateModified).toLocaleString()}
+                </div>
+                <div className="mt-3">
+                    {displayReviewText(reviewObject.review.text)}
 
-                {editReviewButtons()}
+                </div>
             </div>
-        </div >
+        </div>
+
+        <div className="float-right" style={{ "margin-top": "-20px", "position": "relative" }} >
+            <NavLink to={`/display-review/` + reviewObject.review._id} className="grayText lessStyledLink italic text-sm">
+                See review page&nbsp;
+            </NavLink>
+
+            {editReviewButtons()}
+        </div>
+    </div >
     );
 };
 
@@ -108,12 +116,23 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
         }
     }
 
-    return (
-        <div key={reviewObject.review._id} className="border-2 rounded-3xl border-yellow-400 m-2 p-2">
+    const displayReviewText = (rawText) => {
+        if (rawText.length > 103) {
+            rawText = rawText.substring(0, 100).trim() + "...";
+        }
+        return (
+            <div>
+                <ReactMarkdown>{rawText}</ReactMarkdown>
+            </div>
+        )
+    }
 
-            <h6><NavLink to={`/display-review/` + reviewObject.review._id} className="lessStyledLink">
+    return (
+        <div key={reviewObject.review._id} className="border-2 rounded-3xl border-yellow-400 m-2 p-2" >
+
+            <h6>
                 Review of {isItemReview ? "Item" : "Borrower"}
-            </NavLink></h6>
+            </h6>
 
             <div className="flex">
                 <div>
@@ -123,18 +142,22 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
                 <div className="flex-1">
                     <div>
                         <h5><NavLink to={`/display-review/` + reviewObject.review._id} className="lessStyledLink">
-                            {reviewObject.review.rating}/5
+                            <RatingStar rating={reviewObject.review.rating} />
                         </NavLink></h5>
                     </div>
                     <div>
                         {new Date(reviewObject.review.dateModified).toLocaleString()}
                     </div>
                     <div className="mt-3">
-                        {reviewObject.review.text}
+                        {displayReviewText(reviewObject.review.text)}
+
                     </div>
                 </div>
-
             </div>
+
+            <NavLink to={`/display-review/` + reviewObject.review._id} className="float-right grayText lessStyledLink italic text-sm" style={{ "margin-top": "-20px", "position": "relative" }}>
+                See review page
+            </NavLink>
         </div >
     );
 }

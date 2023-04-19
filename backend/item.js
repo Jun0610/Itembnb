@@ -221,7 +221,10 @@ router.get("/search/:searchString", async (req, res) => {
 
 router.get("/get-item-by-category/:category", async (req, res) => {
     try {
-        const items = await db.collection('items').find({ category: [req.params.category] }).toArray()
+        const items = await db.collection('items').find({ category: [req.params.category] },
+            // only get these fields to return
+            { _id: 1, name: 1, description: 1, images: [{ $slice: ['$images', 1] }], price: 1 }
+        ).toArray()
         if (items === null) {
             res.status(201).json({ success: true, data: [] });
         }
