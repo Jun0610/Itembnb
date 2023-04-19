@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from "react-router-dom";
 import userContext from '../contexts/userContext';
 import ReservationService from '../tools/reservationService';
-import { Loading } from '../components/Loading';
 import { BorrowingResSmall, BorrowingResLarge } from '../components/reservationComponents';
+import { Loading } from '../components/Loading';
 
 const BorrowingHistory = () => {
     const [borrowingHist, setBorrowingHist] = useState([]);

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import ItemService from '../tools/itemsService';
-import { Loading } from '../components/Loading';
 import Browsing from '../components/Browsing'
 import Post from '../components/post';
+import { Loading } from '../components/Loading';
 
 import '../styles/categoryPage.css'
 

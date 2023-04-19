@@ -1,10 +1,11 @@
 import React, { useEffect, useContext } from "react";
+
 import userContext from "../contexts/userContext";
 import SocketService, { socket } from '../tools/socketService';
 import ItemService from '../tools/itemsService';
 import Post from "../components/post";
-import { Loading } from "../components/Loading";
 import Browsing from "../components/Browsing";
+import { Loading } from "../components/Loading";
 
 import "../styles/homepage.css";
 

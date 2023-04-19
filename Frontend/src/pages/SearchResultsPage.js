@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+
 import ItemService from '../tools/itemsService'
 import ReviewService from '../tools/reviewService';
-import { Loading } from '../components/Loading';
 import Post from '../components/post';
 import FilterPopUp from '../components/FilterPopUp';
+import { Loading } from '../components/Loading';
 
 import '../styles/searchResultsPage.css'
 

@@ -3,6 +3,7 @@ import { NavLink, useParams, useNavigate } from "react-router-dom";
 import Select from 'react-select';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { confirmAlert } from 'react-confirm-alert';
+
 import userContext from '../contexts/userContext';
 import ReservationService from '../tools/reservationService';
 import ItemService from '../tools/itemsService';
