@@ -99,9 +99,6 @@ const Post = ({ post, isRequest }) => {
                         <button className='btn custom-card-button' >Read more</button>
                     </NavLink>
 
-
-
-
                 </div>
 
                 {!isRequest &&

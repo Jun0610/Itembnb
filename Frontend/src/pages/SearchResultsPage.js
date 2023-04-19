@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import ItemService from '../tools/itemsService'
-import ReviewService from '../tools/reviewService';
 import Post from '../components/post';
 import FilterPopUp from '../components/FilterPopUp';
 import { Loading } from '../components/Loading';
@@ -26,15 +25,8 @@ const SearchResultsPage = () => {
             const toSearch = searchString.split('+')[0]
             const itemResults = await ItemService.searchItem(toSearch)
             for (const item of itemResults) {
-                const res = await ReviewService.getReviewsForItem(item._id)
-                const reviews = res.data;
-                console.log("reviews", reviews);
-                let sum = 0
-                for (const review of reviews) {
-                    sum += Number(review.review.rating)
-                }
-                let avg = sum / reviews.length
-                item.rating = avg;
+                const rating = await ItemService.getItemRating(item._id);
+                item.rating = rating.rating;
                 console.log(item);
             }
 
