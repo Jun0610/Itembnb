@@ -150,7 +150,7 @@ const FilterPopUp = ({ items, setItems, setArrayContents, filterState, setFilter
         setLoading(true)
         //first get unfiltered array from db
         const toSearch = searchString.split('+')[0]
-        const unfiltered = await ItemService.serchItem(toSearch);
+        const unfiltered = await ItemService.searchItem(toSearch);
 
         //handle filtering dates first
         let filterDate = unfiltered;

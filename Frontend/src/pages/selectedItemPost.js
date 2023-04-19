@@ -161,8 +161,8 @@ const SelectedItemPost = () => {
     }
 
     const userIsOwner = () => {
-        return authUser != undefined &&
-            authUser.user.user != null &&
+        return authUser !== undefined &&
+            authUser.user.user !== null &&
             selectedItem.ownerId === authUser.user.user._id;
     }
 

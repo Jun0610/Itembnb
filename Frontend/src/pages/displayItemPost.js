@@ -259,8 +259,8 @@ const DisplayItemPost = () => {
     }
 
     const userIsOwner = () => {
-        return authUser != undefined &&
-            authUser.user.user != null &&
+        return authUser !== undefined &&
+            authUser.user.user !== null &&
             item.ownerId === authUser.user.user._id;
     }
 

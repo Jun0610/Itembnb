@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { NavLink, useParams, useNavigate } from "react-router-dom";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { confirmAlert } from 'react-confirm-alert';
+import ReactMarkdown from 'react-markdown';
 
 import userContext from '../contexts/userContext';
 import RequestService from '../tools/requestService';

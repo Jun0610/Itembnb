@@ -24,9 +24,9 @@ const SearchResultsPage = () => {
         setSortingOrder('Default')
         const search = async () => {
             const toSearch = searchString.split('+')[0]
-            const itemResults = await ItemService.serchItem(toSearch)
+            const itemResults = await ItemService.searchItem(toSearch)
             for (const item of itemResults) {
-                const res = await ReviewService.getReviewByItem(item._id)
+                const res = await ReviewService.getReviewsForItem(item._id)
                 const reviews = res.data;
                 console.log("reviews", reviews);
                 let sum = 0

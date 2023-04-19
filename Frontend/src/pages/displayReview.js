@@ -47,7 +47,7 @@ const DisplayReview = () => {
             setOriginalReview(reviewData);
             setDisplayedReview(reviewData);
 
-            if (reviewData.userId != "" && reviewData.itemId == "") {
+            if (reviewData.userId !== "" && reviewData.itemId === "") {
                 setIsItemReview(false);
 
                 const resData = await ReservationService.getReservation(reviewData.reservationId);
@@ -56,7 +56,7 @@ const DisplayReview = () => {
                 const dataObj = { reservation: resData.data, borrower: borrowerData.data, item: borrowedItemData.data }
                 setReservationDataObject(dataObj);
             }
-            else if (reviewData.itemId != "" && reviewData.userId == "") {
+            else if (reviewData.itemId !== "" && reviewData.userId === "") {
                 setIsItemReview(true);
 
                 const resData = await ReservationService.getReservationAndLender(reviewData.reservationId);
@@ -109,8 +109,8 @@ const DisplayReview = () => {
     const [inputErrors, setInputErrors] = useState(startingErrors);
 
     const userIsReviewOwner = () => {
-        return authUser != undefined &&
-            authUser.user.user != null &&
+        return authUser !== undefined &&
+            authUser.user.user !== null &&
             originalReview.reviewerId === authUser.user.user._id;
     }
 

@@ -46,7 +46,7 @@ class ItemService {
             })
         });
 
-        if (includeRating == false) {
+        if (includeRating === false) {
             return itemMinData;
         }
 
@@ -164,7 +164,7 @@ class ItemService {
         }));
     }
 
-    static async serchItem(searchString) {
+    static async searchItem(searchString) {
         const request = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },

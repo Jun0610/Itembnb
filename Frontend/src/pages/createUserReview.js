@@ -64,10 +64,10 @@ const CreateUserReview = () => {
     const getErrors = (fieldId, fieldValue) => {
         const errorArray = [];
 
-        if (fieldId == "text" && fieldValue.length === 0) {
+        if (fieldId === "text" && fieldValue.length === 0) {
             errorArray.push(fieldId + " must have at least 1 character!");
         }
-        else if (fieldId == "rating" && (fieldValue < 1 || fieldValue > 5)) {
+        else if (fieldId === "rating" && (fieldValue < 1 || fieldValue > 5)) {
             errorArray.push(fieldId + " must be from 1-5!");
         }
 
