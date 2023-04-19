@@ -1,0 +1,44 @@
+.no-error {
+    display: none;
+}
+
+.has-error {
+    display: block;
+    color: red;
+}
+
+.has-error + #name {
+    border: 1px solid red;
+}
+
+#name {
+    width: 300px;
+    height: 3rem;
+    border-radius: 0.3rem;
+    border: 1.5px solid #ddd;
+    padding: 0.5rem;
+}
+
+#description {
+    border: 1.5px solid #ddd;
+    width: 600px;
+    height: 6rem;
+    border-radius: 0.3rem;
+    padding: 0.5rem;
+}
+
+#name:focus {
+    border: none;
+    outline: none;
+    border: 1.5px solid #ffe600;
+}
+
+#description:focus {
+    border: none;
+    outline: none;
+    border: 1.5px solid #ffe600;
+}
+
+.has-error + #description {
+    border: 1px solid red;
+}
