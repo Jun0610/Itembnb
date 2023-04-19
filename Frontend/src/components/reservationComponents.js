@@ -46,6 +46,7 @@ export const BorrowingResLarge = ({ e, key, nav, showReviewButton = false }) => 
                     </div>
                 </div>
                 <div>
+                    <span style={{ "font-weight": "bold", "color": "#f7a62a" }}>Borrowed</span>
                     <div class="flex gap-0 m-1">
                         <div class="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             From

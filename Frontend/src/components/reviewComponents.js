@@ -30,11 +30,8 @@ export const ReviewOnSubjectPage = ({ reviewObject, authUser }) => {
     }
 
     const displayReviewText = (rawText) => {
-        if (rawText.length > 153) {
-            rawText = rawText.substring(0, 150).trim() + "...";
-        }
         return (
-            <div>
+            <div className="p-1" style={{ "max-height": "150px", "overflow-y": "scroll" }}>
                 <ReactMarkdown>{rawText}</ReactMarkdown>
             </div>
         )
@@ -117,11 +114,8 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
     }
 
     const displayReviewText = (rawText) => {
-        if (rawText.length > 103) {
-            rawText = rawText.substring(0, 100).trim() + "...";
-        }
         return (
-            <div>
+            <div className="p-3" style={{ "max-height": "150px", "overflow-y": "scroll" }}>
                 <ReactMarkdown>{rawText}</ReactMarkdown>
             </div>
         )
