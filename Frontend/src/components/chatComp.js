@@ -2,18 +2,21 @@ import Talk from 'talkjs';
 import { useEffect, useState, useRef, useContext } from 'react';
 import chatContext from '../contexts/chatContext';
 import ChatSearchBar from './ChatSearchBar';
+import { faBell, faBellSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ChatComponent = ( {user, otherUser} )  =>  {
 
 	const chatboxEl = useRef();
 	const currChat = useContext(chatContext);
 	const [filter, setFilter] = useState(null);
+	const [selectConv, setSelectConv] = useState(null);	
+	const [notifications, setNotifications] = useState(null);	
 
 	// wait for TalkJS to load
 	const [talkLoaded, markTalkLoaded] = useState(false);
 
 	useEffect(() => {
-		console.log("running chat component");
 		Talk.ready.then(() => markTalkLoaded(true)); 
 
 		currChat.setOtherUser(null);
@@ -72,6 +75,25 @@ const ChatComponent = ( {user, otherUser} )  =>  {
 					email: conversation.others[0].email,
 				}
 				currChat.setOtherUser(currOtherUser);
+				setSelectConv(conversation);
+				fetch(`https://api.talkjs.com/v1/tnfFYmAK/conversations/${conversation.conversation.id}`,
+				{
+					method: "GET",
+					headers: {
+						"Authorization": "Bearer sk_test_qz67J0mBMzQs3RGs3OvwrJmXFBReuebY"
+					}
+				})
+				.then(res => res.json())
+				.then(data => {
+					let notify = false;
+					let obj = data.participants;
+					for (var key in obj) {
+						if (key === user.user._id) {
+							notify = obj[key].notify;
+						}
+					}
+					setNotifications(notify);
+				})
 			});
 
 			inbox.onSendMessage (message => {
@@ -84,9 +106,54 @@ const ChatComponent = ( {user, otherUser} )  =>  {
 		}
 	}, [talkLoaded, otherUser, filter]);
 
+	const handleNotifBell = () => {
+		if (notifications) {
+			setNotifications(false);
+			if (selectConv != null) {
+				fetch(`https://api.talkjs.com/v1/tnfFYmAK/conversations/${selectConv.conversation.id}/participants/${user.user._id}`, {
+					method: "PATCH",
+					body: JSON.stringify({
+						"notify": false
+					}),
+					headers: {
+						"Content-type": "application/json",
+						"Authorization": "Bearer sk_test_qz67J0mBMzQs3RGs3OvwrJmXFBReuebY"
+					}
+				})
+				.then(res => console.log(res))
+			}
+		}
+		else {
+			setNotifications(true);
+			if (selectConv != null) {
+				fetch(`https://api.talkjs.com/v1/tnfFYmAK/conversations/${selectConv.conversation.id}/participants/${user.user._id}`, {
+					method: "PATCH",
+					body: JSON.stringify({
+						"notify": true,
+						"access": "ReadWrite"
+					}),
+					headers: {
+						"Content-type": "application/json",
+						"Authorization": "Bearer sk_test_qz67J0mBMzQs3RGs3OvwrJmXFBReuebY"
+					}
+				})
+				.then(res => console.log(res))
+			}
+		}
+			
+	}
+
 	return (
 		<div>
-			<div className='chat-search-bar'><ChatSearchBar placeholderText={"Search chats"} searchFunc={setFilter}/></div>
+			<div className='row'>
+				<div className='chat-search-bar'><ChatSearchBar placeholderText={"Search chats"} searchFunc={setFilter}/></div>
+				<button className='notif-btn' onClick={handleNotifBell}>
+					{notifications &&
+					<FontAwesomeIcon icon={faBell}/>}
+					{!notifications &&
+					<FontAwesomeIcon icon={faBellSlash}/>}
+				</button>
+			</div>
 			<div className='chat-comp' ref={chatboxEl} />
 		</div>
 	);

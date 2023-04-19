@@ -30,6 +30,7 @@ import BorrowingHistory from "./pages/borrowingHistory";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import CategoryPage from "./pages/CategoryPage";
 import { ChatContextProvider } from "./contexts/chatContext";
+import EmailChatPage from "./pages/emailChatPage";
 
 function App() {
     return (
@@ -52,6 +53,7 @@ function App() {
                                 <Route exact path='/borrowing-history' element={<BorrowingHistory />} />
                                 <Route path="/display-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailDisplayItemPost />} />
                                 <Route path="/selected-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailSelectedItemPost />} />
+                                <Route path="/chat-redir/:id" element={<EmailChatPage />} />
                                 <Route path="/item-status/:id" element={<EmailStatusPage />} />
                                 <Route path="/display-item-post/:id" element={<DisplayItemPost />} />
                                 <Route path="/display-request-post/:id" element={<DisplayRequestPost />} />

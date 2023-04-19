@@ -66,16 +66,17 @@ const ChatPage = ()  =>  {
 	}
 
 	const UserSearch =  () => {
-		const [userList, setUserList] = useState([]);
+		const [userList, setUserList] = useState(null);
 		
 		const handleSearch = async (input) => {
-			if (input === '') {
+			if (input === null) {
 				setUserList(null);
 				return;
 			} else {
-				const res = await fetch(`http://localhost:8888/api/user/get-users/:${input}`);
+				const res = await fetch(`http://localhost:8888/api/user/get-users/${input}`);
 				const data = await res.json();
-				setUserList(data);
+				console.log(data);
+				setUserList(data.data);
 			}
 		}
 
@@ -85,6 +86,7 @@ const ChatPage = ()  =>  {
 				{userList && userList.length > 0 &&
 					<div className='user-list'>
 						{userList.map((user) =>{
+							console.log(user);
 							return (<UserPanel user={user} />)
 						})}	
 					</div>
@@ -93,14 +95,13 @@ const ChatPage = ()  =>  {
 					<span>No results found</span>
 				}
 				{userList == null &&
-					<span>Search for users</span>
+					<span>Search results will appear here</span>
 				}
 			</div>
 		)
 	}
 	
 	useEffect(() => {
-		console.log('chat page');
 		if (sessionStorage.getItem('curUser') !== null) {
 			authUser.login(JSON.parse(sessionStorage.getItem('curUser')));
 

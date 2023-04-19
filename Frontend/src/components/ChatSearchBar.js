@@ -6,17 +6,11 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 const ChatSearchBar = ( {placeholderText, searchFunc} ) => {
     const [input, setInput] = useState('');
 
-    useEffect(() => {
-        console.log('chat component');
-    }, []);
-    
     const handleSearch = async () => {
         if (input === '') {
             searchFunc(null);
             return;
         }
-
-        console.log(input);
         searchFunc(input);
     }
 
