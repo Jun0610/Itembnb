@@ -139,7 +139,7 @@ const ItemCalendar = ({ selectedItem, setReservSuccess, itemOwner }) => {
                         <button className='calendar-column-btn' onClick={reset}>Clear</button>
 
                         {userIsOwner() ?
-                            <button className='calendar-column-btn' style={{ "background-color": "#888888", "color": "#bbbbbb" }}>Make Request</button> :
+                            <div className='calendar-column-btn' style={{ "background-color": "#888888", "color": "#bbbbbb" }}>Make Request</div> :
                             <button className='calendar-column-btn' onClick={makeReq}>Make Request</button>}
                     </div>
                 </div>
