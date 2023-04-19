@@ -56,7 +56,7 @@ const DisplayReview = () => {
             else if (reviewData.itemId != "" && reviewData.userId == "") {
                 setIsItemReview(true);
 
-                let subjectInfo = await ItemService.getItemMin(reviewData.itemId);
+                let subjectInfo = await ItemService.getItemMin(reviewData.itemId, false);
                 setReviewSubject(subjectInfo);
             }
             else {
@@ -154,6 +154,8 @@ const DisplayReview = () => {
             if (noInputErrors()) {
 
                 const sendEdit = async () => {
+                    displayedReview.rating = Number(displayedReview.rating);
+
                     const result = await ReviewService.updateReview(displayedReview);
                     if (result.success) {
                         setIsEditing(false);

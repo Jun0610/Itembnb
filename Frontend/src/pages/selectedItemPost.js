@@ -87,42 +87,18 @@ const SelectedItemPost = () => {
         getItemReviews();
     }, [])
 
-    const onEditReview = (review, idx) => {
-        // update the average rating on item
-        displayedItemReviews[idx].review = review;
-        setDisplayedItemReviews(displayedItemReviews);
-        setOriginalItemReviews(displayedItemReviews);
-
-        var totalRating = 0;
-        for (const ir of displayedItemReviews) totalRating += parseInt(ir.review.rating);
-
-        setRating(1.0 * totalRating / displayedItemReviews.length)
-    }
-
-    const onDeleteReview = (review, idx) => {
-        const deleteReview = async (review, idx) => {
-            await ReviewService.deleteReview(review._id);
-            setDisplayedItemReviews(displayedItemReviews.filter((_, i) => idx !== i));
-            setOriginalItemReviews(originalItemReviews.filter((_, i) => idx !== i));
-
-            // update the average rating of the item
-            var totalRating = 0;
-            const newItemReviews = displayedItemReviews.filter((_, i) => idx !== i);
-            for (const ir of newItemReviews) totalRating += parseInt(ir.review.rating);
-
-            setRating(1.0 * totalRating / newItemReviews.length);
-
-            alert("Successfully deleted your review!");
-        }
-        deleteReview(review, idx);
-    }
-
     const filterStar = (i) => {
         setDisplayedItemReviews(originalItemReviews.filter((e) => e.review.rating === i));
     }
 
     const resetFilter = () => {
         setDisplayedItemReviews(originalItemReviews);
+    }
+
+    // TODO, update function and create backend functions
+    // so that this returns true if can review ?
+    const canBeReviewed = () => {
+        return false;
     }
 
     //========== review section end ============
@@ -229,7 +205,11 @@ const SelectedItemPost = () => {
                             <UserInfo user={owner} />
                             <div className="font-bold">
                                 Reviews ({originalItemReviews.length})
-                                <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
+
+                                {canBeReviewed() &&
+                                    <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
+                                }
+
                             </div>
                             <div className='flex gap-4'>
                                 {stars.map((e, i) => (<div onClick={() => filterStar(e)} style={{ cursor: "pointer" }}>{e}-star</div>))}
@@ -238,7 +218,7 @@ const SelectedItemPost = () => {
                             <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
                                 {displayedItemReviews.length > 0 ?
                                     displayedItemReviews.map((e, i) => (
-                                        <ReviewOnSubjectPage key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
+                                        <ReviewOnSubjectPage reviewObject={e} authUser={authUser} />
                                     )) :
                                     <p>There are no reviews!</p>
                                 }

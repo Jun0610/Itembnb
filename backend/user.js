@@ -4,6 +4,7 @@ const router = express.Router()
 const deleteItem = require('./item').deleteItem;
 const deleteRequest = require('./request').deleteRequest;
 const deleteReview = require('./review').deleteReview;
+const getUserMin = require('./utility').getUserMin;
 const bcrypt = require('bcrypt');
 
 //registering user
@@ -55,16 +56,10 @@ router.post('/user-login', async (req, res) => {
 // sending minimalist user data (just name, profile pic, description)
 router.get('/user-data-min/:id', async (req, res) => {
     try {
-        const id = new mongo.ObjectId(req.params.id)
-        const results = await db.collection('users').findOne({ _id: id })
-        if (results == null) {
-            res.status(200).json({ success: true, data: null })
-        } else {
-            const returnData = { _id: results._id, name: results.name, profileDesc: results.profileDesc, profilePic: results.profilePic }
-            res.status(200).json({ success: true, data: returnData })
-        }
+        const results = await getUserMin(db, req.params.id);
+        res.status(200).json({ success: true, data: results })
     } catch (err) {
-        res.status(404).json({ success: false, data: err });
+        res.status(200).json({ success: false, data: err });
     }
 })
 

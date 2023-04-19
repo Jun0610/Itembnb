@@ -11,85 +11,21 @@ import { SmallUserInfo, SmallItemInfo } from "./smallInfoBox";
 import { NavLink } from "react-router-dom";
 import RatingStar from "../components/ratingStar.js";
 
-export const ReviewOnSubjectPage = ({ reviewObject, authUser, onDeleteReview, onEditReview, idx }) => {
-    const [isEditing, setIsEditing] = useState(false);
-
-    // local copy of the review that the user edits when isEditing = true
-    const [localReview, setLocalReview] = useState(null);
-
+export const ReviewOnSubjectPage = ({ reviewObject, authUser }) => {
     const userIsReviewOwner = () => {
         return authUser != undefined &&
             authUser.user.user != null &&
             reviewObject.user._id === authUser.user.user._id;
     }
 
-    // edit owner review
-    const editOwnerReview = () => {
-        const updateReview = async () => {
-            // update in database and frontend
-            localReview.dateModified = new Date(Date.now());
-            await ReviewService.updateReview(localReview);
-            reviewObject.review = localReview
-            onEditReview(reviewObject.review, idx)
-            setIsEditing(false)
-            setLocalReview(null);
-            alert("Successfully edited your review!");
-        }
-
-        if (isEditing) {
-            updateReview();
-        }
-        else {
-            setIsEditing(true);
-            setLocalReview(reviewObject.review);
-        }
-    }
-
-    const cancelEdit = () => {
-        setIsEditing(false);
-        setLocalReview(null);
-    }
-
-    const onInputChange = (e) => {
-        setLocalReview({
-            ...localReview,
-            [e.target.id]: e.target.value
-        });
-    }
-
     // Cancel Edit, Edit, Delete buttons
     // (only show up if you made the review)
     const editReviewButtons = () => {
-        /*
-        let cancelEditButton = "";
-        if (isEditing) {
-            cancelEditButton =
-                <button className={isEditing ? "place-self-end fa-solid fa-xmark mt-1 icon-3x" : "place-self-end fa-solid fa-border-none mt-1 icon-3x"} onClick={cancelEdit}></button>
-                ;
-        }
-
-        if (userIsReviewOwner()) {
-            return (
-                <div className="flex justify-end gap-4">
-                    {cancelEditButton}
-
-                    <button className={isEditing ? "place-self-end fa-solid fa-save mt-1 icon-3x" : "place-self-end fa-solid fa-pencil mt-1 icon-3x"} onClick={editOwnerReview}></button>
-
-                    <button className="fa-solid fa-trash mt-1 icon-3x" onClick={() => onDeleteReview(reviewObject, idx)}></button>
-                </div>
-            );
-        }
-        else {
-            return <div></div>;
-        }
-        */
 
         if (userIsReviewOwner()) {
             return (
                 <div className="flex justify-end gap-4">
                     <NavLink className="lessStyledLink" to={`/display-review/` + reviewObject.review._id}><button className={"place-self-end fa-solid fa-pencil mt-1 icon-3x"}></button></NavLink>
-
-                    <NavLink className="lessStyledLink" to={`/display-review/` + reviewObject.review._id}><button className="fa-solid fa-trash mt-1 icon-3x"></button></NavLink>
                 </div>
             );
         }
@@ -107,10 +43,7 @@ export const ReviewOnSubjectPage = ({ reviewObject, authUser, onDeleteReview, on
                 <h5>
                     <NavLink to={`/display-review/` + reviewObject.review._id} className="lessStyledLink">
                         {
-                            userIsReviewOwner() && isEditing ?
-                                <input id="rating" className="mt-1 border border-slate-300 py-2 rounded-md" type="number" min="1" max="5" value={localReview.rating} onChange={onInputChange} />
-                                :
-                                reviewObject.review.rating + "/5"
+                            reviewObject.review.rating + "/5"
                         }
                     </NavLink>
                 </h5>
@@ -120,18 +53,9 @@ export const ReviewOnSubjectPage = ({ reviewObject, authUser, onDeleteReview, on
                         {new Date(reviewObject.review.dateModified).toLocaleString()}
                     </div>
 
-
-                    {
-                        // Review Textbox (editable)
-                        userIsReviewOwner() && isEditing ?
-                            < div >
-                                <input id="text" className="mt-1 block border border-slate-300 w-full py-2 rounded-md" type="text" value={localReview.text} onChange={onInputChange} />
-                            </div>
-                            :
-                            <div className="mt-3">
-                                {reviewObject.review.text}
-                            </div>
-                    }
+                    <div className="mt-3">
+                        {reviewObject.review.text}
+                    </div>
                 </div>
 
                 {editReviewButtons()}
@@ -157,7 +81,7 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
             else if (reviewObject.review.itemId != "" && reviewObject.review.userId == "") {
                 setIsItemReview(true);
 
-                let subjectInfo = await ItemService.getItem(reviewObject.review.itemId);
+                let subjectInfo = await ItemService.getItemMin(reviewObject.review.itemId);
                 setReviewSubject(subjectInfo);
             }
             else {

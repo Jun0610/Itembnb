@@ -4,14 +4,16 @@ import { NavLink, useParams } from "react-router-dom";
 import ReviewService from "../tools/reviewService";
 import userContext from '../contexts/userContext';
 import UserService from "../tools/userService";
-import { UserInfo } from "../components/smallInfoBox";
-import Post from "../components/post";
+import ItemService from "../tools/itemsService";
+import ReservationService from "../tools/reservationService";
+import { LendingResLarge } from "../components/reservationComponents";
+import Loading from "../components/Loading";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
 
 const CreateUserReview = () => {
-    const { userId } = useParams(); // id of selected borrower
+    const { reservationId } = useParams();
     const navigate = useNavigate();
 
     const authUser = useContext(userContext);
@@ -21,24 +23,30 @@ const CreateUserReview = () => {
         text: "Enter your review here!",
         reviewerId: "",
         itemId: "",
-        userId: userId
+        userId: "",
+        reservationId: reservationId
         /* these get changed in reviewService.postReview
         dateModified: '',
         dateCreated: '',
         */
     };
 
-    const [user, setSelectedUser] = React.useState({});
+    // dataObject is an object with full info of reservation, borrower, and item borrowed (3 objects)
+    // must be formatted like this because LendingResLarge expects it this way
+    const [dataObject, setDataObject] = React.useState(null);
+
     const [review, setReview] = React.useState(blankReview);
     const startingErrors = { text: [], rating: [] };
     const [inputErrors, setInputErrors] = React.useState(startingErrors);
 
-    //make sure user is logged in and get user details
     useEffect(() => {
 
         const fetchData = async () => {
-            const dataObject = await UserService.getUserData(userId);
-            setSelectedUser(dataObject.data);
+            const resData = await ReservationService.getReservation(reservationId);
+            const borrowerData = await UserService.getUserData(resData.data.borrowerId);
+            const borrowedItemData = await ItemService.getItemMin(resData.data.itemId, false);
+            const dataObj = { reservation: resData.data, borrower: borrowerData.data, item: borrowedItemData.data }
+            setDataObject(dataObj);
         }
 
         fetchData();
@@ -97,9 +105,17 @@ const CreateUserReview = () => {
         if (noInputErrors()) {
             console.log("creation of " + review);
             review.reviewerId = authUser.user.user._id;
-            await ReviewService.postReview(review, authUser.user.user._id).then((res) => {
-                alert("Review successfully posted!");
-                setReview(blankReview);
+            review.userId = dataObject.reservation.borrowerId;
+            review.rating = Number(review.rating);
+
+            await ReviewService.postReview(review, reservationId).then((res) => {
+                if (res.success) {
+                    alert("Review successfully posted!");
+                    setReview(blankReview);
+                }
+                else {
+                    alert("Sorry, an error occured.");
+                }
             });
         }
     }
@@ -112,10 +128,13 @@ const CreateUserReview = () => {
     if (authUser.user.user == null) {
         return navigate("/login-required");
     }
+    if (dataObject == null) {
+        return <Loading />
+    }
     return (
         <div>
             <div className="m-3 text-xl font-bold" style={{ color: "#F0D061" }}>Review this Borrower!</div>
-            <div><UserInfo user={user} /></div>
+            <LendingResLarge e={dataObject} key="" nav={navigate} />
             <div className="m-3">
                 <form onSubmit={handleSubmit}>
                     <div className="flex gap-6 mb-6">

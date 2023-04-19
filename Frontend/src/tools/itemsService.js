@@ -33,7 +33,7 @@ class ItemService {
 
     // getting minimalist item data (just name, description, first pic, price)
     // also getting the item's average rating
-    static async getItemMin(itemId) {
+    static async getItemMin(itemId, includeRating = true) {
         let itemMinData = new Promise((resolve, reject) => {
             fetch(`${url}/get-item-post-min/${itemId}`, {
                 method: 'GET',
@@ -46,6 +46,10 @@ class ItemService {
             })
         });
 
+        if (includeRating == false) {
+            return itemMinData;
+        }
+
         let itemRating = ItemService.getItemRating(itemId);
 
         return Promise.all([itemMinData, itemRating]).then(([itemResult, ratingResult]) => {
@@ -55,7 +59,7 @@ class ItemService {
     }
 
     static async getItem(itemId) {
-        return new Promise((resolve, reject) => {
+        let itemData = new Promise((resolve, reject) => {
             fetch(`${url}/get-item-post/${itemId}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
@@ -65,7 +69,14 @@ class ItemService {
             }).catch((err) => {
                 reject(err);
             })
-        })
+        });
+
+        let itemRating = ItemService.getItemRating(itemId);
+
+        return Promise.all([itemData, itemRating]).then(([itemResult, ratingResult]) => {
+            itemResult.data.rating = ratingResult.rating;
+            return itemResult;
+        });
     }
 
 
@@ -174,10 +185,28 @@ class ItemService {
             headers: { 'Content-Type': 'application/json' },
         }
         try {
-            const res = await fetch(`${url}/get-item-by-category/${category}`, request);
-            const response = await res.json();
-            response.status = res.status
-            return response.data
+            let itemDataPromise = new Promise((resolve, reject) => {
+                fetch(`${url}/get-item-by-category/${category}`, request)
+                    .then(res => res.json()).then((res) => {
+                        // const data = res.data;
+                        resolve(res);
+                    }).catch((err) => {
+                        reject(err);
+                    })
+            });
+
+            let ratingPromises = [];
+            const itemData = await itemDataPromise;
+            itemData.data.forEach(item => {
+                ratingPromises.push(ItemService.getItemRating(item._id));
+            })
+
+            return Promise.all(ratingPromises).then((ratingResult) => {
+                for (let i = 0; i < itemData.data.length; i++) {
+                    itemData.data[i].rating = ratingResult[i].rating;
+                }
+                return itemData.data;
+            });
         } catch (err) {
             console.log(err);
         }

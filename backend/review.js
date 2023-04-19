@@ -14,6 +14,8 @@ const { db, mongo } = require('./mongo')
 const express = require("express")
 const router = express.Router()
 
+const getUserMin = require('./utility').getUserMin;
+
 //sending a single specific review
 router.get('/get-review/:id', async (req, res) => {
     try {
@@ -91,7 +93,7 @@ router.get("/get-reviews-made-by-user/:id", async (req, res) => {
             const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
             if (review) {
                 const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(review.reviewerId) })
-                if (user) reviewsWithUsers.push({ review, user })
+                if (user) reviewsWithUsers.push({ review })
             }
         }
         res.status(200).json({ success: true, data: reviewsWithUsers })
@@ -137,7 +139,7 @@ router.get("/get-item-review/:id", async (req, res) => {
             for (const reviewId of item.review) {
                 const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
                 if (review) {
-                    const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(review.reviewerId) })
+                    const user = await getUserMin(db, review.reviewerId);
                     if (user) {
                         rating += review.rating;
                         reviewsWithUsers.push({ review, user });
@@ -174,34 +176,57 @@ router.put("/update-review/:id", async (req, res) => {
 })
 
 //create new review
-router.post('/add-review/user-id/:userId', async (req, res) => {
+router.post('/add-review/reservation-id/:reservationId', async (req, res) => {
     try {
+        // check reservation associated with review 
+        // (to ensure you're not reviewing the same reservation twice)
+
+        // if review of item (from borrower)
+        if (req.body.userId == "" && req.body.itemId != "") {
+            const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(req.params.reservationId) }, { borrowerReview: 1 });
+            console.log(reservation + " " + (reservation.borrowerReview === ""));
+
+            if (reservation.borrowerReview !== "") {
+                console.error("Review already exists! Review id: " + reservation.borrowerReview);
+                throw new Error("Review already exists! Review id: " + reservation.borrowerReview);
+            }
+        }
+        // if review of borrower (from lender)
+        else if (req.body.userId != "" && req.body.itemId == "") {
+            const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(req.params.reservationId) }, { lenderReview: 1 });
+            console.log(reservation + " " + (reservation.lenderReview === ""));
+
+            if (reservation.lenderReview !== "") {
+                console.error("Review already exists! Review id: " + reservation.lenderReview);
+                throw new Error("Review already exists! Review id: " + reservation.lenderReview);
+            }
+        }
+        else {
+            console.error("Improperly formatted review! " + req.body);
+            throw new Error("Improperly formatted review!");
+        }
+
+        // actually create reservation, set appropriate fields
+
         //save date as date object
         req.body.dateModified = new Date(req.body.dateModified);
         const results = await db.collection("reviews").insertOne(req.body);
-
         const reviewId = results.insertedId.toString();
 
-        console.log(results);
-        console.log(reviewId);
-
         // every user tracks reviews they've left
-        await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.params.reviewerId) }, { $push: { reviewsMade: reviewId } })
+        await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.body.reviewerId) }, { $push: { reviewsMade: reviewId } });
 
-        // if review is review of an item
+        // if review is review of an item (from borrower)
         if (req.body.userId == "" && req.body.itemId != "") {
-            const results2 = await db.collection('items').updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $push: { review: reviewId } });
-            console.log(results2);
+            await db.collection('items').updateOne({ _id: new mongo.ObjectId(req.body.itemId) }, { $push: { review: reviewId } });
+
+            await db.collection('reservations').updateOne({ _id: new mongo.ObjectId(req.params.reservationId) }, { $set: { borrowerReview: reviewId } });
         }
-        // if review is review of a user
+        // if review is review of a user (from lender)
         else if (req.body.itemId == "" && req.body.userId != "") {
-            const results2 = await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.body.userId) }, { $push: { reviewsOfUser: reviewId } });
-            console.log(results2);
-        }
-        else {
-            // we should never reach this point
-            console.error(req);
-            throw new Error('Improperly formatted review!');
+            await db.collection('users').updateOne({ _id: new mongo.ObjectId(req.body.userId) }, { $push: { reviewsOfUser: reviewId } });
+
+            await db.collection('reservations').updateOne({ _id: new mongo.ObjectId(req.params.reservationId) }, { $set: { lenderReview: reviewId } });
         }
 
         res.status(201).json({ success: true, data: "successfully added review!" });
@@ -231,16 +256,18 @@ async function deleteReview(db, reviewId) {
         // first update reviewer's reviewsMade list
         await db.collection('users').updateOne({ _id: new mongo.ObjectId(review.reviewerId) }, { $pull: { reviewsMade: reviewId } })
 
-        // then delete the review from the user/item it's for
-        // if review is review of an item
+        // delete the review from the user/item it's for
+        // if review is review of an item (from borrower)
         if (review.userId == "" && review.itemId != "") {
-            const results2 = await db.collection('items').updateOne({ _id: new mongo.ObjectId(review.itemId) }, { $pull: { review: reviewId } });
-            console.log(results2);
+            await db.collection('items').updateOne({ _id: new mongo.ObjectId(review.itemId) }, { $pull: { review: reviewId } });
+
+            await db.collection('reservations').updateOne({ _id: new mongo.ObjectId(review.reservationId) }, { $set: { borrowerReview: "" } });
         }
-        // if review is review of a user
+        // if review is review of a user (from lender)
         else if (review.itemId == "" && review.userId != "") {
-            const results2 = await db.collection('users').updateOne({ _id: new mongo.ObjectId(review.userId) }, { $pull: { reviewsOfUser: reviewId } });
-            console.log(results2);
+            await db.collection('users').updateOne({ _id: new mongo.ObjectId(review.userId) }, { $pull: { reviewsOfUser: reviewId } });
+
+            await db.collection('reservations').updateOne({ _id: new mongo.ObjectId(review.reservationId) }, { $set: { lenderReview: "" } });
         }
         else {
             // we should never reach this point

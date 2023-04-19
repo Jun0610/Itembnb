@@ -63,6 +63,21 @@ class ReservationService {
         }
     }
 
+    static async getReservationAndLender(reservId) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-reservation-and-lender-by-id/${reservId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     static async getAllPastLendingHistory(userId) {
         const request = {
             method: 'GET',

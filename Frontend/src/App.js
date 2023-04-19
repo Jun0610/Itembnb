@@ -45,8 +45,8 @@ function App() {
                                 <Route exact path="/" element={<Home />} />
                                 <Route exact path="/create-item-post" element={<CreateItemPost />} />
                                 <Route exact path='/create-item-request' element={<CreateRequest />} />
-                                <Route exact path='/create-item-review/:itemId' element={<CreateItemReview />} />
-                                <Route exact path='/create-user-review/:userId' element={<CreateUserReview />} />
+                                <Route exact path='/create-item-review/:reservationId' element={<CreateItemReview />} />
+                                <Route exact path='/create-user-review/:reservationId' element={<CreateUserReview />} />
                                 <Route exact path='/lending-history' element={<LendingHistory />} />
                                 <Route exact path='/borrowing-history' element={<BorrowingHistory />} />
                                 <Route path="/display-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailDisplayItemPost />} />

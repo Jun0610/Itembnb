@@ -61,7 +61,7 @@ class ReviewService {
         }
     }
 
-    static async postReview(review, id) {
+    static async postReview(review, reservationId) {
         console.log(review);
 
         // new Date() gets converted to string-formatted Date through JSON.stringify
@@ -69,7 +69,7 @@ class ReviewService {
         review.dateModified = new Date();
 
         return new Promise((resolve, reject) => {
-            fetch(`${url}/add-review/user-id/${id}`, {
+            fetch(`${url}/add-review/reservation-id/${reservationId}`, {
                 method: 'post',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(review),

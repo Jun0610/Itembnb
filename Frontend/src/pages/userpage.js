@@ -91,6 +91,7 @@ const Userpage = () => {
     /* --- Review Section --- */
     // TODO - return true only if user can be reviewed
     const canBeReviewed = () => {
+        return false;
         return (
             authUser.user.user != null && // user must be logged in
             authUser.user.user._id != id // user must not be viewing their own profile
@@ -112,7 +113,7 @@ const Userpage = () => {
                 setDisplayedReviewsForUser(originalReviewsForUser);
             }
 
-            if (displayedReviewsForUser == null) {
+            if (originalReviewsForUser == null) {
                 return <LoadingSmall />;
             }
             if (originalReviewsForUser.length == 0) {
@@ -122,7 +123,7 @@ const Userpage = () => {
                 <div>
                     <div className='flex gap-4'>
                         {stars.map((starNum, i) => (
-                            <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }}>
+                            <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }} key={i}>
                                 {starNum}-star
                             </div>
                         ))}
@@ -148,23 +149,28 @@ const Userpage = () => {
 
             const filterReviews = (starNum) => {
                 setDisplayedReviewsByUser(originalReviewsByUser.filter((e) => e.review.rating === starNum));
+                console.log(displayedReviewsByUser);
             }
 
             const resetFilter = () => {
                 setDisplayedReviewsByUser(originalReviewsByUser);
             }
 
-            if (displayedReviewsByUser == null) {
+            if (originalReviewsByUser == null) {
                 return <LoadingSmall />;
             }
-            else if (displayedReviewsByUser.length === 0) {
+            if (originalReviewsByUser.length === 0) {
                 return <p className="grayText">There are no reviews!</p>
             }
+
+            console.log("display", displayedReviewsByUser);
+            console.log("display 2 ", originalReviewsByUser);
+
             return (
                 <div>
                     <div className='flex gap-4'>
                         {stars.map((starNum, i) => (
-                            <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }}>
+                            <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }} key={i}>
                                 {starNum}-star
                             </div>
                         ))}
@@ -173,9 +179,12 @@ const Userpage = () => {
                         </div>
                     </div>
 
-                    {displayedReviewsByUser.map((e, i) => (
-                        <ReviewOnReviewerPage reviewObject={e} />
-                    ))}
+                    {displayedReviewsByUser.length > 0 ?
+                        displayedReviewsByUser.map((e, i) => (
+                            <ReviewOnReviewerPage key={i} reviewObject={e} />
+                        )) :
+                        <p className="grayText">There are no reviews!</p>
+                    }
                 </div>
             );
         }
