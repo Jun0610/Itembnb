@@ -6,11 +6,13 @@ import UserService from "../tools/userService.js";
 import ReservationService from "../tools/reservationService";
 import { Loading } from "../components/Loading";
 import ItemCalendar from "../components/borrowerCalendar";
-import UserInfo from "../components/userInfo";
+import { UserInfo } from "../components/smallInfoBox";
+import RatingStar from "../components/ratingStar";
 import "../styles/itempost.css";
 import SocketService, { socket } from '../tools/socketService';
 import ReviewService from "../tools/reviewService";
-import ItemReview from '../components/itemReview';
+import { ReviewOnSubjectPage } from '../components/reviewComponents';
+import ReactMarkdown from 'react-markdown';
 
 const SelectedItemPost = () => {
     const { itemId } = useParams(); // id of selected item
@@ -18,13 +20,13 @@ const SelectedItemPost = () => {
     const [owner, setOwner] = useState({});
     const [userReserv, setUserReserv] = useState({});
     const [reservSuccess, setReservSuccess] = useState(false);
-    const [selectedItem, setSelectedItem] = useState({});
+    const [selectedItem, setSelectedItem] = useState(null);
 
     // for handling reviews/ratings
-    const [itemReviews, setItemReviews] = useState([]);
     const [rating, setRating] = useState(null);
-    const [OGItemReviews, setOGItemReviews] = useState([]);
-    const stars = [1, 2, 3, 4, 5]
+    const [originalItemReviews, setOriginalItemReviews] = useState([]);
+    const [displayedItemReviews, setDisplayedItemReviews] = useState([]);
+    const stars = [1, 2, 3, 4, 5];
 
     //make sure user is logged in and get item details
     useEffect(() => {
@@ -78,50 +80,26 @@ const SelectedItemPost = () => {
     useEffect(() => {
         const getItemReviews = async () => {
             //get reservation data for user
-            const itemReviews = await ReviewService.getReviewByItem(itemId);
-            setItemReviews(itemReviews.data);
-            setOGItemReviews(itemReviews.data);
+            const itemReviews = await ReviewService.getReviewsForItem(itemId);
+            setDisplayedItemReviews(itemReviews.data);
+            setOriginalItemReviews(itemReviews.data);
             setRating(itemReviews.rating);
         }
         getItemReviews();
     }, [])
 
-    const onEditReview = (review, idx) => {
-        // update the average rating on item
-        itemReviews[idx].review = review;
-        setItemReviews(itemReviews);
-        setOGItemReviews(itemReviews);
-
-        var totalRating = 0;
-        for (const ir of itemReviews) totalRating += parseInt(ir.review.rating)
-
-        setRating(1.0 * totalRating / itemReviews.length)
-    }
-
-    const onDeleteReview = (review, idx) => {
-        const deleteReview = async (review, idx) => {
-            await ReviewService.deleteReview(review._id, itemId)
-            setItemReviews(itemReviews.filter((_, i) => idx !== i))
-            setOGItemReviews(OGItemReviews.filter((_, i) => idx !== i))
-
-            // update the average rating of the item
-            var totalRating = 0;
-            const newItemReviews = itemReviews.filter((_, i) => idx !== i)
-            for (const ir of newItemReviews) totalRating += parseInt(ir.review.rating)
-
-            setRating(1.0 * totalRating / newItemReviews.length)
-
-            alert("Successfully deleted your review!");
-        }
-        deleteReview(review, idx);
-    }
-
     const filterStar = (i) => {
-        setItemReviews(OGItemReviews.filter((e) => e.review.rating === i))
+        setDisplayedItemReviews(originalItemReviews.filter((e) => e.review.rating === i));
     }
 
     const resetFilter = () => {
-        setItemReviews(OGItemReviews)
+        setDisplayedItemReviews(originalItemReviews);
+    }
+
+    // TODO, update function and create backend functions
+    // so that this returns true if can review ?
+    const canBeReviewed = () => {
+        return false;
     }
 
     //========== review section end ============
@@ -180,13 +158,31 @@ const SelectedItemPost = () => {
 
     }
 
+    const userIsOwner = () => {
+        return authUser != undefined &&
+            authUser.user.user != null &&
+            selectedItem.ownerId === authUser.user.user._id;
+    }
+
+    const ownerButton = () => {
+
+        // links to the owner view of the item post page (display-item-post)
+        if (userIsOwner()) {
+            return <NavLink to={`/display-item-post/` + selectedItem._id}><button className="defaultButton text-base" style={{ display: "inline-block" }} >Owner View</button></NavLink >
+        }
+    }
+
     if (selectedItem !== null) {
         return (
             <div>
                 <div className="itempost-outer">
                     <div className="item-post-row">
-                        <h1>{selectedItem.name}</h1>
-                        <h1>{rating}/5</h1>
+                        <h1>
+                            {selectedItem.name}
+                            &nbsp;{ownerButton()}
+                        </h1>
+
+                        <h1><RatingStar rating={rating} /></h1>
                     </div>
 
                     <div className="cardcontainer">
@@ -198,8 +194,10 @@ const SelectedItemPost = () => {
                     <div className="row">
                         <div className="col-6" style={{ borderRight: "2px solid #ffec18" }}>
                             <div className="item-post-row">
-                                <h5>{selectedItem.description}</h5>
-                                <div style={{ paddingLeft: "4rem" }}>
+                                <div className="p-3" style={{ "max-height": "500px", "overflow-y": "scroll" }}>
+                                    <ReactMarkdown>{selectedItem.description}</ReactMarkdown>
+                                </div>
+                                <div style={{ paddingLeft: "2rem" }}>
 
                                 </div>
                                 <h4>${selectedItem.price}/day</h4>
@@ -209,17 +207,21 @@ const SelectedItemPost = () => {
                             </div>
                             <UserInfo user={owner} />
                             <div className="font-bold">
-                                Reviews
-                                <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
+                                Reviews ({originalItemReviews.length})
+
+                                {canBeReviewed() &&
+                                    <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
+                                }
+
                             </div>
                             <div className='flex gap-4'>
                                 {stars.map((e, i) => (<div onClick={() => filterStar(e)} style={{ cursor: "pointer" }}>{e}-star</div>))}
                                 <div onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
                             </div>
                             <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
-                                {itemReviews.length > 0 ?
-                                    itemReviews.map((e, i) => (
-                                        <ItemReview key={i} reviewObject={e} authUser={authUser} onDeleteReview={onDeleteReview} onEditReview={onEditReview} idx={i} />
+                                {displayedItemReviews.length > 0 ?
+                                    displayedItemReviews.map((e, i) => (
+                                        <ReviewOnSubjectPage reviewObject={e} authUser={authUser} />
                                     )) :
                                     <p>There are no reviews!</p>
                                 }

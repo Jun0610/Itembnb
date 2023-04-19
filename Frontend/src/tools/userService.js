@@ -106,6 +106,27 @@ class UserService {
         }
     }
 
+    // getting minimalist user data (just name, profile pic, description)
+    static async getUserDataMin(userId) {
+        console.log("getting user data");
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/user-data-min/${userId}`, request);
+            const response = await res.json();
+            response.status = res.status
+
+            if (response.data.profileDesc && response.data.profileDesc.length > 15) {
+                response.data.profileDesc = response.data.profileDesc.slice(0, 12) + "...";
+            }
+
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     static async getUserData(userId) {
         console.log("getting user data");

@@ -29,6 +29,10 @@ router.post("/make-reservation", async (req, res) => {
         req.body.startDate = new Date(req.body.startDate);
         req.body.endDate = new Date(req.body.endDate);
 
+        // string to store id of reviews associated with reservation (currently none) 
+        // reviews can only be made once reservation is complete
+        req.body.borrowerReview = "";
+        req.body.lenderReview = "";
 
         //a reservation status is always pending initially
         req.body.status = 'pending';
@@ -122,7 +126,7 @@ router.get("/get-active-reservation/borrower/:userId", async (req, res) => {
         const activeReservations = [];
         for (const reservId of user.reservHist) {
             const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(reservId) })
-            if (reservation === null) continue; 
+            if (reservation === null) continue;
             if (reservation.status === "approved" || reservation.status === "active") {
                 const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
                 if (item != null) activeReservations.push({ item, reservation })
@@ -160,13 +164,13 @@ router.get("/get-active-reservation/lender/:userId", async (req, res) => {
                 for (const unavail of item.unavailList) {
                     if (unavail.reservId) {
                         const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(unavail.reservId) })
-                        if (reservation && reservation.unavailList === null) continue; 
+                        if (reservation && reservation.unavailList === null) continue;
                         if (reservation && (reservation.status === "approved" || reservation.status === "active")) {
                             const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
                             activeReservations.push({ item, reservation })
                         }
                     }
-    
+
                 }
             }
         }
@@ -233,7 +237,7 @@ router.get('/get-past-borrowing-reservations/:userId', async (req, res) => {
             const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) })
             if (item === null) continue;
 
-            const lender = await db.collection("users").findOne({_id: new mongo.ObjectId(item.ownerId)})
+            const lender = await db.collection("users").findOne({ _id: new mongo.ObjectId(item.ownerId) })
             if (lender === null) continue;
 
             borrowedReservations.push({ reservation, item, lender })
@@ -253,8 +257,8 @@ router.get("/get-past-lending-reservations/:userId", async (req, res) => {
             if (item && item.reservHist) {
                 for (const resvid of item.reservHist) {
                     const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(resvid) })
-                    
-                    if (reservation && reservation.unavailList === null) continue; 
+
+                    if (reservation && reservation.unavailList === null) continue;
                     if (reservation && (reservation.status === "completed")) {
                         const borrower = await db.collection("users").findOne({ _id: new mongo.ObjectId(reservation.borrowerId) })
                         lendedReservations.push({ item, reservation, borrower })
@@ -280,6 +284,31 @@ router.get("/get-reservation-by-id/:reservId", async (req, res) => {
             throw new Error("reservation not found")
         }
         res.status(201).json({ success: true, data: reservation })
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
+// get reservation based on reservId - with information about lender as well
+router.get("/get-reservation-and-lender-by-id/:reservId", async (req, res) => {
+    try {
+        const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(req.params.reservId) })
+        if (reservation === null) {
+            throw new Error("reservation not found")
+        }
+
+        const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reservation.itemId) },
+            { ownerId: 1 }) // only get ownerId
+        if (item === null) {
+            throw new Error("item not found");
+        }
+
+        const lender = await db.collection("users").findOne({ _id: new mongo.ObjectId(item.ownerId) })
+        if (lender === null) {
+            throw new Error("lender not found");
+        }
+
+        res.status(201).json({ success: true, data: { reservation, lender } })
     } catch (err) {
         res.status(404).json({ success: false, data: err.message })
     }

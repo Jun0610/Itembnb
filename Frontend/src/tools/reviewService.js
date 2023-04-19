@@ -1,7 +1,22 @@
 const url = "http://localhost:8888/api/review";
 
 class ReviewService {
-    static async getReviewByItem(id) {
+    static async getReview(id) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-review/${id}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async getReviewsForItem(id) {
         const request = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -16,7 +31,7 @@ class ReviewService {
         }
     }
 
-    static async getReviewByUser(id) {
+    static async getReviewsForUser(id) {
         const request = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -31,7 +46,22 @@ class ReviewService {
         }
     }
 
-    static async postReview(review, id) {
+    static async getReviewsByUser(id) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-reviews-made-by-user/${id}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async postReview(review, reservationId) {
         console.log(review);
 
         // new Date() gets converted to string-formatted Date through JSON.stringify
@@ -39,7 +69,7 @@ class ReviewService {
         review.dateModified = new Date();
 
         return new Promise((resolve, reject) => {
-            fetch(`${url}/add-review/user-id/${id}`, {
+            fetch(`${url}/add-review/reservation-id/${reservationId}`, {
                 method: 'post',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(review),
@@ -67,9 +97,9 @@ class ReviewService {
         }
     }
 
-    static async deleteReview(reviewId, itemId) {
+    static async deleteReview(reviewId) {
         return new Promise((resolve, reject) => {
-            fetch(`${url}/delete-review/review-id/${reviewId}/item-id/${itemId}`, {
+            fetch(`${url}/delete-review/review-id/${reviewId}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             }).then(res => res.json()).then(
