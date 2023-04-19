@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 import Select from 'react-select';
-import ItemService from '../tools/itemsService';
-import { confirmAlert } from 'react-confirm-alert';
-import { useParams, useNavigate } from "react-router-dom";
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from 'react-confirm-alert';
+
 import userContext from '../contexts/userContext';
-import BorrowingRequestList from '../components/borrowingRequestList';
 import ReservationService from '../tools/reservationService';
+import ItemService from '../tools/itemsService';
 import SocketService, { socket } from '../tools/socketService';
+import BorrowingRequestList from '../components/borrowingRequestList';
 import OwnerCalendar from '../components/ownerCalendar';
+import { Loading } from '../components/Loading';
+import Unavailable404 from './Unavailable404';
 
 const DisplayItemPost = () => {
     const { id } = useParams();
@@ -255,12 +258,34 @@ const DisplayItemPost = () => {
         setSelectedUser(selectedUser);
     }
 
+    const userIsOwner = () => {
+        return authUser !== undefined &&
+            authUser.user.user !== null &&
+            item.ownerId === authUser.user.user._id;
+    }
+
+    const mainViewButton = () => {
+        // links to the main view of the item post page (selected-item-post)
+        if (userIsOwner()) {
+            return <NavLink to={`/selected-item-post/` + item._id}><button className="defaultButton text-base" style={{ display: "inline-block" }} >Main View</button></NavLink >
+        }
+    }
+
+    // if item hasn't loaded
+    if (!Object.keys(item).length) {
+        return <Loading />
+    }
+    // if item has loaded and its info indicates you're not supposed to be viewing this page
+    if (Object.keys(item).length && !userIsOwner()) {
+        return <Unavailable404 />
+    }
     return (
         <div>
             <div className="m-3 font-bold" style={{ color: "#F0D061" }}>Your Item Post</div>
             <div>
                 <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={() => { isEditing ? handleSaveItem() : setIsEditing(!isEditing) }}>{isEditing ? 'Save' : 'Edit'}</button>
                 <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full m-2" style={{ backgroundColor: '#F7D65A' }} onClick={() => handleDeleteItem()}>Delete</button>
+                {mainViewButton()}
             </div>
             <div className='m-3'>
                 <div className="flex gap-6 mb-6">
@@ -320,8 +345,8 @@ const DisplayItemPost = () => {
                 <div>
                 </div>
             </div>
-            <OwnerCalendar selectedItem={item} selectedResv={selectedUser ? pendingReservations[selectedUser-1] : null} setRefresh={setRefresh} refresh={refresh}/>
-            <BorrowingRequestList endDates={endDates} brList={pendingReservations} item={item} onChangeResvList={onChangeResvList} selectedUser={selectedUser} onChangeSelectedUser={onChangeSelectedUser}/>
+            <OwnerCalendar selectedItem={item} selectedResv={selectedUser ? pendingReservations[selectedUser - 1] : null} setRefresh={setRefresh} refresh={refresh} />
+            <BorrowingRequestList endDates={endDates} brList={pendingReservations} item={item} onChangeResvList={onChangeResvList} selectedUser={selectedUser} onChangeSelectedUser={onChangeSelectedUser} />
         </div>
     )
 }

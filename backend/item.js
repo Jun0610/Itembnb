@@ -3,20 +3,69 @@ const express = require("express")
 const router = express.Router()
 
 
-//sending all item posts
+// sending 'all' item posts from database (actually limited to 20)
 router.get('/get-item-posts', async (req, res) => {
     try {
-        const result = await db.collection("items").find().sort({ dateCreated: -1 }).limit(20).toArray();
-        if (result == null) {
+        const itemArray = await db.collection('items')
+            .find()
+            .limit(20)
+            .sort({ dateCreated: -1 })
+
+            // only get these attributes plus the first element of images
+            .project({ _id: 1, name: 1, description: 1, images: [{ $slice: ['$images', 1] }], price: 1, review: 1 })
+            .toArray();
+
+        if (itemArray == null) {
             res.status(200).json({ success: true, data: [] })
         } else {
-            res.status(200).json({ success: true, data: result })
+            // loop through all items and for each item get the reviews
+            for (const item of itemArray) {
+
+                let rating = 0;
+                let num_ratings = 0;
+
+                for (const reviewId of item.review) {
+                    const review = await db.collection("reviews").findOne({ _id: new mongo.ObjectId(reviewId) })
+                    if (review) {
+                        num_ratings++;
+                        rating += review.rating;
+                    }
+                }
+                if (num_ratings === 0) {
+                    rating = -1;
+                }
+                else {
+                    rating /= num_ratings;
+                }
+                item.rating = rating;
+            }
+
+            res.status(200).json({ success: true, data: itemArray })
         }
 
     } catch (err) {
         res.status(404).json({ success: false, data: err });
     }
 
+})
+
+// sending minimalist item data (just name, description, first pic, price)
+router.get('/get-item-post-min/:id', async (req, res) => {
+    try {
+        const id = new mongo.ObjectId(req.params.id)
+        const results = await db.collection("items").findOne({ _id: id },
+            // only get these fields to return
+            { _id: 1, name: 1, description: 1, images: [{ $slice: ['$images', 1] }], price: 1 });
+
+        // trim description
+        if (results.description.length > 35) {
+            results.description = results.description.substring(0, 32).trim() + "...";
+        }
+
+        res.status(200).json({ success: true, data: results })
+    } catch (err) {
+        res.status(404).json({ success: false, data: err });
+    }
 })
 
 //sending a specific item post
@@ -65,12 +114,22 @@ router.delete('/delete-item/item-id/:itemId/user-id/:userId', async (req, res) =
 async function deleteItem(db, itemId, userId) {
     try {
         const res = await db.collection("items").findOne({ _id: new mongo.ObjectId(itemId) })
+
+        // remove from requests
         const linkedToReq = res.linkedToReq;
         if (linkedToReq) {
             for (const reqId of linkedToReq) {
                 await db.collection('requests').updateOne({ _id: new mongo.ObjectId(reqId) }, { $pull: { recommendedItems: itemId } })
             }
         }
+
+        // delete linked reviews
+        if (res.reviews.length > 0) {
+            for (const itemId of res.reviews) {
+                await db.collection('reviews').deleteOne({ _id: new mongo.ObjectId(reqId) });
+            }
+        }
+
         await db.collection('users').updateOne({ _id: new mongo.ObjectId(userId) }, { $pull: { postedItems: itemId } })
         await db.collection('items').deleteOne({ _id: new mongo.ObjectId(itemId) })
         await db.collection("users").updateMany({ favoritedItems: itemId }, { $pull: { favoritedItems: itemId } })
@@ -162,7 +221,10 @@ router.get("/search/:searchString", async (req, res) => {
 
 router.get("/get-item-by-category/:category", async (req, res) => {
     try {
-        const items = await db.collection('items').find({ category: [req.params.category] }).toArray()
+        const items = await db.collection('items').find({ category: [req.params.category] },
+            // only get these fields to return
+            { _id: 1, name: 1, description: 1, images: [{ $slice: ['$images', 1] }], price: 1 }
+        ).toArray()
         if (items === null) {
             res.status(201).json({ success: true, data: [] });
         }

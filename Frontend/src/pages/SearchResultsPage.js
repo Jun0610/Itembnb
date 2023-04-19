@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import ItemService from '../tools/itemsService'
 import { useParams } from 'react-router-dom'
-import Loading from '../components/Loading';
-import Post from '../components/post';
-import '../styles/searchResultsPage.css'
-import FilterPopUp from '../components/FilterPopUp';
+
+import ItemService from '../tools/itemsService'
 import ReviewService from '../tools/reviewService';
+import Post from '../components/post';
+import FilterPopUp from '../components/FilterPopUp';
+import { Loading } from '../components/Loading';
+
+import '../styles/searchResultsPage.css'
 
 const SearchResultsPage = () => {
     const [items, setItems] = useState([]);
@@ -22,9 +24,9 @@ const SearchResultsPage = () => {
         setSortingOrder('Default')
         const search = async () => {
             const toSearch = searchString.split('+')[0]
-            const itemResults = await ItemService.serchItem(toSearch)
+            const itemResults = await ItemService.searchItem(toSearch)
             for (const item of itemResults) {
-                const res = await ReviewService.getReviewByItem(item._id)
+                const res = await ReviewService.getReviewsForItem(item._id)
                 const reviews = res.data;
                 console.log("reviews", reviews);
                 let sum = 0

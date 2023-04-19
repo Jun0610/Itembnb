@@ -1,16 +1,18 @@
 import React, { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { NavLink, useParams } from "react-router-dom";
-import ReviewService from "../tools/reviewService";
+import { useParams, useNavigate } from "react-router-dom";
+
 import userContext from '../contexts/userContext';
+import ReviewService from "../tools/reviewService";
 import ItemService from "../tools/itemsService";
-import Post from "../components/post";
+import ReservationService from "../tools/reservationService";
+import { BorrowingResLarge } from "../components/reservationComponents";
+import { Loading } from "../components/Loading";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
 
 const CreateItemReview = () => {
-    const { itemId } = useParams(); // id of selected item
+    const { reservationId } = useParams();
     const navigate = useNavigate();
 
     const authUser = useContext(userContext);
@@ -19,29 +21,33 @@ const CreateItemReview = () => {
         rating: 5,
         text: "Enter your review here!",
         reviewerId: "",
-        itemId: itemId,
-        userId: ""
+        itemId: "",
+        userId: "",
+        reservationId: reservationId
         /* these get changed in reviewService.postReview
         dateModified: '',
         dateCreated: '',
         */
     };
 
-    const [item, setSelectedItem] = React.useState({});
+    // dataObject is an object with full info of reservation, lender, and item borrowed (3 objects)
+    // must be formatted like this because BorrowingResLarge expects it this way
+    const [dataObject, setDataObject] = React.useState(null);
+
     const [review, setReview] = React.useState(blankReview);
     const startingErrors = { text: [], rating: [] };
     const [inputErrors, setInputErrors] = React.useState(startingErrors);
 
-    //make sure user is logged in and get item details
     useEffect(() => {
 
-        const itemPageSetUp = async () => {
-            //get item data
-            const itemData = await ItemService.getItem(itemId);
-            setSelectedItem(itemData.data);
+        const fetchData = async () => {
+            const resData = await ReservationService.getReservationAndLender(reservationId);
+            const borrowedItemData = await ItemService.getItemMin(resData.data.reservation.itemId, false);
+            const dataObj = { reservation: resData.data.reservation, lender: resData.data.lender, item: borrowedItemData.data }
+            setDataObject(dataObj);
         }
 
-        itemPageSetUp();
+        fetchData();
 
     }, [])
 
@@ -56,10 +62,10 @@ const CreateItemReview = () => {
     const getErrors = (fieldId, fieldValue) => {
         const errorArray = [];
 
-        if (fieldId == "text" && fieldValue.length === 0) {
+        if (fieldId === "text" && fieldValue.length === 0) {
             errorArray.push(fieldId + " must have at least 1 character!");
         }
-        else if (fieldId == "rating" && (fieldValue < 1 || fieldValue > 5)) {
+        else if (fieldId === "rating" && (fieldValue < 1 || fieldValue > 5)) {
             errorArray.push(fieldId + " must be from 1-5!");
         }
 
@@ -95,12 +101,19 @@ const CreateItemReview = () => {
         e.preventDefault();
 
         if (noInputErrors()) {
-            console.log(review);
-            console.log("review made");
+            console.log("creation of" + review);
             review.reviewerId = authUser.user.user._id;
-            await ReviewService.postReview(review, authUser.user.user._id).then((res) => {
-                alert("Review successfully posted!");
-                setReview(blankReview);
+            review.itemId = dataObject.item._id;
+            review.rating = Number(review.rating);
+
+            await ReviewService.postReview(review, reservationId).then((res) => {
+                if (res.success) {
+                    alert("Review successfully posted!");
+                    setReview(blankReview);
+                }
+                else {
+                    alert("Sorry, an error occured.");
+                }
             });
         }
     }
@@ -113,10 +126,13 @@ const CreateItemReview = () => {
     if (authUser.user.user == null) {
         return navigate("/login-required");
     }
+    if (dataObject == null) {
+        return <Loading />
+    }
     return (
         <div>
-            <div className="m-3 text-xl font-bold" style={{ color: "#F0D061" }}>Review this Item!</div>
-            <div><Post key={item._id} post={item} isreview={false} /></div>
+            <div className="m-3 text-xl font-bold" style={{ color: "#F0D061" }}>Review the Item You Borrowed!</div>
+            <BorrowingResLarge e={dataObject} i={reservationId} nav={navigate} />
             <div className="m-3">
                 <form onSubmit={handleSubmit}>
                     <div className="flex gap-6 mb-6">

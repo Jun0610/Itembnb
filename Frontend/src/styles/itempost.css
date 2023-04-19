@@ -19,8 +19,6 @@
 
 .user-img {
     border-radius: 50%;
-    width: 150px;
-    height: 150px;
     margin: 0 0.5rem;
     align-self: center;
     justify-self: center;
@@ -28,8 +26,6 @@
 }
 
 .user {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
     max-width: 600px;
     margin: 10px;
     border: 1px solid #777777;
@@ -59,6 +55,7 @@
 .user-desc {
     max-width: 400px;
     text-justify: inter-word;
+    font-size: 0.875em;
 }
 
 .pendingContainter {

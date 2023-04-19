@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
+
 import userContext from '../contexts/userContext';
 import UserService from '../tools/userService.js';
 import ItemService from '../tools/itemsService';
 import FavPost from "../components/FavPost";
-import Loading from '../components/Loading';
+import { Loading } from '../components/Loading';
+
 import '../styles/favItemPage.css';
 
 const FavoriteItems = () => {
@@ -28,7 +30,7 @@ const FavoriteItems = () => {
                 let newFavItems = [];
 
                 for (const item of userData.favoritedItems) {
-                    const data = await ItemService.getItem(item);
+                    const data = await ItemService.getItemMin(item);
                     if (data.data != null) {
                         newFavItems.push(data.data);
                     }

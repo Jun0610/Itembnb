@@ -9,6 +9,7 @@ import CreateItemReview from "./pages/createItemReview";
 import CreateUserReview from "./pages/createUserReview";
 import DisplayItemPost from "./pages/displayItemPost";
 import DisplayRequestPost from "./pages/displayRequest";
+import DisplayReview from "./pages/displayReview";
 import Unavailable404 from "./pages/Unavailable404";
 import LoginWall from "./pages/LoginWall";
 import SignUp from "./pages/signup";
@@ -47,8 +48,8 @@ function App() {
                                 <Route exact path="/" element={<Home />} />
                                 <Route exact path="/create-item-post" element={<CreateItemPost />} />
                                 <Route exact path='/create-item-request' element={<CreateRequest />} />
-                                <Route exact path='/create-item-review/:itemId' element={<CreateItemReview />} />
-                                <Route exact path='/create-user-review/:userId' element={<CreateUserReview />} />
+                                <Route exact path='/create-item-review/:reservationId' element={<CreateItemReview />} />
+                                <Route exact path='/create-user-review/:reservationId' element={<CreateUserReview />} />
                                 <Route exact path='/lending-history' element={<LendingHistory />} />
                                 <Route exact path='/borrowing-history' element={<BorrowingHistory />} />
                                 <Route path="/display-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailDisplayItemPost />} />
@@ -57,6 +58,7 @@ function App() {
                                 <Route path="/item-status/:id" element={<EmailStatusPage />} />
                                 <Route path="/display-item-post/:id" element={<DisplayItemPost />} />
                                 <Route path="/display-request-post/:id" element={<DisplayRequestPost />} />
+                                <Route path="/display-review/:id" element={<DisplayReview />} />
                                 <Route exact path="/signup" element={<SignUp />} />
                                 <Route exact path="/login" element={<Login />} />
                                 <Route path='/user/:id' element={<UserProfile />} />

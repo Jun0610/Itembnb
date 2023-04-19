@@ -62,3 +62,7 @@
 .plainLink {
     text-decoration: none;
 }
+
+.grayText {
+    color: #777777;
+}

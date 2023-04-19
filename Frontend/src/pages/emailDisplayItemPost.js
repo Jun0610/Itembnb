@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
-import userContext from "../contexts/userContext";
 import { useNavigate, useParams } from 'react-router-dom';
+
+import userContext from "../contexts/userContext";
 import UserService from '../tools/userService';
 import SocketService, { socket } from '../tools/socketService';
 
