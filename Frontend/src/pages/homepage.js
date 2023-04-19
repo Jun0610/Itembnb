@@ -21,6 +21,14 @@ const Homepage = () => {
             SocketService.connect();
             socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
         }
+
+        // fetch existing session id
+        const sessionID = sessionStorage.getItem("sessionID")
+        console.log(sessionID)
+        if (sessionID) {
+            socket.auth = {sessionID}
+            socket.connect()
+        }
     }, [])
 
     useEffect(() => {

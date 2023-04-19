@@ -44,8 +44,18 @@ const Login = () => {
                     sessionStorage.setItem('curUser', JSON.stringify(data.data));
 
                     // set socket connection with server
-                    SocketService.connect();
-                    socket.emit('sendId', email);
+                    socket.auth = { username: email }
+                    console.log("socket: ", socket)
+                    socket.connect()
+                    socket.on("session", ({sessionID, userID}) => {
+                        socket.auth = {sessionID};
+                        sessionStorage.setItem("sessionID", sessionID)
+                        socket.userID = userID
+                        console.log("sessionID: ", sessionID)
+                    })
+                    //socket.emit('sendId', email);
+
+                    // notification 
                     let notificationString = ''
                     for (const notification of data.data.notificationList) {
                         const date = new Date(notification.slice(notification.length - 11, notification.length - 1))

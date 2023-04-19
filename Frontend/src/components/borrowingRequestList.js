@@ -153,9 +153,15 @@ const BorrowingRequestList = ({ endDates, brList, item, onChangeResvList, onChan
   const removeHighlightUser = () => {
     onChangeSelectedUser(null);
   }
+  
+  const test = () => {
+    console.log("testingggg")
+    SocketService.emit('emitMsg', { type: 'toBorrower', name: "Borrower2", recipient: "borrower2Itembnb@gmail.com", msg: "denied" });
+  }
 
   return (
     <div>
+      <div onClick={test}>Testingggg</div>
       <div className='font-bold text-4xl m-3'>Borrowing Request List</div>
       {brList.length === 0 ?
         <div className='m-3 text-xl font-semibold'>
