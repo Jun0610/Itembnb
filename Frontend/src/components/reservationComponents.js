@@ -80,8 +80,8 @@ export const LendingResSmall = ({ e, key, nav }) => {
             <div style={{ cursor: "pointer" }} onClick={() => nav(`/user/${e.borrower._id}`)}>
                 {e.borrower.name}
             </div>
-            <div>
-                {e.item.name}
+            <div style={{ cursor: "pointer" }} onClick={() => { nav(`/selected-item-post/${e.item._id}`)}}>
+                {e.item.name }
             </div>
             <div>
                 From {new Date(e.reservation.startDate).toDateString()} to {new Date(e.reservation.endDate).toDateString()}
@@ -111,7 +111,7 @@ export const LendingResLarge = ({ e, key, nav, showReviewButton = false }) => {
                         <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             Borrowed
                         </div>
-                        <div className="bg-white/25 rounded-r-lg content-center p-1">
+                        <div className="bg-white/25 rounded-r-lg content-center p-1" style={{ cursor: "pointer" }} onClick={() => { nav(`/selected-item-post/${e.item._id}`)}}>
                             {e.item.name}
                         </div>
                     </div>
