@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
+
 import userContext from '../contexts/userContext';
 import UserService from '../tools/userService.js';
 import ItemService from '../tools/itemsService';
 import FavPost from "../components/FavPost";
-import Loading from '../components/Loading';
+import { Loading } from '../components/Loading';
+
 import '../styles/favItemPage.css';
 
 const FavoriteItems = () => {

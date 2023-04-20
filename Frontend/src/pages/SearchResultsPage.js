@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import ItemService from '../tools/itemsService'
 import { useParams } from 'react-router-dom'
-import Loading from '../components/Loading';
+
+import ItemService from '../tools/itemsService'
 import Post from '../components/post';
-import '../styles/searchResultsPage.css'
 import FilterPopUp from '../components/FilterPopUp';
-import ReviewService from '../tools/reviewService';
+import { Loading } from '../components/Loading';
+
+import '../styles/searchResultsPage.css'
 
 const SearchResultsPage = () => {
     const [items, setItems] = useState([]);
@@ -22,23 +23,17 @@ const SearchResultsPage = () => {
         setSortingOrder('Default')
         const search = async () => {
             const toSearch = searchString.split('+')[0]
-            const itemResults = await ItemService.serchItem(toSearch)
+            const itemResults = await ItemService.searchItem(toSearch)
             for (const item of itemResults) {
-                const res = await ReviewService.getReviewByItem(item._id)
-                const reviews = res.data;
-                console.log("reviews", reviews);
-                let sum = 0
-                for (const review of reviews) {
-                    sum += Number(review.review.rating)
-                }
-                let avg = sum / reviews.length
-                item.rating = avg;
+                const rating = await ItemService.getItemRating(item._id);
+                item.rating = rating.rating;
                 console.log(item);
             }
 
             const copy = JSON.parse(JSON.stringify(itemResults))
             setOrigItems(copy)
             setItems(itemResults)
+            setFilterButtonState('search-results-btn')
             setLoading(false)
         }
         search();
@@ -132,8 +127,14 @@ const SearchResultsPage = () => {
     const highlyRated = () => {
         setLoading(true)
         const sorted = items.sort((item1, item2) => {
-            if ((item1.review && item1.review.length === 0) || (item2.review && item2.review.length === 0)) {
+            if ((item1.review && item1.review.length === 0) && (item2.review && item2.review.length === 0)) {
                 return 0;
+            }
+            if ((item1.review && item1.review.length !== 0) && (item2.review && item2.review.length === 0)) {
+                return -1;
+            }
+            if ((item1.review && item1.review.length === 0) && (item2.review && item2.review.length !== 0)) {
+                return 1;
             }
             const rating1 = item1.rating
             const rating2 = item2.rating

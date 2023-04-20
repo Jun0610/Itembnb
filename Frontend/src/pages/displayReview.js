@@ -1,18 +1,18 @@
 import React, { useEffect, useContext, useState } from "react";
 import { NavLink, useParams, useNavigate } from "react-router-dom";
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from 'react-confirm-alert';
+import ReactMarkdown from 'react-markdown';
+
+import userContext from '../contexts/userContext';
 import ItemService from '../tools/itemsService';
 import ReviewService from '../tools/reviewService';
+import ReservationService from '../tools/reservationService';
 import UserService from '../tools/userService';
-import { socket } from '../tools/socketService';
-import SocketService from '../tools/socketService';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css';
-import userContext from '../contexts/userContext';
+import SocketService, { socket } from '../tools/socketService';
 import { Loading, LoadingSmall } from "../components/Loading";
-import Post from "../components/post";
-import { UserInfo } from "../components/smallInfoBox";
 import RatingStar from "../components/ratingStar.js";
-import ReactMarkdown from 'react-markdown';
+import { BorrowingResLarge, LendingResLarge } from "../components/reservationComponents";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
@@ -31,8 +31,9 @@ const DisplayReview = () => {
     // Get request to be shown from the server
     const [originalReview, setOriginalReview] = useState({});
     const [displayedReview, setDisplayedReview] = useState({});
-    const [reviewSubject, setReviewSubject] = useState();
     const [isItemReview, setIsItemReview] = useState(false);
+
+    const [reservationDataObject, setReservationDataObject] = useState(null);
 
     // loading after submission of data
     const [loading, setLoading] = useState({ addItem: false });
@@ -46,17 +47,22 @@ const DisplayReview = () => {
             setOriginalReview(reviewData);
             setDisplayedReview(reviewData);
 
-            if (reviewData.userId != "" && reviewData.itemId == "") {
+            if (reviewData.userId !== "" && reviewData.itemId === "") {
                 setIsItemReview(false);
 
-                let subjectInfo = await UserService.getUserDataMin(reviewData.userId);
-                setReviewSubject(subjectInfo);
+                const resData = await ReservationService.getReservation(reviewData.reservationId);
+                const borrowerData = await UserService.getUserData(resData.data.borrowerId);
+                const borrowedItemData = await ItemService.getItemMin(resData.data.itemId, false);
+                const dataObj = { reservation: resData.data, borrower: borrowerData.data, item: borrowedItemData.data }
+                setReservationDataObject(dataObj);
             }
-            else if (reviewData.itemId != "" && reviewData.userId == "") {
+            else if (reviewData.itemId !== "" && reviewData.userId === "") {
                 setIsItemReview(true);
 
-                let subjectInfo = await ItemService.getItemMin(reviewData.itemId, false);
-                setReviewSubject(subjectInfo);
+                const resData = await ReservationService.getReservationAndLender(reviewData.reservationId);
+                const borrowedItemData = await ItemService.getItemMin(resData.data.reservation.itemId, false);
+                const dataObj = { reservation: resData.data.reservation, lender: resData.data.lender, item: borrowedItemData.data }
+                setReservationDataObject(dataObj);
             }
             else {
                 console.error("Improperly formatted review! " + reviewData);
@@ -103,8 +109,8 @@ const DisplayReview = () => {
     const [inputErrors, setInputErrors] = useState(startingErrors);
 
     const userIsReviewOwner = () => {
-        return authUser != undefined &&
-            authUser.user.user != null &&
+        return authUser !== undefined &&
+            authUser.user.user !== null &&
             originalReview.reviewerId === authUser.user.user._id;
     }
 
@@ -241,18 +247,18 @@ const DisplayReview = () => {
     const displayReviewSubject = () => {
         let divContents = "";
 
-        if (reviewSubject == undefined) {
+        if (reservationDataObject === null) {
             divContents = <LoadingSmall />;
         }
         else {
             if (!isItemReview) {
                 divContents = (
-                    <UserInfo user={reviewSubject.data} />
+                    <LendingResLarge e={reservationDataObject} i={originalReview.reservationId} nav={navigate} />
                 );
             }
             else if (isItemReview) {
                 divContents = (
-                    <Post post={reviewSubject.data} isRequest={false} />
+                    <BorrowingResLarge e={reservationDataObject} i={originalReview.reservationId} nav={navigate} />
                 );
             }
         }
@@ -272,7 +278,7 @@ const DisplayReview = () => {
     return (
         <div>
             <div className="m-3 font-bold yellowText">
-                <h2>{isEditing ? 'Modify Review of' : 'Review of'}</h2>
+                <h2>{isEditing ? 'Modify Review of' : 'Review of'}{isItemReview ? ' Item' : ' Borrower'}</h2>
             </div>
 
             {displayReviewSubject()}

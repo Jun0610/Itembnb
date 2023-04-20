@@ -1,10 +1,13 @@
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from "react-confirm-alert";
+
+import userContext from "../contexts/userContext";
+import SocketService, { socket } from "../tools/socketService";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/login.css";
-import userContext from "../contexts/userContext";
-import { useNavigate } from "react-router-dom";
-import SocketService, { socket } from "../tools/socketService";
-import { confirmAlert } from "react-confirm-alert";
 
 const Login = () => {
     const [email, setEmail] = useState(null);
@@ -44,16 +47,8 @@ const Login = () => {
                     sessionStorage.setItem('curUser', JSON.stringify(data.data));
 
                     // set socket connection with server
-                    socket.auth = { username: email }
-                    console.log("socket: ", socket)
-                    socket.connect()
-                    socket.on("session", ({sessionID, userID}) => {
-                        socket.auth = {sessionID};
-                        sessionStorage.setItem("sessionID", sessionID)
-                        socket.userID = userID
-                        console.log("sessionID: ", sessionID)
-                    })
-                    //socket.emit('sendId', email);
+                    SocketService.connect()
+                    socket.emit('sendId', email);
 
                     // notification 
                     let notificationString = ''

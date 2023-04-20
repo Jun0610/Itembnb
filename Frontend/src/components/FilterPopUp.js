@@ -83,12 +83,12 @@ const FilterPopUp = ({ items, setItems, setArrayContents, filterState, setFilter
         }
 
         //filter by rating
-        let rating = 0;
+        let rating = -1;
         if (document.getElementById('rating').value !== '') {
             rating = document.getElementById('rating').value
         }
 
-        if (rating < 0 || rating > 5) {
+        if ((document.getElementById('rating').value !== '') && (rating < 0 || rating > 5)) {
             alert("Please enter a rating between 0 and 5!");
             return;
         }
@@ -150,7 +150,11 @@ const FilterPopUp = ({ items, setItems, setArrayContents, filterState, setFilter
         setLoading(true)
         //first get unfiltered array from db
         const toSearch = searchString.split('+')[0]
-        const unfiltered = await ItemService.serchItem(toSearch);
+        const unfiltered = await ItemService.searchItem(toSearch);
+        for (const item of unfiltered) {
+            const rating = await ItemService.getItemRating(item._id);
+            item.rating = rating.rating;
+        }
 
         //handle filtering dates first
         let filterDate = unfiltered;

@@ -29,7 +29,7 @@ const SearchBar = () => {
         const clear = document.getElementById('clear-button');
         clear.style.visibility = 'visible';
 
-        if (e.key == "Enter") {
+        if (e.key === "Enter") {
             handleSearch();
         }
     }

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import ReservationService from '../tools/reservationService';
-import PendingItem from '../components/PendingItem';
-import Loading from '../components/Loading';
-import "../styles/pendingPage.css"
 import SocketService, { socket } from '../tools/socketService';
+import PendingItem from '../components/PendingItem';
+import { Loading } from '../components/Loading';
+
+import "../styles/pendingPage.css"
 
 const PendingPage = () => {
     const nav = useNavigate();

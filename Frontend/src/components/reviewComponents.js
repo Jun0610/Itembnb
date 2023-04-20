@@ -13,8 +13,8 @@ import ReactMarkdown from 'react-markdown';
 
 export const ReviewOnSubjectPage = ({ reviewObject, authUser }) => {
     const userIsReviewOwner = () => {
-        return authUser != undefined &&
-            authUser.user.user != null &&
+        return authUser !== undefined &&
+            authUser.user.user !== null &&
             reviewObject.user._id === authUser.user.user._id;
     }
 
@@ -30,11 +30,8 @@ export const ReviewOnSubjectPage = ({ reviewObject, authUser }) => {
     }
 
     const displayReviewText = (rawText) => {
-        if (rawText.length > 153) {
-            rawText = rawText.substring(0, 150).trim() + "...";
-        }
         return (
-            <div>
+            <div className="p-1" style={{ "max-height": "150px", "overflow-y": "scroll" }}>
                 <ReactMarkdown>{rawText}</ReactMarkdown>
             </div>
         )
@@ -80,13 +77,13 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
     useEffect(() => {
         async function getReviewSubject() {
             console.log("Get Review Subject");
-            if (reviewObject.review.userId != "" && reviewObject.review.itemId == "") {
+            if (reviewObject.review.userId !== "" && reviewObject.review.itemId === "") {
                 setIsItemReview(false);
 
                 let subjectInfo = await UserService.getUserDataMin(reviewObject.review.userId);
                 setReviewSubject(subjectInfo);
             }
-            else if (reviewObject.review.itemId != "" && reviewObject.review.userId == "") {
+            else if (reviewObject.review.itemId !== "" && reviewObject.review.userId === "") {
                 setIsItemReview(true);
 
                 let subjectInfo = await ItemService.getItemMin(reviewObject.review.itemId);
@@ -100,7 +97,7 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
     }, []);
 
     let displayReviewSubject = "";
-    if (reviewSubject == undefined) {
+    if (reviewSubject === undefined) {
         displayReviewSubject = <LoadingSmall />;
     }
     else {
@@ -117,11 +114,8 @@ export const ReviewOnReviewerPage = ({ reviewObject }) => {
     }
 
     const displayReviewText = (rawText) => {
-        if (rawText.length > 103) {
-            rawText = rawText.substring(0, 100).trim() + "...";
-        }
         return (
-            <div>
+            <div className="p-3" style={{ "max-height": "150px", "overflow-y": "scroll" }}>
                 <ReactMarkdown>{rawText}</ReactMarkdown>
             </div>
         )

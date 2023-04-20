@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { NavLink, useParams } from "react-router-dom";
-import ReviewService from "../tools/reviewService";
+import { useParams, useNavigate } from "react-router-dom";
+
 import userContext from '../contexts/userContext';
+import ReviewService from "../tools/reviewService";
 import ItemService from "../tools/itemsService";
 import ReservationService from "../tools/reservationService";
 import { BorrowingResLarge } from "../components/reservationComponents";
-import Loading from "../components/Loading";
+import { Loading } from "../components/Loading";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/homepage.css";
@@ -51,7 +51,7 @@ const CreateItemReview = () => {
 
     }, [])
 
-    const handleReview = (e) => {
+    const handleEdit = (e) => {
         setReview({
             ...review,
             [e.target.id]: e.target.value,
@@ -62,10 +62,10 @@ const CreateItemReview = () => {
     const getErrors = (fieldId, fieldValue) => {
         const errorArray = [];
 
-        if (fieldId == "text" && fieldValue.length === 0) {
+        if (fieldId === "text" && fieldValue.length === 0) {
             errorArray.push(fieldId + " must have at least 1 character!");
         }
-        else if (fieldId == "rating" && (fieldValue < 1 || fieldValue > 5)) {
+        else if (fieldId === "rating" && (fieldValue < 1 || fieldValue > 5)) {
             errorArray.push(fieldId + " must be from 1-5!");
         }
 
@@ -139,13 +139,13 @@ const CreateItemReview = () => {
                         <div className="flex-auto">
                             <label htmlFor="rating" className="font-bold" style={{ color: "#F0D061" }}>Rating</label>
                             <p className="input-error">{inputErrors.rating}</p>
-                            <input className="mt-1 border border-slate-300 rounded-md w-full text-sm shadow-sm placeholder-slate-400 block px-3 py-2 bg-white" id="rating" type="number" min="1" max="5" value={review.rating} onChange={handleReview} name="rating" />
+                            <input className="mt-1 border border-slate-300 rounded-md w-full text-sm shadow-sm placeholder-slate-400 block px-3 py-2 bg-white" id="rating" type="number" min="1" max="5" value={review.rating} onChange={handleEdit} name="rating" />
 
                             <br />
 
                             <label htmlFor="description" className="font-bold" style={{ color: "#F0D061" }}>Text of Review</label>
                             <p className="input-error">{inputErrors.text}</p>
-                            <textarea className="mt-1 border border-slate-300 rounded-md w-full text-sm shadow-sm placeholder-slate-400 block px-3 py-2 bg-white" id="text" rol={10} value={review.text} onChange={handleReview} name="text" />
+                            <textarea className="mt-1 border border-slate-300 rounded-md w-full text-sm shadow-sm placeholder-slate-400 block px-3 py-2 bg-white" id="text" rol={10} value={review.text} onChange={handleEdit} name="text" />
                         </div>
                     </div>
                     <button className="hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full" style={{ backgroundColor: '#F7D65A' }} type="submit" onClick={handleSubmit}>Submit</button>
