@@ -25,17 +25,20 @@ import EmailDisplayItemPost from "./pages/emailDisplayItemPost";
 import EmailStatusPage from "./pages/emailStatusPage";
 import AccountSettings from "./pages/accountSettings";
 import EmailSelectedItemPost from "./pages/emailSelectedItemPost";
+import ChatPage from "./pages/chatPage";
 import LendingHistory from "./pages/lendingHistory";
 import BorrowingHistory from "./pages/borrowingHistory";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import CategoryPage from "./pages/CategoryPage";
-
+import { ChatContextProvider } from "./contexts/chatContext";
+import EmailChatPage from "./pages/emailChatPage";
 
 function App() {
     return (
         <div className="App">
             <UserContextProvider>
                 <ItemContextProvider>
+                    <ChatContextProvider>
                     <Router>
                         <Navbar />
                         <NotificationProvider>
@@ -51,6 +54,7 @@ function App() {
                                 <Route exact path='/borrowing-history' element={<BorrowingHistory />} />
                                 <Route path="/display-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailDisplayItemPost />} />
                                 <Route path="/selected-item-post/itemId/:itemId/ownerId/:ownerId" element={<EmailSelectedItemPost />} />
+                                <Route path="/chat-redir/:id" element={<EmailChatPage />} />
                                 <Route path="/item-status/:id" element={<EmailStatusPage />} />
                                 <Route path="/display-item-post/:id" element={<DisplayItemPost />} />
                                 <Route path="/display-request-post/:id" element={<DisplayRequestPost />} />
@@ -65,9 +69,11 @@ function App() {
                                 <Route exact path='/pending-reservations' element={<PendingPage />}></Route>
                                 <Route exact path='/search-results/:searchString' element={<SearchResultsPage />}></Route>
                                 <Route exact path='/category-items/:category' element={<CategoryPage />}> </Route>
+                                <Route exact path='/chat' element={<ChatPage />}></Route>
                             </Routes>
                         </NotificationProvider>
                     </Router>
+                    </ChatContextProvider> 
                 </ItemContextProvider>
             </UserContextProvider>
 
