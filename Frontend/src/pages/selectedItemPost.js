@@ -83,6 +83,7 @@ const SelectedItemPost = () => {
         const getItemReviews = async () => {
             //get reservation data for user
             const itemReviews = await ReviewService.getReviewsForItem(itemId);
+            console.log("item reviews: ", itemReviews)
             setDisplayedItemReviews(itemReviews.data);
             setOriginalItemReviews(itemReviews.data);
             setRating(itemReviews.rating);
@@ -142,10 +143,6 @@ const SelectedItemPost = () => {
                         <div className="item-post-row">
                             <p>Enjoy using {selectedItem.ownerId ? owner.name : "owner not shown"}'s {selectedItem.name} and make sure to return it on time!</p>
                         </div>
-
-
-                        {/* <div className='pendingContainter'>
-                            </div> */}
 
                     </div>);
             }
@@ -207,8 +204,8 @@ const SelectedItemPost = () => {
                 </div>
 
                 <div className='flex gap-4'>
-                    {stars.map((e, i) => (<div onClick={() => filterStar(e)} style={{ cursor: "pointer" }}>{e}-star</div>))}
-                    <div onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
+                    {stars.map((e, i) => (<div onClick={() => filterStar(e)} className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" style={{ cursor: "pointer" }}>{e}-star</div>))}
+                    <div className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
                 </div>
                 <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
                     {displayedItemReviews.length > 0 ?
