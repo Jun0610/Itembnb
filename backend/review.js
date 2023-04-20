@@ -16,6 +16,33 @@ const router = express.Router()
 
 const getUserMin = require('./utility').getUserMin;
 
+router.get('/can-review-user/:reviewerId/:revieweeId', async (req, res) => {
+    try {
+        canReview = false;
+
+        const revieweeId = new mongo.ObjectId(req.params.revieweeId);
+        const reviewee = await db.collection("users").findOne({ _id: revieweeId });
+
+        for (const reservId of reviewee.reservHist) {
+            const reserv = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(reservId) })
+            if (reserv) {
+                const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(reserv.itemId) });
+                if (item) {
+                    const ownerId = item.ownerId;
+                    if (ownerId === req.params.reviewerId) {
+                        canReview = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        res.status(200).json({ success: true, data: canReview })
+    } catch (err) {
+        res.status(404).json({ success: false, data: err });
+    }
+})
+
 //sending a single specific review
 router.get('/get-review/:id', async (req, res) => {
     try {

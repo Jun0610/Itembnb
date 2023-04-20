@@ -1,7 +1,21 @@
 const url = "http://localhost:8888/api/reservation";
 
-
 class ReservationService {
+    static async getTransactionHistory(lenderId, borrowerId) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/get-past-lending-reservations/${lenderId}/${borrowerId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     static async getUserReservation(itemId, userId) {
         const request = {
             method: 'GET',

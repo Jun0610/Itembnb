@@ -248,6 +248,35 @@ router.get('/get-past-borrowing-reservations/:userId', async (req, res) => {
     }
 })
 
+// used to determine if you can review for a user or not
+router.get("/get-past-lending-reservations/:userId/:borrowerId", async (req, res) => {
+    try {
+        const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) });
+        const lendedReservations = [];
+        for (const itemId of user.postedItems) {
+            const item = await db.collection("items").findOne({ _id: new mongo.ObjectId(itemId) })
+            if (item && item.reservHist) {
+                for (const resvid of item.reservHist) {
+                    const reservation = await db.collection("reservations").findOne({ _id: new mongo.ObjectId(resvid) })
+
+                    if (reservation && reservation.unavailList === null) continue;
+                    if (reservation && (reservation.status === "completed") && (reservation.borrowerId === req.params.borrowerId)) {
+                        const borrower = await db.collection("users").findOne({ _id: new mongo.ObjectId(reservation.borrowerId) })
+                        lendedReservations.push({ item, reservation, borrower })
+                    }
+                }
+            }
+        }
+        if (lendedReservations.length === 0) {
+            res.status(201).json({ success: true, data: null });
+        } else {
+            res.status(201).json({ success: true, data: lendedReservations });
+        }
+    } catch (err) {
+        res.status(404).json({ success: false, data: err.message })
+    }
+})
+
 router.get("/get-past-lending-reservations/:userId", async (req, res) => {
     try {
         const user = await db.collection("users").findOne({ _id: new mongo.ObjectId(req.params.userId) });
