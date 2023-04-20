@@ -66,6 +66,20 @@
     margin-right: 2rem;
 }
 
+.chat-redir {
+    margin-right: 1.3rem;
+}
+
+.more-info-chat {
+    visibility: hidden;
+    position: absolute;
+    background-color: #a7a7a7;
+    top: 80%;
+    right: 13rem;
+    padding: 2px 8px;
+    border-radius: 0.5rem;
+}
+
 .more-info-item {
     visibility: hidden;
     position: absolute;
@@ -84,6 +98,10 @@
     right: 5rem;
     padding: 2px 8px;
     border-radius: 0.5rem;
+}
+
+.chat-redir:hover .more-info-chat{
+    visibility: visible;
 }
 
 .bell:hover .more-info-bell{
