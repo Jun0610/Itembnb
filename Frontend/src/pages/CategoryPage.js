@@ -50,7 +50,10 @@ const CategoryPage = () => {
     if (loading) {
         return <>
             <Browsing category={category} />
-            <Loading />
+            <div style={{ margin: "0 auto", marginTop: "-5rem" }}>
+                <Loading />
+            </div>
+
         </>
     } else if (items.length !== 0) {
         return (
