@@ -71,14 +71,16 @@ const FavoriteItems = () => {
                         <h1 className='title'>Favorited Items</h1>
                         <button className='btn-mode' onClick={handleViewMode}>{viewMode}</button>
                     </div>
+                    <div style={{ paddingBottom: "2rem" }}>
+                        <div className='fav-item-page-container'>
+                            {favItems.map((item) => (
+                                <FavPost key={item._id} post={item} isRequest={false} favItems={favItems} setFavItems={setFavItems} viewMode={viewMode} />
+                            ))}
 
-                    <div className='fav-item-page-container'>
-                        {favItems.map((item) => (
-                            <FavPost key={item._id} post={item} isRequest={false} favItems={favItems} setFavItems={setFavItems} viewMode={viewMode} />
-                        ))}
-
+                        </div>
+                        {favItems.length === 0 && <h2 className='no-fav'>You have no favorited items yet!</h2>}
                     </div>
-                    {favItems.length === 0 && <h2 className='no-fav'>You have no favorited items yet!</h2>}
+
 
 
                 </>

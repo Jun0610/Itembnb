@@ -10,7 +10,7 @@ async function getUserMin(db, userId) {
             return null;
         } else {
             // trim description
-            if (results.profileDesc.length > 45) {
+            if (results.profileDesc && results.profileDesc.length > 45) {
                 results.profileDesc = results.profileDesc.substring(0, 42).trim() + "...";
             }
             return results;
