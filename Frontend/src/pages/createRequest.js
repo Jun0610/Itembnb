@@ -27,7 +27,12 @@ const CreateRequest = () => {
     const [nameErrorStyle, setNameErrorStyle] = useState("no-error")
     const [descriptionErrorStyle, setDescriptionErrorStyle] = useState("no-error")
 
-
+    const handleEdit = (e) => {
+        setRequest({
+            ...request,
+            [e.target.id]: e.target.value,
+        });
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -64,8 +69,13 @@ const CreateRequest = () => {
             console.log("creation of " + request);
             request.ownerID = authUser.user.user._id;
             await RequestService.postRequest(request, authUser.user.user._id).then((res) => {
-                alert("Request successfully posted!");
-                setRequest(blankRequest);
+                if (res.success) {
+                    alert("Request successfully posted!");
+                    setRequest(blankRequest);
+                }
+                else {
+                    alert("An error occured, and request submission has failed. Sorry.");
+                }
             });
             navigate('/')
         }
@@ -85,14 +95,14 @@ const CreateRequest = () => {
                             <label htmlFor="name" className="font-bold" style={{ color: "#F0D061", fontSize: '20px', marginBottom: "0.5rem" }}>Name</label>
                             <br />
                             <p className={nameErrorStyle}>{nameError}</p>
-                            <input id="name" type="text" autoComplete="off" />
+                            <input id="name" type="text" autoComplete="off" onChange={handleEdit} />
                         </div>
                         <div className="flex-auto" style={{ marginLeft: "4rem" }}>
                             <label htmlFor="description" className="font-bold" style={{ color: "#F0D061", fontSize: '20px', marginBottom: "0.5rem" }}>Description</label>
                             <br />
                             <p className={descriptionErrorStyle}>{descError}</p>
 
-                            <textarea id="description" rol={10} />
+                            <textarea id="description" rol={10} onChange={handleEdit} />
 
 
                         </div>

@@ -12,7 +12,7 @@ import ItemCalendar from "../components/borrowerCalendar";
 import RatingStar from "../components/ratingStar";
 import { UserInfo } from "../components/smallInfoBox";
 import { ReviewOnSubjectPage } from '../components/reviewComponents';
-import { Loading } from "../components/Loading";
+import { Loading, LoadingSmall } from "../components/Loading";
 
 import "../styles/itempost.css";
 
@@ -26,7 +26,7 @@ const SelectedItemPost = () => {
 
     // for handling reviews/ratings
     const [rating, setRating] = useState(null);
-    const [originalItemReviews, setOriginalItemReviews] = useState([]);
+    const [originalItemReviews, setOriginalItemReviews] = useState(null);
     const [displayedItemReviews, setDisplayedItemReviews] = useState([]);
     const stars = [1, 2, 3, 4, 5];
 
@@ -83,6 +83,7 @@ const SelectedItemPost = () => {
         const getItemReviews = async () => {
             //get reservation data for user
             const itemReviews = await ReviewService.getReviewsForItem(itemId);
+            console.log("item reviews: ", itemReviews)
             setDisplayedItemReviews(itemReviews.data);
             setOriginalItemReviews(itemReviews.data);
             setRating(itemReviews.rating);
@@ -143,10 +144,6 @@ const SelectedItemPost = () => {
                             <p>Enjoy using {selectedItem.ownerId ? owner.name : "owner not shown"}'s {selectedItem.name} and make sure to return it on time!</p>
                         </div>
 
-
-                        {/* <div className='pendingContainter'>
-                            </div> */}
-
                     </div>);
             }
 
@@ -172,6 +169,54 @@ const SelectedItemPost = () => {
         if (userIsOwner()) {
             return <NavLink to={`/display-item-post/` + selectedItem._id}><button className="defaultButton text-base" style={{ display: "inline-block" }} >Owner View</button></NavLink >
         }
+    }
+
+    const reviewSection = () => {
+        if (originalItemReviews == null) {
+            return <LoadingSmall />
+        }
+
+        if (originalItemReviews.length === 0) {
+            return (<div>
+                <div className="font-bold">
+                    <br />
+                    <h4>Reviews ({originalItemReviews.length})</h4>
+
+                    {canBeReviewed() &&
+                        <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
+                    }
+                </div>
+
+                <p className="grayText">There are no reviews!</p>
+            </div>)
+        }
+
+        return (
+            <div>
+                <div className="font-bold">
+                    <br />
+                    <h4>Reviews ({originalItemReviews.length})</h4>
+
+                    {canBeReviewed() &&
+                        <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
+                    }
+
+                </div>
+
+                <div className='flex gap-4'>
+                    {stars.map((e, i) => (<div onClick={() => filterStar(e)} className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" style={{ cursor: "pointer" }}>{e}-star</div>))}
+                    <div className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
+                </div>
+                <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
+                    {displayedItemReviews.length > 0 ?
+                        displayedItemReviews.map((e, i) => (
+                            <ReviewOnSubjectPage reviewObject={e} authUser={authUser} />
+                        )) :
+                        <p className="grayText">There are no reviews!</p>
+                    }
+                </div>
+            </div>
+        );
     }
 
     if (selectedItem !== null) {
@@ -208,26 +253,8 @@ const SelectedItemPost = () => {
                                 <p>Date Posted: {new Date(selectedItem.dateCreated).toDateString()}</p>
                             </div>
                             <UserInfo user={owner} />
-                            <div className="font-bold">
-                                Reviews ({originalItemReviews.length})
 
-                                {canBeReviewed() &&
-                                    <NavLink to={"/create-item-review/" + itemId} className="plainLink"><button className="defaultButton">Make Review</button></NavLink>
-                                }
-
-                            </div>
-                            <div className='flex gap-4'>
-                                {stars.map((e, i) => (<div onClick={() => filterStar(e)} style={{ cursor: "pointer" }}>{e}-star</div>))}
-                                <div onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
-                            </div>
-                            <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
-                                {displayedItemReviews.length > 0 ?
-                                    displayedItemReviews.map((e, i) => (
-                                        <ReviewOnSubjectPage reviewObject={e} authUser={authUser} />
-                                    )) :
-                                    <p>There are no reviews!</p>
-                                }
-                            </div>
+                            {reviewSection()}
                         </div>
                         {reservationInfo()}
                     </div>

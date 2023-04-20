@@ -8,7 +8,7 @@ import { LendingResSmall, LendingResLarge } from '../components/reservationCompo
 
 const LendingHistory = () => {
     const [lendingHist, setLendingHist] = useState([]);
-    const [borrowers, setBorrowers] = useState([]);
+    const [items, setItems] = useState([]);
     const [OGLendingHist, setOGLendingHist] = useState([])
     const authUser = useContext(userContext);
     const [loading, setLoading] = useState(true);
@@ -30,13 +30,13 @@ const LendingHistory = () => {
                 SocketService.connect();
                 socket.emit('sendId', sessionUser.email);
                 */
-                const newB = []
+                const newI = []
                 if (data.data) {
                     data.data.forEach(e => {
-                        if (!newB.includes(e.borrower.name)) newB.push(e.borrower.name)
+                        if (!newI.includes(e.item.name)) newI.push(e.item.name)
                     })
                 }
-                setBorrowers(newB)
+                setItems(newI)
             }
         }
         getAllLendingResv().then(() => setLoading(false));
@@ -82,8 +82,8 @@ const LendingHistory = () => {
         setLendingHist(OGLendingHist)
     }
 
-    const onSelectBorrower = (name) => {
-        setLendingHist(OGLendingHist.filter(e => e.borrower.name === name))
+    const onSelectItem = (name) => {
+        setLendingHist(OGLendingHist.filter(e => e.item.name === name))
     }
 
     if (!loading) {
@@ -102,8 +102,8 @@ const LendingHistory = () => {
                 {lendingHist === null || lendingHist === undefined || lendingHist.length === 0 ? <div className='text-xl font-bold m-3'>You don't have any lending history yet!</div>
                     : <div>
                         <div className="flex gap-3">
-                            <div className='items-center p-2 text-medium font-bold text-yellow-400'>View by borrower: </div>
-                            {borrowers.map((e, i) => (<div key={i} onClick={() => onSelectBorrower(e)} className='items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg' style={{ cursor: "pointer" }}>{e}</div>))}
+                            <div className='items-center p-2 text-medium font-bold text-yellow-400'>My items: </div>
+                            {items.map((e, i) => (<div key={i} onClick={() => onSelectItem(e)} className='items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg' style={{ cursor: "pointer" }}>{e}</div>))}
                             <div onClick={() => onReset()} className='items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg' style={{ cursor: "pointer" }}>Reset</div>
                         </div>
                         {lendingHist.map((e, i) => (
