@@ -201,11 +201,11 @@ const FilterPopUp = ({ items, setItems, setArrayContents, filterState, setFilter
         setToDate('')
         setRating('')
         setFilterState({
-            fromPrice,
-            toPrice,
-            rating,
-            fromDate,
-            toDate
+            fromPrice: '',
+            toPrice: '',
+            rating: '',
+            fromDate: '',
+            toDate: ''
         })
         console.log(filterState);
     }
