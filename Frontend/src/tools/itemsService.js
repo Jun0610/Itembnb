@@ -3,7 +3,6 @@ const review_url = "http://localhost:8888/api/review";
 
 class ItemService {
     static async postItem(item, userId) {
-        console.log(item);
         return new Promise((resolve, reject) => {
             fetch(`${url}/add-item/user-id/${userId}`, {
                 method: 'POST',

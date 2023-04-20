@@ -1,6 +1,21 @@
 const url = "http://localhost:8888/api/review";
 
 class ReviewService {
+    static async getCanReview(reviewerId, revieweeId) {
+        const request = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }
+        try {
+            const res = await fetch(`${url}/can-review-user/${reviewerId}/${revieweeId}`, request);
+            const response = await res.json();
+            response.status = res.status
+            return response
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     static async getReview(id) {
         const request = {
             method: 'GET',

@@ -9,9 +9,11 @@ import UserService from '../tools/userService';
 import ItemService from '../tools/itemsService';
 import RequestService from '../tools/requestService';
 import ReviewService from '../tools/reviewService';
+import ReservationService from '../tools/reservationService';
 import SocketService, { socket } from '../tools/socketService';
 import Post from "../components/post";
 import RatingStar from "../components/ratingStar.js";
+import { LendingResLarge, LendingResSmall } from "../components/reservationComponents";
 import { ReviewOnSubjectPage, ReviewOnReviewerPage } from "../components/reviewComponents.js";
 import { Loading, LoadingSmall } from "../components/Loading";
 
@@ -22,6 +24,8 @@ import "../styles/userpage.css";
 const Userpage = () => {
     const authUser = useContext(userContext);
     const { id } = useParams(); // id of user on webpage
+
+    const navigate = useNavigate(); // for redirect to homepage
 
     /* --- Fetching info from server --- */
 
@@ -40,6 +44,9 @@ const Userpage = () => {
     const [originalReviewsByUser, setOriginalReviewsByUser] = useState(null); // TODO implement
     const [borrowerRating, setBorrowerRating] = useState("...");
     const [lenderRating, setLenderRating] = useState("..."); // TODO implement
+
+    const [canReview, setCanReview] = useState(null);
+    const [lendingHist, setLendingHist] = useState(null);
 
     useEffect(() => {
         async function fetchData() {
@@ -73,26 +80,40 @@ const Userpage = () => {
         }
         getUserReviews();
 
-        async function connectSocket() {
+        async function currentUserFetch() {
             // check if user is logged in with sessionStorage, because checking authUser.user.isAuth doesn't work in useEffect
             const loggedInUser = JSON.parse(sessionStorage.getItem('curUser'));
 
             if (loggedInUser !== null) {
+                if (loggedInUser._id !== id) {
+                    /*
+                    let canReview = await ReviewService.getCanReview(loggedInUser._id, id);
+                    if (canReview.success) {
+                        setCanReview(canReview.data);
+                    } */
+
+                    const data = await ReservationService.getTransactionHistory(loggedInUser._id, id);
+                    setLendingHist(data.data)
+                }
+                else {
+                    setCanReview(false);
+                }
+
                 // log in user automatically if session storage indicates they've already logged in, in another tab
                 authUser.login(loggedInUser);
 
                 SocketService.connect();
-                socket.emit('sendId', JSON.parse(sessionStorage.getItem('curUser')).email);
+                socket.emit('sendId', JSON.parse(loggedInUser.email));
             }
         }
-        connectSocket();
+        currentUserFetch();
 
     }, []);
 
     /* --- Review Section --- */
     // TODO - return true only if user can be reviewed
     const canBeReviewed = () => {
-        return false;
+        return (canReview !== null && canReview === true);
         return (
             authUser.user.user !== null && // user must be logged in
             authUser.user.user._id !== id // user must not be viewing their own profile
@@ -192,7 +213,6 @@ const Userpage = () => {
     /* --- Profile editing functionality --- */
 
     const ProfileHeader = () => {
-        const navigate = useNavigate(); // for redirect to homepage
 
         const logout = () => {
             sessionStorage.removeItem('curUser')
@@ -451,10 +471,15 @@ const Userpage = () => {
             <div id="profile_main" className="add_padding">
                 <ProfileHeader />
 
-                {canBeReviewed() ?
-                    <NavLink to={"/create-user-review/" + id} className="plainLink"><button className="defaultButton">Review this User</button></NavLink>
-                    : <div></div>
-                }
+                <div className="m-4">
+                    <h5>Times this user has borrowed one of your items</h5>
+                    {lendingHist === null || lendingHist === undefined || lendingHist.length === 0 ? <div className='text-xl font-bold m-3'>This user has never borrowed any of your items!</div>
+                        : <div>
+                            {lendingHist.map((e, i) => (
+                                <LendingResLarge e={e} key={i} nav={navigate} showReviewButton={true} />
+                            ))}
+                        </div>}
+                </div>
 
                 <hr />
 

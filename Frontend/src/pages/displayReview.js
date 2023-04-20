@@ -137,7 +137,13 @@ const DisplayReview = () => {
                             console.log("deleteresult", deleteResult);
                             if (deleteResult.success) {
                                 alert("Deletion successful.");
-                                return navigate("/");
+
+                                if (isItemReview) {
+                                    return navigate("/selected-item-post/" + reservationDataObject.item._id);
+                                }
+                                else {
+                                    return navigate("/user/" + reservationDataObject.reservation.borrowerId);
+                                }
                             }
                             else {
                                 alert("Deletion failed. Sorry.");
