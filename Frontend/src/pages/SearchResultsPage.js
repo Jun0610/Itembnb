@@ -33,6 +33,7 @@ const SearchResultsPage = () => {
             const copy = JSON.parse(JSON.stringify(itemResults))
             setOrigItems(copy)
             setItems(itemResults)
+            setFilterButtonState('search-results-btn')
             setLoading(false)
         }
         search();
@@ -126,8 +127,14 @@ const SearchResultsPage = () => {
     const highlyRated = () => {
         setLoading(true)
         const sorted = items.sort((item1, item2) => {
-            if ((item1.review && item1.review.length === 0) || (item2.review && item2.review.length === 0)) {
+            if ((item1.review && item1.review.length === 0) && (item2.review && item2.review.length === 0)) {
                 return 0;
+            }
+            if ((item1.review && item1.review.length !== 0) && (item2.review && item2.review.length === 0)) {
+                return -1;
+            }
+            if ((item1.review && item1.review.length === 0) && (item2.review && item2.review.length !== 0)) {
+                return 1;
             }
             const rating1 = item1.rating
             const rating2 = item2.rating
