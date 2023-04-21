@@ -111,13 +111,62 @@ const Userpage = () => {
     }, []);
 
     /* --- Review Section --- */
-    // TODO - return true only if user can be reviewed
-    const canBeReviewed = () => {
-        return (canReview !== null && canReview === true);
-        return (
-            authUser.user.user !== null && // user must be logged in
-            authUser.user.user._id !== id // user must not be viewing their own profile
-        );
+    const DisplayTransactions = () => {
+        const [showTransactions, setShowTransactions] = useState(false);
+
+        const showHideTransactions = () => {
+            if (showTransactions) {
+                setShowTransactions(false);
+            }
+            else {
+                setShowTransactions(true);
+            }
+        }
+
+        const lendingHistDisplay = () => {
+            if (lendingHist === null || lendingHist === undefined || lendingHist.length === 0) {
+                return <div className='grayText text-sm m-3'>This user has never borrowed any of your items!</div>;
+            }
+
+            const title = <h3>Your transactions with {userInfo.name}</h3>;
+            if (showTransactions) {
+                return (<div>
+                    {title}
+                    <button className="defaultButton" onClick={showHideTransactions} > {showTransactions ? "Hide" : "Show"}</button >
+
+                    {lendingHist.map((e, i) => (
+                        <LendingResLarge e={e} key={i} nav={navigate} showReviewButton={true} />
+                    ))}
+
+                    <button className="defaultButton" onClick={showHideTransactions}>{showTransactions ? "Hide" : "Show"}</button>
+                </div>);
+            }
+            else {
+                return (
+                    <div>
+                        {title}
+                        <button className="defaultButton" onClick={showHideTransactions} > {showTransactions ? "Hide" : "Show"}</button >
+                    </div>
+                );
+            }
+        }
+
+        const canSeeTransactions = () => {
+            return (
+                authUser.user.user !== null && // user must be logged in
+                authUser.user.user._id !== id // user must not be viewing their own profile
+            );
+        }
+
+        if (canSeeTransactions()) {
+            return (<div>
+
+                {lendingHistDisplay()}
+
+                <hr />
+            </div>
+            );
+        }
     }
 
     // Reviews of user (as borrower)
@@ -182,9 +231,6 @@ const Userpage = () => {
         if (originalReviewsByUser.length === 0) {
             return <p className="grayText">There are no reviews!</p>
         }
-
-        console.log("display", displayedReviewsByUser);
-        console.log("display 2 ", originalReviewsByUser);
 
         return (
             <div>
@@ -457,31 +503,28 @@ const Userpage = () => {
     }
     return (
         <div id="page_content_container">
-            <div id="profile_leftbox" className="add_padding">
-                <div>
+            <div id="profile_leftbox" className="m-3">
+                <div className="fixed top-100px p-3">
                     <img id="profilepic" src={userInfo.profilePic} alt="Profile" />
 
                     <h6 className="user_stat">Borrower Rating: <RatingStar rating={borrowerRating} /></h6>
                     <hr />
-                    <h6 className="user_stat">{userInfo.name} has {userInfo.postedItems.length} {userInfo.postedItems.length === 1 ? "item" : "items"}</h6>
-                    <h6 className="user_stat">{userInfo.name} has {userInfo.requestPosts.length} {userInfo.requestPosts.length === 1 ? "request" : "requests"}</h6>
+
+                    <h6 className="user_stat">{userInfo.name} has:</h6>
+                    <ul className="text-left list-disc">
+                        <li>{userInfo.postedItems.length} {userInfo.postedItems.length === 1 ? "item" : "items"}</li>
+                        <li>{userInfo.requestPosts.length} {userInfo.requestPosts.length === 1 ? "request" : "requests"}</li>
+                        <li>{userInfo.reviewsOfUser.length} {userInfo.reviewsOfUser.length === 1 ? "review from another user" : "reviews from other users"}</li>
+                        <li>created {userInfo.reviewsMade.length} {userInfo.reviewsMade.length === 1 ? "review" : "reviews"}</li>
+                    </ul>
                 </div>
             </div>
 
             <div id="profile_main" className="add_padding">
                 <ProfileHeader />
 
-                <div className="m-4">
-                    <h5>Times this user has borrowed one of your items</h5>
-                    {lendingHist === null || lendingHist === undefined || lendingHist.length === 0 ? <div className='text-xl font-bold m-3'>This user has never borrowed any of your items!</div>
-                        : <div>
-                            {lendingHist.map((e, i) => (
-                                <LendingResLarge e={e} key={i} nav={navigate} showReviewButton={true} />
-                            ))}
-                        </div>}
-                </div>
-
                 <hr />
+                <DisplayTransactions />
 
                 <h3 className="item-post-header">{userInfo.name}'s Posted Items</h3>
                 <div className="cardcontainer">
@@ -495,9 +538,13 @@ const Userpage = () => {
                     {displayUserRequests()}
                 </div>
 
+                <br />
+
                 <div>
                     <h3 className="item-post-header">Reviews of {userInfo.name}</h3>
                     <DisplayReviewsOfUser originalReviewsForUser={originalReviewsForUser} />
+
+                    <br />
 
                     <h3 className="item-post-header">Reviews Made By {userInfo.name}</h3>
                     <DisplayReviewsMadeByUser originalReviewsByUser={originalReviewsByUser} />
