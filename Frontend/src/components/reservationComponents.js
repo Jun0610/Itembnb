@@ -65,7 +65,10 @@ export const BorrowingResLarge = ({ e, key, nav, showReviewButton = false }) => 
                     </div>
 
                     {showReviewButton &&
-                        <NavLink to={`/create-item-review/` + e.reservation._id} style={{ "text-decoration": "inherit" }}><button className="defaultButton">Review this Item</button></NavLink>
+                        (e.reservation.borrowerReview === "" ?
+                            <NavLink to={`/create-item-review/` + e.reservation._id} style={{ "text-decoration": "inherit" }}><button className="defaultButton">Review this Item</button></NavLink> :
+                            <NavLink to={`/display-review/` + e.reservation.borrowerReview} style={{ "text-decoration": "inherit" }}><button className="defaultButton">See Your Review</button></NavLink>
+                        )
                     }
                 </div>
             </div>
@@ -80,8 +83,8 @@ export const LendingResSmall = ({ e, key, nav }) => {
             <div style={{ cursor: "pointer" }} onClick={() => nav(`/user/${e.borrower._id}`)}>
                 {e.borrower.name}
             </div>
-            <div style={{ cursor: "pointer" }} onClick={() => { nav(`/selected-item-post/${e.item._id}`)}}>
-                {e.item.name }
+            <div style={{ cursor: "pointer" }} onClick={() => { nav(`/selected-item-post/${e.item._id}`) }}>
+                {e.item.name}
             </div>
             <div>
                 From {new Date(e.reservation.startDate).toDateString()} to {new Date(e.reservation.endDate).toDateString()}
@@ -111,7 +114,7 @@ export const LendingResLarge = ({ e, key, nav, showReviewButton = false }) => {
                         <div className="rounded-l-lg content-center p-1 font-semibold text-white" style={{ backgroundColor: "#F7D65A" }}>
                             Borrowed
                         </div>
-                        <div className="bg-white/25 rounded-r-lg content-center p-1" style={{ cursor: "pointer" }} onClick={() => { nav(`/selected-item-post/${e.item._id}`)}}>
+                        <div className="bg-white/25 rounded-r-lg content-center p-1" style={{ cursor: "pointer" }} onClick={() => { nav(`/selected-item-post/${e.item._id}`) }}>
                             {e.item.name}
                         </div>
                     </div>
@@ -135,7 +138,10 @@ export const LendingResLarge = ({ e, key, nav, showReviewButton = false }) => {
                     </div>
 
                     {showReviewButton &&
-                        <NavLink to={`/create-user-review/` + e.reservation._id} style={{ "text-decoration": "inherit" }}><button className="defaultButton">Review this Borrower</button></NavLink>
+                        (e.reservation.lenderReview === "" ?
+                            <NavLink to={`/create-user-review/` + e.reservation._id} style={{ "text-decoration": "inherit" }}><button className="defaultButton">Review this Borrower</button></NavLink> :
+                            <NavLink to={`/display-review/` + e.reservation.lenderReview} style={{ "text-decoration": "inherit" }}><button className="defaultButton">See Your Review</button></NavLink>
+                        )
                     }
                 </div>
             </div>
