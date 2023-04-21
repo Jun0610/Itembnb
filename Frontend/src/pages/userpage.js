@@ -108,7 +108,7 @@ const Userpage = () => {
         }
         currentUserFetch();
 
-    }, []);
+    }, [id]);
 
     /* --- Review Section --- */
     // TODO - return true only if user can be reviewed
