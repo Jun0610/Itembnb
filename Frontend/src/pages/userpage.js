@@ -143,11 +143,11 @@ const Userpage = () => {
             <div>
                 <div className='flex gap-4'>
                     {stars.map((starNum, i) => (
-                        <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }} key={i}>
+                        <div onClick={() => filterReviews(starNum)} className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" style={{ cursor: "pointer" }} key={i}>
                             {starNum}-star
                         </div>
                     ))}
-                    <div onClick={resetFilter} style={{ cursor: "pointer" }}>
+                    <div onClick={resetFilter} className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" style={{ cursor: "pointer" }}>
                         Reset
                     </div>
                 </div>
@@ -190,11 +190,11 @@ const Userpage = () => {
             <div>
                 <div className='flex gap-4'>
                     {stars.map((starNum, i) => (
-                        <div onClick={() => filterReviews(starNum)} style={{ cursor: "pointer" }} key={i}>
+                        <div onClick={() => filterReviews(starNum)} className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" style={{ cursor: "pointer" }} key={i}>
                             {starNum}-star
                         </div>
                     ))}
-                    <div onClick={resetFilter} style={{ cursor: "pointer" }}>
+                    <div className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" onClick={resetFilter} style={{ cursor: "pointer" }}>
                         Reset
                     </div>
                 </div>
