@@ -16,6 +16,7 @@ const router = express.Router()
 
 const getUserMin = require('./utility').getUserMin;
 
+// currently unused; remove?
 router.get('/can-review-user/:reviewerId/:revieweeId', async (req, res) => {
     try {
         canReview = false;
