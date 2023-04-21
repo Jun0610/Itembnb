@@ -108,7 +108,7 @@ const Userpage = () => {
         }
         currentUserFetch();
 
-    }, []);
+    }, [id]);
 
     /* --- Review Section --- */
     const DisplayTransactions = () => {
