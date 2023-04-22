@@ -60,7 +60,7 @@ const SelectedItemPost = () => {
 
         itemPageSetUp();
 
-    }, [])
+    }, [itemId])
 
     //re-render reservation info part after item is reserved
     useEffect(() => {
@@ -192,7 +192,7 @@ const SelectedItemPost = () => {
         }
 
         return (
-            <div>
+            <div  >
                 <div className="font-bold">
                     <br />
                     <h4>Reviews ({originalItemReviews.length})</h4>
@@ -207,7 +207,7 @@ const SelectedItemPost = () => {
                     {stars.map((e, i) => (<div onClick={() => filterStar(e)} className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" style={{ cursor: "pointer" }}>{e}-star</div>))}
                     <div className="items-center font-medium text-sm p-2 bg-yellow-100 rounded-lg" onClick={resetFilter} style={{ cursor: "pointer" }}>Reset</div>
                 </div>
-                <div className="m-3 h-48 overflow-auto grid grid-rows-auto rounded-lg">
+                <div className="m-3 overflow-auto grid grid-rows-auto rounded-lg item-review">
                     {displayedItemReviews.length > 0 ?
                         displayedItemReviews.map((e, i) => (
                             <ReviewOnSubjectPage reviewObject={e} authUser={authUser} />
@@ -222,7 +222,7 @@ const SelectedItemPost = () => {
     if (selectedItem !== null) {
         return (
             <div>
-                <div className="itempost-outer">
+                <div className="itempost-outer" style={{ paddingBottom: "2rem" }}>
                     <div className="item-post-row">
                         <h1>
                             {selectedItem.name}
